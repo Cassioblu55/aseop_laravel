@@ -1,0 +1,225 @@
+var app = angular.module('app', ['ui.grid'], function($interpolateProvider) {
+	$interpolateProvider.startSymbol('<%');
+	$interpolateProvider.endSymbol('%>');
+});
+
+function randomFromArray(array){
+	return array[Math.floor((Math.random() * array.length))];
+}
+
+function getTrapString(traps){
+	var trapStrings = [];
+	for(var i=0; i< traps.length; i++){
+		var trapString = []; var trap = traps[i];
+		trapString.push(trap.id);
+		trapString.push(trap.column);
+		trapString.push(trap.row);
+		trapStrings.push(trapString);
+	}
+	return JSON.stringify(trapStrings);
+}
+
+app.controller("UtilsController", ['$scope', "$http","$controller", function($scope, $http, $controller){
+	angular.extend(this, $controller("StandardUtilitiesController", {$scope: $scope}));
+
+	var Utils = function(CONFIG){
+		var that = {};
+
+		const HTTP_CALL_PROJECT_BASE = CONFIG.projectBase || PROJECT_BASE;
+
+		function getApiUrl(){
+			const HTTP_CALL_API_URL = CONFIG.apiUrl || API_URL_LOCATION;
+			return HTTP_CALL_PROJECT_BASE+HTTP_CALL_API_URL;
+		}
+		that.getApiUrl = getApiUrl;
+
+		function getLocalUrl(){
+			return HTTP_CALL_PROJECT_BASE+(CONFIG.localResource || '');
+		}
+		that. getLocalUrl = getLocalUrl;
+
+		function  getLocalApiUrl() {
+			return getApiUrl()+"/"+(CONFIG.localResource || '');
+		}
+		that.getLocalApiUrl = getLocalApiUrl;
+
+		function runOnFailed(requestName, reason) {
+			var errorMessage = "Http request " + requestName + " failed";
+			if(reason){errorMessage = errorMessage+": "+reason;}
+			if (CONFIG.alertOnError) {
+				alert(errorMessage);
+			} else if (!CONFIG.disableLog) {
+				console.log(errorMessage);
+			}
+		}
+		that.runOnFailed = runOnFailed;
+
+		function getFirstNotNull(list){
+			for(var i=0; i<list.length; i++){
+				if(list[i]){return list[i];}
+			}
+			runOnFailed("getFirstNotNull", 'all list entries null');
+			return null;
+		}
+		that.getFirstNotNull = getFirstNotNull;
+
+		return that;
+	};
+
+	$scope.CreateEditUtil = function(CONFIG){
+		const HTTP_CALL_PROJECT_BASE = CONFIG.projectBase || PROJECT_BASE;
+		var utils = new Utils(CONFIG);
+		var that = {};
+
+		function getDataOnEdit(setFunct, requiredId, url){
+			requiredId = requiredId || CONFIG.defaultCheckObjectPresent;
+			if(requiredIdPresent(requiredId)){
+				url = url || utils.getLocalApiUrl()+"/"+requiredId;
+				$http.get(url).then(function(response){
+					setFunct(response.data);
+				}, function errorCallback(response){
+					runOnFailed("getDataOnEdit", response.statusText);
+				});
+			}
+		}
+		that.getDataOnEdit = getDataOnEdit;
+
+		function requiredIdPresent(requiredId){
+			return requiredId && requiredId.length >0;
+		}
+
+		function getDefaultAccess(runOnSuccess, url){
+			url = url || utils.getApiUrl()+"/profile/defaultAccess";
+			$http.get(url).then(function(response){
+				runOnSuccess(response.data);
+			}, function errorCallback(response){
+				runOnFailed("getDefaultAccess", response.statusText);
+			});
+		}
+		that.getDefaultAccess = getDefaultAccess;
+
+		function runOnCreate(functionToRun, requiredId){
+			requiredId = requiredId || CONFIG.defaultCheckObjectPresent;
+			if(!requiredIdPresent(requiredId)){
+				functionToRun();
+			}
+		}
+		that.runOnCreate = runOnCreate;
+
+		return that;
+
+	};
+
+	$scope.ExtendedGrid = function(CONFIG ,options){
+		const DEFAULT_GRID_OPTIONS = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42, enableColumnMenus: false};
+
+		var that = options || DEFAULT_GRID_OPTIONS;
+		var utils = new Utils(CONFIG);
+
+		function formatColumnAsDate(columnName){
+			var data = that.data;
+			for(var i=0; i<data.length; i++){
+				data[i][columnName] = new Date( data[i][columnName]);
+			}
+			that.data = data;
+		}
+		that.formatColumnAsDate = formatColumnAsDate;
+
+		function refresh(callback, url){
+			url = url || utils.getLocalApiUrl();
+			callback = callback || CONFIG.runOnGridRefresh;
+			$http.get(url).then(function(response){
+				that.data = response.data;
+				if(callback){callback(response.data)}
+			}, function errorCallback(response){
+				utils.runOnFailed("refresh", response.statusText);
+			});
+
+		}
+		that.refresh = refresh;
+
+		function formatColumnWithHash(columnName, hash){
+			var data = that.data;
+			angular.forEach(data, function(row){
+				if(hash[row[columnName]]){
+					row[columnName] = hash[row[columnName]];
+				}
+			});
+			that.data = data;
+		}
+		that.formatColumnWithHash = formatColumnWithHash;
+
+		function destory(object, confirmName, url, callback, doNotRefresh) {
+			confirmName = confirmName || object.name || "this object";
+			if(window.confirm("Are you sure you want to delete "+confirmName+"?")){
+				url = url || utils.getLocalUrl()+"/"+object.id;
+				$http.delete(url).then(function(response){
+					if(callback){
+						callback(response);
+					}
+					if(!doNotRefresh){
+						refresh();
+					}
+				}, function errorCallback(response){
+					runOnFailed("deleteObjectFromGrid", response.statusText);
+				});
+			}
+		}
+		that.destory = destory;
+
+		function getLocalRowUrlWithId(){
+			return utils.getLocalUrl() + "/<%row.entity.id%>";
+		}
+
+		function setColumnDefs(columns) {
+			var href;
+			if(!CONFIG.noAdditinalColumns) {
+				if (!CONFIG.noEditColumn) {
+					href = getLocalRowUrlWithId()+"/edit";
+					columns.unshift(getEditCell(href));
+				}
+				if (!CONFIG.noShowColumn) {
+					href = getLocalRowUrlWithId();
+					columns.unshift(getShowCell(href));
+				}
+				if (!CONFIG.noDeleteColumn) {
+					columns.push(getDeleteCell());
+				}
+			}
+
+			that.columnDefs = columns;
+		}
+		that.setColumnDefs = setColumnDefs;
+
+		function getGridLink(href, buttonName, classes){
+			return '<a class="btn '+classes+'" role="button" ng-href="'+href+'">'+buttonName+'</a>;'
+		}
+		that.getGridLink = getGridLink;
+
+		function getGridButton(clickAction, buttonName, classes){
+			return '<button class="btn '+classes+'" role="button" ng-click="'+clickAction+'">'+buttonName+'</button>'
+		}
+		that.getGridButton = getGridButton;
+
+		function getEditCell(href){
+			const  EDIT_BUTTON_HTML = getGridLink(href, "Edit", "btn-default");
+			return {field: 'edit', enableFiltering: false, width: 52, cellTemplate: EDIT_BUTTON_HTML};
+		}
+
+		function getDeleteCell(clickAction){
+			const CLICK_ACTION = clickAction || "grid.appScope.gridModel.destory(row.entity)";
+			const DELETE_BUTTON_HTML = getGridButton(CLICK_ACTION, "Delete", "btn-danger");
+			return {field: 'delete',  enableFiltering: false, width: 67,  cellTemplate: DELETE_BUTTON_HTML};
+		}
+
+		function getShowCell(href){
+			const SHOW_BUTTON_HTML = getGridLink(href, "Show", "btn-default");
+			return {field: 'show', enableFiltering: false, width: 63, cellTemplate: SHOW_BUTTON_HTML};
+		}
+
+		return that;
+	};
+
+
+
+}]);
