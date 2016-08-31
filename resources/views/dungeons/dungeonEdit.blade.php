@@ -110,13 +110,11 @@
             </div>
         </div>
     </div>
-    </div>
-    </div>
-    <textarea style="display: none" type="text" ng-model="dungeon.map"
-              name="map"></textarea>
-    <input style="display: none" type="text" ng-model="dungeon.traps"
-           type="text" name="traps" />
+    <textarea style="display: none" type="text" ng-model="dungeon.map" name="map"></textarea>
+    <input style="display: none" type="text" ng-model="dungeon.traps" type="text" name="traps" />
 @stop
+
+@section('back_location', url('/dungeons'))
 
 @section('scripts')
     <script>

@@ -11,6 +11,9 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+	const DEFAULT_RECORD_UPDATED_MESSAGE = "Record Updated Successfully";
+	const DEFAULT_RECORD_ADDED_MESSAGE = "Record Added Successfully";
+
 	private $controllerNameSpace;
 
 	protected function setControllerNameSpace($controllerNameSpace){
@@ -31,5 +34,13 @@ class Controller extends BaseController
 
 	protected function getPostHeaders(){
 		return (object) ["postLocation" => $this->getPostLocation(), "methodField" => "POST"];
+	}
+
+	protected static function sendRecordUpdatedSuccessfully($message = self::DEFAULT_RECORD_UPDATED_MESSAGE){
+		return ["successMessage" => $message];
+	}
+
+	protected static function sendRecordAddedSuccessfully($message = self::DEFAULT_RECORD_ADDED_MESSAGE){
+		return ["successMessage" => $message];
 	}
 }

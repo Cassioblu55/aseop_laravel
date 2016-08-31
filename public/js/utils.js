@@ -7,6 +7,10 @@ function randomFromArray(array){
 	return array[Math.floor((Math.random() * array.length))];
 }
 
+function cutString(string, n){
+	return string.substring(0, (string.length-n));
+}
+
 function getTrapString(traps){
 	var trapStrings = [];
 	for(var i=0; i< traps.length; i++){
@@ -147,6 +151,16 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 			that.data = data;
 		}
 		that.formatColumnWithHash = formatColumnWithHash;
+
+		function formatCreatedAt(){
+			that.formatColumnAsDate("created_at");
+		}
+		that.formatCreatedAt = formatCreatedAt;
+
+		function formatPublicPrivate(){
+			that.formatColumnWithHash('public', {0:"Private", 1: "Public"});
+		}
+		that.formatPublicPrivate = formatPublicPrivate;
 
 		function destory(object, confirmName, url, callback, doNotRefresh) {
 			confirmName = confirmName || object.name || "this object";

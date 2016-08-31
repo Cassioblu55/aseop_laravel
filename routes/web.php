@@ -14,6 +14,10 @@
 use App\Dungeon;
 use App\Trap;
 
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -22,26 +26,9 @@ Route::resource('dungeons', 'DungeonController',[
 	'parameters' => 'singular'
 ]);
 
-Route::get('api/dungeons', function (){
-	return Dungeon::all();
-});
-
-Route::get('api/dungeons/{dungeon}', function(Dungeon $dungeon){
-	return $dungeon;
-});
-
-Route::get('api/traps', function (){
-	return [['name'=> "test", 'id'=>1]];
-});
-
-Route::get('api/traps/{trap}', function (Trap $trap){
-	return $trap;
-});
+Route::resource('traps', 'TrapController',[
+	'parameters' => 'singular'
+]);
 
 
-Route::get('api/profile/defaultAccess', function(){
-	return "0";
-});
-Auth::routes();
 
-Route::get('/home', 'HomeController@index');

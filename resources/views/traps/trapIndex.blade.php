@@ -1,11 +1,11 @@
 @extends('layout.grid')
 
-@section('panelTitle', 'My Dungeons')
+@section('panelTitle', 'My Traps')
 
-@section('controller', 'DungeonIndexController')
+@section('controller', 'TrapIndexController')
 
 @section('additionalHeaderContent')
-    <a class="btn btn-primary pull-right" href="{{url('/dungeons/create')}}">Add</a>
+    <a class="btn btn-primary pull-right" href="{{url('/traps/create')}}">Add</a>
 @stop
 
 @section('panelBody')
@@ -18,22 +18,21 @@
 
 @section('scripts')
     <script>
-        app.controller("DungeonIndexController", ['$scope', "$controller","$http", function($scope, $controller, $http) {
+        app.controller("TrapIndexController", ['$scope', "$controller","$http", function($scope, $controller, $http) {
 
             angular.extend(this, $controller('UtilsController', {$scope: $scope}));
 
-            const CONFIG = {localResource: 'dungeons', runOnGridRefresh: function(){
+            const CONFIG = {localResource: 'traps', runOnGridRefresh: function(){
                 $scope.gridModel.formatCreatedAt();
                 $scope.gridModel.formatPublicPrivate();
-                $scope.gridModel.formatColumnWithHash('size', {"M":"Medium", "S": "Small", "L" : "Large"});
             }};
 
             $scope.gridModel = $scope.ExtendedGrid(CONFIG);
 
             $scope.gridModel.setColumnDefs([
                 {field: 'name'},
-                {field: 'purpose'},
-                {field: 'size'},
+                {field: 'description'},
+                {field: 'weight'},
                 {field: 'public'},
                 {field: 'created_at', cellFilter: "date:'MM-dd-yy'", displayName: "Created"}
             ]);
