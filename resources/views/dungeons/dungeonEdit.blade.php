@@ -124,7 +124,7 @@
 
             angular.extend(this, $controller('TrapController', {$scope: $scope}))
 
-            const TRAP_RESOURCE_URL = "{{ProjectRoute::makeRoute("api/traps")}}";
+            const TRAP_RESOURCE_URL = "{{url("/api/traps")}}";
 
             $scope.setFromGet(TRAP_RESOURCE_URL,loadTraps);
             function loadTraps(traps){$scope.trapOptions = traps;}

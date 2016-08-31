@@ -33,7 +33,7 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 		that.getApiUrl = getApiUrl;
 
 		function getLocalUrl(){
-			return HTTP_CALL_PROJECT_BASE+(CONFIG.localResource || '');
+			return HTTP_CALL_PROJECT_BASE+"/"+(CONFIG.localResource || '');
 		}
 		that. getLocalUrl = getLocalUrl;
 
