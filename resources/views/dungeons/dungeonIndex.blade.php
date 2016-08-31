@@ -5,7 +5,7 @@
 @section('controller', 'DungeonIndexController')
 
 @section('additionalHeaderContent')
-    <a class="btn btn-primary pull-right" href="{{ProjectRoute::makeRoute('dungeons/create')}}">Add</a>
+    <a class="btn btn-primary pull-right" href="{{url('/dungeons/create')}}">Add</a>
 @stop
 
 @section('panelBody')
@@ -13,7 +13,7 @@
 @stop()
 
 @section('panelFooter')
-    <a class="btn btn-default" href="{{ProjectRoute::getProjectBase()}}">Back</a>
+    <a class="btn btn-default" href="{{url('/')}}">Back</a>
 @stop
 
 @section('scripts')

@@ -28,8 +28,7 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 		const HTTP_CALL_PROJECT_BASE = CONFIG.projectBase || PROJECT_BASE;
 
 		function getApiUrl(){
-			const HTTP_CALL_API_URL = CONFIG.apiUrl || API_URL_LOCATION;
-			return HTTP_CALL_PROJECT_BASE+HTTP_CALL_API_URL;
+			return CONFIG.apiUrl || API_URL_LOCATION;
 		}
 		that.getApiUrl = getApiUrl;
 

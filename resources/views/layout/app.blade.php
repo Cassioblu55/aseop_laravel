@@ -15,8 +15,8 @@
     @yield('required_scripts')
 
     <script>
-        const PROJECT_BASE = "{{ProjectRoute::getProjectBase()}}";
-        const API_URL_LOCATION = "api";
+        const PROJECT_BASE = "{{url('/')}}";
+        const API_URL_LOCATION = "{{url('/api')}}";
         displayMessageFromUrlPrams();
     </script>
 
@@ -24,11 +24,61 @@
     @yield('styles')
 
     @yield("additional_head_content")
-
 </head>
 
 <header>
-    @yield('menu')
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Aseop</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Creations <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{url('/dungeons')}}">Dungeons</a></li>
+                        </ul>
+                    </li>
+                    @yield('menu_right')
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <!-- Authentication Links -->
+                    @if (Auth::guest())
+                        <li><a href="{{ url('/login') }}">Login</a></li>
+                        <li><a href="{{ url('/register') }}">Register</a></li>
+                    @else
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                {{ Auth::user()->name }} <span class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="{{ url('/logout') }}"
+                                       onclick="event.preventDefault();
+                                                 document.getElementById('logout-form').submit();">
+                                        Logout
+                                    </a>
+
+                                    <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                                        {{ csrf_field() }}
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+                    @yield('menu_left')
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    @yield('additional_header_content')
 </header>
 
 
