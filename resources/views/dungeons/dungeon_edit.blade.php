@@ -14,21 +14,16 @@
 
     <div class="panel-body">
         <div class="col-md-6">
-            <div class="form-group">
-                <label for="name">Name</label> <input type="text"  class="form-control" name="name" ng-model="dungeon.name" placeholder="Dungeon Name" />
-            </div>
-            <div class="form-group">
-                <label for="purpose">Purpose</label> <input type="text" class="form-control" name="purpose" ng-model="dungeon.purpose" placeholder="Purpose" />
-            </div>
-            <div class="form-group">
-                <label for="history">History</label> <input type="text" class="form-control" name="history" ng-model="dungeon.history" placeholder="History" />
-            </div>
-            <div class="form-group">
-                <label for="location">Location</label> <input type="text" class="form-control" name="location" ng-model="dungeon.location" placeholder="Location" />
-            </div>
-            <div class="form-group">
-                <label for="creator">Creator</label> <input type="text" class="form-control" name="creator" ng-model="dungeon.creator" placeholder="Creator" />
-            </div>
+            @include("tiles.questions.text", ['field' =>'name'])
+
+            @include("tiles.questions.text", ['field' =>'purpose'])
+
+            @include("tiles.questions.text", ['field' =>'history'])
+
+            @include("tiles.questions.text", ['field' =>'location'])
+
+            @include("tiles.questions.text", ['field' =>'creator'])
+
             <div class="form-group">
                 <label for="size">Size</label> <select class="form-control" ng-model="dungeon.size" name="size">
                     <option value="">Any</option>
@@ -37,8 +32,10 @@
                     <option ng-selected="dungeon.size== 'L'" value="L">Large</option>
                 </select>
             </div>
+
             <div class="form-group">
-                <label>Number of Traps</label> <input class="form-control" type="number" ng-model="trapNumber" placeholder="Number of Traps" />
+                <label>Number of Traps</label>
+                <input class="form-control" type="number" ng-model="trapNumber" placeholder="Number of Traps" />
             </div>
             <div class="row" ng-show="traps.length >0">
                 <div class="col-md-4">
@@ -76,18 +73,10 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="other_information">Other Information</label>
-                <textarea name="other_information" class="form-control" ng-model="dungeon.other_information" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="public">Public or Private</label>
-                <select class="form-control" id="public" name="public" ng-model="dungeon.public">
-                    <option ng-selected="dungeon.public=='1'" value="1">Public</option>
-                    <option  ng-selected="dungeon.public=='0'" value="0">Private</option>
-                </select>
-            </div>
 
+            @include("tiles.questions.textArea", ['field' =>'other_information'])
+
+            @include('tiles.questions.publicPrivate')
 
         </div>
         <div class="col-md-6">

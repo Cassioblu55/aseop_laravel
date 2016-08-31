@@ -31,7 +31,7 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Aseop</a>
+                <a class="navbar-brand" href="{{url("/")}}">Aseop</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -44,6 +44,14 @@
                             <li><a href="{{url('/traps')}}">Traps</a></li>
                         </ul>
                     </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Creation Traits <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{url('/dungeonTraits')}}">Dungeons</a></li>
+                        </ul>
+                    </li>
+
                     @yield('menu_right')
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -53,7 +61,7 @@
                         <li><a href="{{ url('/register') }}">Register</a></li>
                     @else
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>
                             </a>
 

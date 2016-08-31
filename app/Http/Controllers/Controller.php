@@ -15,22 +15,59 @@ class Controller extends BaseController
 	const DEFAULT_RECORD_ADDED_MESSAGE = "Record Added Successfully";
 
 	private $controllerNameSpace;
+	private $controllerProperName;
+	private $controllerViewPrefix;
+	private $controllerModelName;
+
+	protected function setControllerNames($controllerName){
+		$this->setControllerNameSpace($controllerName."s");
+		$this->setControllerProperName(ucfirst($controllerName)."Controller");
+		$this->setControllerViewPrefix($controllerName);
+		$this->setControllerModelName($controllerName);
+	}
 
 	protected function setControllerNameSpace($controllerNameSpace){
 		$this->controllerNameSpace = $controllerNameSpace;
+	}
+
+	protected function setControllerProperName($controllerProperName){
+		$this->controllerProperName = $controllerProperName;
+	}
+
+	protected function setControllerViewPrefix($controllerViewPrefix){
+		$this->controllerViewPrefix = $controllerViewPrefix;
+	}
+
+	protected function setControllerModelName($controllerModelName){
+		$this->controllerModelName = $controllerModelName;
 	}
 
 	private function getPostLocation(){
 		return url($this->controllerNameSpace);
 	}
 
+	protected function getControllerAction($controllerAction){
+		return $this->controllerProperName.'@'.$controllerAction;
+	}
+
+	protected function getControllerView($controllerView){
+		return $this->controllerNameSpace.".".$this->controllerViewPrefix."_".$controllerView;
+	}
+
 	protected function getCreateHeaders(){
-		return (object) ["createOrUpdate" => "Create", "postLocation" => $this->getPostLocation(), "methodField" => "POST", "addOrSave" => "Add"];
+		return (object) ["createOrUpdate" => "Create", "postLocation" => $this->getPostLocation(), "methodField" => "POST", "addOrSave" => "Add", "dataDefaults" => $this->getDefaultAdditionalData()];
 	}
 
 	protected function getUpdateHeaders($id){
-		return (object) ["createOrUpdate" => "Update", "postLocation" => $this->getPostLocation()."/".$id, "methodField" => "PATCH", "addOrSave" => "Save"];
+		return (object) ["createOrUpdate" => "Update", "postLocation" => $this->getPostLocation()."/".$id, "methodField" => "PATCH", "addOrSave" => "Save", "dataDefaults" => $this->getDefaultAdditionalData()];
 	}
+
+	private function getDefaultAdditionalData(){
+		$data = [];
+		$data['model'] = $this->controllerModelName;
+		return (object) $data;
+	}
+
 
 	protected function getPostHeaders(){
 		return (object) ["postLocation" => $this->getPostLocation(), "methodField" => "POST"];

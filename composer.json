@@ -17,7 +17,8 @@
     },
     "autoload": {
         "classmap": [
-            "database"
+            "database",
+            "app/Services/StringUtils.php"
         ],
         "psr-4": {
             "App\\": "app/"

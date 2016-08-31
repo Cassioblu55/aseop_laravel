@@ -16,14 +16,12 @@ class TrapController extends Controller
 		'weight' => 'numeric|min:1'
 	];
 
+	const CONTROLLER_NAME  = "trap";
+
 	public function __construct(){
-		$this->setControllerNameSpace($this->getControllerNameSpace());
+		$this->setControllerNames(self::CONTROLLER_NAME);
 
 		$this->middleware('auth', ['except' => ['show']]);
-	}
-
-	private function getControllerNameSpace(){
-		return "traps";
 	}
 
 	/**
@@ -33,7 +31,7 @@ class TrapController extends Controller
      */
     public function index()
     {
-	    return view('traps.trapIndex');
+	    return view($this->getControllerView("index"));
     }
 
     /**
@@ -45,7 +43,7 @@ class TrapController extends Controller
     {
 	    $trap = new Trap();
 	    $headers = $this->getCreateHeaders();
-	    return view($this->getControllerNameSpace().".trapEdit", compact('trap', 'headers'));
+	    return view($this->getControllerView("edit"), compact('trap', 'headers'));
     }
 
     /**
@@ -61,7 +59,7 @@ class TrapController extends Controller
 	    $request['owner_id'] = Auth::user()->id;
 	    $request['approved'] = false;
 	    Trap::create($request->all());
-	    return redirect()->action("TrapController@index", self::sendRecordAddedSuccessfully());
+	    return redirect()->action($this->getControllerAction("index"), self::sendRecordAddedSuccessfully());
     }
 
     /**
@@ -84,7 +82,7 @@ class TrapController extends Controller
     public function edit(Trap $trap)
     {
 	    $headers = $this->getUpdateHeaders($trap->id);
-	    return view($this->getControllerNameSpace().".trapEdit", compact('trap', 'headers'));
+	    return view($this->getControllerView("edit"), compact('trap', 'headers'));
     }
 
     /**
@@ -99,7 +97,7 @@ class TrapController extends Controller
 	    $this->validate($request, self::defaultValidation);
 
 	    $trap -> update($request->all());
-	    return redirect()->action("TrapController@index", self::sendRecordUpdatedSuccessfully());
+	    return redirect()->action($this->getControllerAction("index"), self::sendRecordUpdatedSuccessfully());
     }
 
     /**

@@ -26,6 +26,10 @@ Route::resource('dungeons', 'DungeonController',[
 	'parameters' => 'singular'
 ]);
 
+Route::resource('dungeonTraits', 'DungeonTraitController',[
+	'parameters' => 'singular'
+]);
+
 Route::resource('traps', 'TrapController',[
 	'parameters' => 'singular'
 ]);

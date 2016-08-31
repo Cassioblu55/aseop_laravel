@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Dungeon;
 use App\Trap;
+use App\DungeonTrait;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,14 @@ Route::get('/dungeons', function (){
 
 Route::get('/dungeons/{dungeon}', function(Dungeon $dungeon){
 	return $dungeon;
+});
+
+Route::get('/dungeonTraits', function (){
+	return DungeonTrait::all();
+});
+
+Route::get('/dungeonTraits/{dungeonTrait}', function(DungeonTrait $dungeonTrait){
+	return $dungeonTrait;
 });
 
 Route::get('/traps', function (){

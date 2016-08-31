@@ -8,17 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class DungeonController extends Controller
 {
+	const CONTROLLER_NAME  = "dungeon";
 
-    public function __construct(){
-		$this->setControllerNameSpace($this->getControllerNameSpace());
+	public function __construct(){
+	    $this->setControllerNames(self::CONTROLLER_NAME);
 
 	    $this->middleware('auth', ['except' => ['show']]);
     }
-
-    private function getControllerNameSpace(){
-    	return "dungeons";
-    }
-
 
 	/**
      * Display a listing of the resource.
@@ -27,7 +23,7 @@ class DungeonController extends Controller
      */
     public function index()
     {
-        return view('dungeons.dungeonIndex');
+        return view($this->getControllerView("index"));
     }
 
     /**
@@ -39,7 +35,7 @@ class DungeonController extends Controller
     {
 	    $dungeon = new Dungeon();
 	    $headers = $this->getCreateHeaders();
-	    return view($this->getControllerNameSpace().".dungeonEdit", compact('dungeon', 'headers'));
+	    return view($this->getControllerView("edit"), compact('dungeon', 'headers'));
 
     }
 
@@ -54,8 +50,7 @@ class DungeonController extends Controller
 	    $request['owner_id'] = Auth::user()->id;
 	    $request['approved'] = false;
 	    Dungeon::create($request->all());
-	    $message = "Record Added Successfully";
-	    return redirect()->action("DungeonController@index", ["successMessage" => $message]);
+	    return redirect()->action($this->getControllerAction("index"), self::sendRecordAddedSuccessfully());
     }
 
     /**
@@ -78,7 +73,7 @@ class DungeonController extends Controller
     public function edit(Dungeon $dungeon)
     {
         $headers = $this->getUpdateHeaders($dungeon->id);
-	    return view($this->getControllerNameSpace().".dungeonEdit", compact('dungeon', 'headers'));
+	    return view($this->getControllerView("edit"), compact('dungeon', 'headers'));
     }
 
     /**
@@ -91,8 +86,7 @@ class DungeonController extends Controller
     public function update(Request $request, Dungeon $dungeon)
     {
 	    $dungeon -> update($request->all());
-	    $message = "Record Updated Successfully";
-	    return redirect()->action("DungeonController@index", ["successMessage" => $message]);
+	    return redirect()->action($this->getControllerAction("index"), self::sendRecordUpdatedSuccessfully());
     }
 
     /**

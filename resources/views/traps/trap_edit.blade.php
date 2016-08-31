@@ -11,32 +11,18 @@
 @stop
 
 @section('form_body')
-    <div class="form-group">
-        <label>Name</label> <input type="text" class="form-control" required="required" name="name" ng-model="trap.name" placeholder="Name" />
-    </div>
-    <div class="form-group">
-        <label for="description">Description</label>
-        <textArea type="text" class="form-control" rows="6" name="description" ng-model="trap.description" placeholder="Description"></textArea>
-    </div>
+
+    @include("tiles.questions.text", ['field' =>'name'])
+
+    @include("tiles.questions.textArea", ['field' =>'description'])
+
     @include('tiles.rolls.roll_display_panel')
     <input type="text" style="display: none;" name="rolls" ng-model="trap.rolls" />
-    <div class="form-group">
-        <div class="{{ $errors->has('weight') ? 'has-error' : '' }}">
-            <label class="control-label">Weight</label>
-            <input type="number" class="form-control" name="weight" ng-model="trap.weight" placeholder="Weight" min="0" />
-            @include('tiles.error', ['errorName' => 'weight'])
-        </div>
-        <p class="help-block">Will determine how often trap will appear randomly when making dungons</p>
-    </div>
 
+    @include("tiles.questions.number", ['field' =>'weight'])
 
-    <div class="form-group">
-        <label for="public">Public or Private</label>
-        <select class="form-control" id="public" name="public" ng-model="trap.public">
-            <option ng-selected="trap.public=='1'" value="1">Public</option>
-            <option  ng-selected="trap.public=='0'" value="0">Private</option>
-        </select>
-    </div>
+    @include('tiles.questions.publicPrivate')
+
     @include('tiles.rolls.roll_modal')
 @stop
 
