@@ -42,5 +42,13 @@ Route::resource('npcTraits', 'NpcTraitController',[
 	'parameters' => 'singular'
 ]);
 
+Route::resource('settlements', 'SettlementController',[
+	'parameters' => 'singular'
+]);
+
+Route::resource('settlementTraits', 'SettlementTraitController',[
+	'parameters' => 'singular'
+]);
+
 
 

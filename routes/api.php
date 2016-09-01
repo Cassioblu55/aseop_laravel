@@ -6,6 +6,8 @@ use App\Trap;
 use App\DungeonTrait;
 use App\NonPlayerCharacter;
 use App\NonPlayerCharacterTrait;
+use App\SettlementTrait;
+use App\Settlement;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +44,19 @@ Route::get('/npcs', function (){
 	return NonPlayerCharacter::all();
 });
 
+Route::get('/npcs/names', function (){
+	$queryData = NonPlayerCharacter::all(['id', 'first_name', 'last_name']);
+	$data = [];
+	foreach ($queryData as $row){
+		$newRow = [];
+		$newRow['name'] = $row['first_name'] . " ". $row['last_name'];
+		$newRow['id'] = $row['id'];
+		array_push($data, $newRow);
+	}
+
+	return $data;
+});
+
 Route::get('/npcs/{npc}', function(NonPlayerCharacter $npc){
 	return $npc;
 });
@@ -52,6 +67,22 @@ Route::get('/npcTraits', function (){
 
 Route::get('/npcTraits/{npcTrait}', function(NonPlayerCharacterTrait $npcTrait){
 	return $npcTrait;
+});
+
+Route::get('/settlements', function (){
+	return Settlement::all();
+});
+
+Route::get('/settlements/{settlement}', function(Settlement $settlement){
+	return $settlement;
+});
+
+Route::get('/settlementTraits', function (){
+	return SettlementTrait::all();
+});
+
+Route::get('/settlementTraits/{settlementTrait}', function(SettlementTrait $settlementTrait){
+	return $settlementTrait;
 });
 
 Route::get('/traps', function (){

@@ -1,15 +1,20 @@
 <?php
     $model = (isset($model)) ? $model : $headers->dataDefaults->model;
+
+    $required = (isset($required) && $required== true);
+    $isRequired = $required ? 'required ="required"' : '';
 ?>
 
 <div class="form-group {{ $errors->has($field) ? 'has-error' : '' }}">
    <label class="control-label" for="{{$field}}_inputDiv">{{\App\Services\StringUtils::display($field)}}</label>
-        <select id="{{$field}}_inputDiv" class="form-control" name="{{$field}}" ng-model="{{$model}}.{{$field}}">
-        <option value="">Any</option>
+        <select id="{{$field}}_inputDiv" {{$isRequired}} class="form-control" name="{{$field}}" ng-model="{{$model}}.{{$field}}">
+        <option {{$required ? 'disabled' : ''}} value="">{{($required) ? 'Choose One' : 'Any'}}</option>
 
         @foreach($data as $value=>$displayValue)
             <option ng-selected="{{$model}}.{{$field}}=='{{$value}}'" value="{{$value}}">{{$displayValue}}</option>
         @endforeach
 
     </select>
+
+    @include('tiles.error', ['errorName' => $field])
 </div>
