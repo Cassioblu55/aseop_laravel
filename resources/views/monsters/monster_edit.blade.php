@@ -399,9 +399,9 @@
             }
 
             $scope.utils.getDataOnEdit(function(monster){
-                $scope.monster = monster;
-                $scope.monster.stats = (monster.stats) ? JSON.parse($scope.monster.stats) : {};
-                $scope.skills = (monster.skills) ? $scope.monster.skills.parseEscape() : [];
+                $scope.monster = convertValuesToNumbers(monster, valueToNumberList);
+                $scope.monster.stats = (monster.stats) ? JSON.parse(convertValuesToNumbers($scope.monster.stats, $scope.statsValues)) : {};
+                $scope.skills = (monster.skills) ? convertListHashValuesToNumbers($scope.monster.skills.parseEscape(), ['modifer']) : [];
                 $scope.languages = (monster.languages) ? $scope.monster.languages.parseEscape() : [];
                 $scope.senses = (monster.senses) ? $scope.monster.senses.parseEscape() : [];
                 $scope.abilities = (monster.abilities) ? $scope.monster.abilities.parseEscape() : [];

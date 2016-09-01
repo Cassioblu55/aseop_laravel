@@ -23,6 +23,21 @@ function getTrapString(traps){
 	return JSON.stringify(trapStrings);
 }
 
+function convertValuesToNumbers(hash, list){
+	for(var i=0; i<list.length; i++){
+		var value = list[i];
+		hash[value] = Number(hash[value]);
+	}
+	return hash;
+}
+
+function convertListHashValuesToNumbers(array, list){
+	for(var i=0; i<array.length; i++){
+		array[i] = convertValuesToNumbers(array[i], list);
+	}
+	return array;
+}
+
 app.controller("UtilsController", ['$scope', "$http","$controller", function($scope, $http, $controller){
 	angular.extend(this, $controller("StandardUtilitiesController", {$scope: $scope}));
 
