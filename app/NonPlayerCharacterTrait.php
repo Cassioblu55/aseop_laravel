@@ -1,13 +1,11 @@
 <?php
 
 namespace App;
+
 use Illuminate\Database\Eloquent\Model;
 
-
-
-class Trap extends Model
+class NonPlayerCharacterTrait extends Model
 {
-
 	protected $guarded = [];
 
 	public function user()

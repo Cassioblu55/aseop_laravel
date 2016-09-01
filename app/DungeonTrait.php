@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class DungeonTrait extends Model
 {
-	protected $fillable = [
-		'type', 'trait', 'description', 'weight', 'owner_id', 'public', 'description'
-	];
+
+	protected $guarded = [];
 
 	public function user()
 	{

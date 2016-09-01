@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use App\Dungeon;
 use App\Trap;
 use App\DungeonTrait;
+use App\NonPlayerCharacter;
+use App\NonPlayerCharacterTrait;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +36,22 @@ Route::get('/dungeonTraits', function (){
 
 Route::get('/dungeonTraits/{dungeonTrait}', function(DungeonTrait $dungeonTrait){
 	return $dungeonTrait;
+});
+
+Route::get('/npcs', function (){
+	return NonPlayerCharacter::all();
+});
+
+Route::get('/npcs/{npc}', function(NonPlayerCharacter $npc){
+	return $npc;
+});
+
+Route::get('/npcTraits', function (){
+	return NonPlayerCharacterTrait::all();
+});
+
+Route::get('/npcTraits/{npcTrait}', function(NonPlayerCharacterTrait $npcTrait){
+	return $npcTrait;
 });
 
 Route::get('/traps', function (){

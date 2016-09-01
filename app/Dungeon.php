@@ -6,9 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dungeon extends Model
 {
-	protected $fillable = [
-		'name', 'purpose', 'history', 'location', 'creator', 'map', 'traps', 'size', 'other_information', 'owner_id', 'public'
-	];
+	protected $guarded = [];
 
 	public function user()
 	{

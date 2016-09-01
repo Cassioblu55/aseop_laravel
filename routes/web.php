@@ -34,5 +34,13 @@ Route::resource('traps', 'TrapController',[
 	'parameters' => 'singular'
 ]);
 
+Route::resource('npcs', 'NpcController',[
+	'parameters' => 'singular'
+]);
+
+Route::resource('npcTraits', 'NpcTraitController',[
+	'parameters' => 'singular'
+]);
+
 
 

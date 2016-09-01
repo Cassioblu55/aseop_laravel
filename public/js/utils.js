@@ -141,11 +141,13 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 		}
 		that.refresh = refresh;
 
-		function formatColumnWithHash(columnName, hash){
+		function formatColumnWithHash(columnName, hash, defaultValue){
 			var data = that.data;
 			angular.forEach(data, function(row){
 				if(hash[row[columnName]]){
 					row[columnName] = hash[row[columnName]];
+				}else if(defaultValue){
+					row[columnName] = defaultValue;
 				}
 			});
 			that.data = data;
