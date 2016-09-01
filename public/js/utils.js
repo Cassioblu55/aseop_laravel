@@ -235,6 +235,12 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 		return that;
 	};
 
+	$scope.getModifer = function(stat){
+		if(!stat){return "";}
+		var modifer = (stat) ? Math.floor((stat-10)/2): 0;
+		return (modifer >0) ? "+"+modifer : modifer;
+	}
+
 
 
 }]);

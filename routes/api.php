@@ -8,6 +8,7 @@ use App\NonPlayerCharacter;
 use App\NonPlayerCharacterTrait;
 use App\SettlementTrait;
 use App\Settlement;
+use App\Monster;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,10 @@ use App\Settlement;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
+
+Route::get('/profile/defaultAccess', function(){
+	return "0";
+});
 
 Route::get('/dungeons', function (){
 	return Dungeon::all();
@@ -93,7 +98,10 @@ Route::get('/traps/{trap}', function (Trap $trap){
 	return $trap;
 });
 
+Route::get('/monsters', function (){
+	return Monster::all();
+});
 
-Route::get('/profile/defaultAccess', function(){
-	return "0";
+Route::get('/monsters/{monster}', function (Monster $monster){
+	return $monster;
 });

@@ -1,11 +1,11 @@
 @extends('layout.grid')
 
-@section('panelTitle', 'My Settlements Traits')
+@section('panelTitle', 'My Monsters')
 
-@section('controller', 'SettlementTraitIndexController')
+@section('controller', 'MonsterIndexController')
 
 @section('additionalHeaderContent')
-    <a class="btn btn-primary pull-right" href="{{url('/settlementTraits/create')}}">Add</a>
+    <a class="btn btn-primary pull-right" href="{{url('/monsters/create')}}">Add</a>
 @stop
 
 @section('panelBody')
@@ -18,11 +18,11 @@
 
 @section('scripts')
     <script>
-        app.controller("SettlementTraitIndexController", ['$scope', "$controller", function($scope, $controller) {
+        app.controller("MonsterIndexController", ['$scope', "$controller", function($scope, $controller) {
 
             angular.extend(this, $controller('UtilsController', {$scope: $scope}));
 
-            const CONFIG = {localResource: 'settlementTraits', runOnGridRefresh: function(){
+            const CONFIG = {localResource: 'monsters', runOnGridRefresh: function(){
                 $scope.gridModel.formatCreatedAt();
                 $scope.gridModel.formatPublicPrivate();
             }};
@@ -30,8 +30,10 @@
             $scope.gridModel = $scope.ExtendedGrid(CONFIG);
 
             $scope.gridModel.setColumnDefs([
-                {field: 'type'},
-                {field: 'trait'},
+                {field: 'name'},
+                {field: 'hit_points'},
+                {field: 'speed'},
+                {field: 'xp'},
                 {field: 'public'},
                 {field: 'created_at', cellFilter: "date:'MM-dd-yy'", displayName: "Created"}
             ]);

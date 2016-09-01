@@ -50,5 +50,9 @@ Route::resource('settlementTraits', 'SettlementTraitController',[
 	'parameters' => 'singular'
 ]);
 
+Route::resource('monsters', 'MonsterController', [
+	'parameters' => 'singular'
+]);
+
 
 
