@@ -9,6 +9,9 @@ use App\NonPlayerCharacterTrait;
 use App\SettlementTrait;
 use App\Settlement;
 use App\Monster;
+use App\Tavern;
+use App\TavernTrait;
+use App\Riddle;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,4 +107,36 @@ Route::get('/monsters', function (){
 
 Route::get('/monsters/{monster}', function (Monster $monster){
 	return $monster;
+});
+
+Route::get('/taverns', function (){
+	return Tavern::all();
+});
+
+Route::get('/taverns/{tavern}', function (Tavern $tavern){
+	return $tavern;
+});
+
+Route::get('/tavernTraits', function (){
+	return TavernTrait::all();
+});
+
+Route::get('/tavernTraits/{tavernTrait}', function (TavernTrait $tavernTrait){
+	return $tavernTrait;
+});
+
+Route::get('/riddles', function (){
+	return Riddle::all();
+});
+
+Route::get('/riddles/{riddle}', function(Riddle $riddle){
+	return $riddle;
+});
+
+Route::get('/spells', function (){
+return \App\Spell::all();
+});
+
+Route::get('/spells/{spell}', function(\App\Spell $spell){
+return $spell;
 });

@@ -11,9 +11,6 @@
 |
 */
 
-use App\Dungeon;
-use App\Trap;
-
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
@@ -54,5 +51,18 @@ Route::resource('monsters', 'MonsterController', [
 	'parameters' => 'singular'
 ]);
 
+Route::resource('taverns', 'TavernController',[
+	'parameters' => 'singular'
+]);
 
+Route::resource('tavernTraits', 'TavernTraitController',[
+	'parameters' => 'singular'
+]);
 
+Route::resource('riddles', 'RiddleController',[
+	'parameters' => 'singular'
+]);
+
+Route::resource('spells', 'SpellController',[
+'parameters' => 'singular'
+]);

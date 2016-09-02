@@ -6,5 +6,7 @@
         <li><a href="{{url('/dungeons')}}">Dungeons</a></li>
         <li><a href="{{url('/monsters')}}">Monsters</a></li>
         <li><a href="{{url('/traps')}}">Traps</a></li>
+        <li><a href="{{url('/taverns')}}">Taverns</a></li>
+        <li><a href="{{url('/riddles')}}">Riddles</a></li>
     </ul>
 </li>

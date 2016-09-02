@@ -4,5 +4,6 @@
         <li><a href="{{url('/npcTraits')}}">Non Player Characters</a></li>
         <li><a href="{{url('/settlementTraits')}}">Settlements</a></li>
         <li><a href="{{url('/dungeonTraits')}}">Dungeons</a></li>
+        <li><a href="{{url('/tavernTraits')}}">Taverns</a></li>
     </ul>
 </li>
