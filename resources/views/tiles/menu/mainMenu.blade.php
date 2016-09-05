@@ -12,6 +12,8 @@
 
                 @include('tiles.menu.traits')
 
+                @include('tiles.menu.encounters')
+
                 @yield('menu_right')
             </ul>
             <ul class="nav navbar-nav navbar-right">

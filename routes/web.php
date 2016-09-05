@@ -66,3 +66,19 @@ Route::resource('riddles', 'RiddleController',[
 Route::resource('spells', 'SpellController',[
 'parameters' => 'singular'
 ]);
+
+Route::resource('villains', 'VillainController',[
+'parameters' => 'singular'
+]);
+
+Route::resource('villainTraits', 'VillainTraitController',[
+'parameters' => 'singular'
+]);
+
+Route::resource('forestEncounters', 'ForestEncounterController',[
+'parameters' => 'singular'
+]);
+
+Route::resource('urbanEncounters', 'UrbanEncounterController',[
+'parameters' => 'singular'
+]);

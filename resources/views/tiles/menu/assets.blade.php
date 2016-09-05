@@ -8,5 +8,6 @@
         <li><a href="{{url('/traps')}}">Traps</a></li>
         <li><a href="{{url('/taverns')}}">Taverns</a></li>
         <li><a href="{{url('/riddles')}}">Riddles</a></li>
+        <li><a href="{{url('/villains')}}">Villains</a></li>
     </ul>
 </li>

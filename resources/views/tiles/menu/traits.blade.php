@@ -5,5 +5,6 @@
         <li><a href="{{url('/settlementTraits')}}">Settlements</a></li>
         <li><a href="{{url('/dungeonTraits')}}">Dungeons</a></li>
         <li><a href="{{url('/tavernTraits')}}">Taverns</a></li>
+        <li><a href="{{url('/villainTraits')}}">Villains</a></li>
     </ul>
 </li>

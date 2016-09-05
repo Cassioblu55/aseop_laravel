@@ -140,3 +140,35 @@ return \App\Spell::all();
 Route::get('/spells/{spell}', function(\App\Spell $spell){
 return $spell;
 });
+
+Route::get('/villains', function (){
+return \App\Villain::all();
+});
+
+Route::get('/villains/{villain}', function(\App\Villain $villain){
+return $villain;
+});
+
+Route::get('/villainTraits', function (){
+return \App\VillainTrait::all();
+});
+
+Route::get('/villainTraits/{villainTrait}', function(\App\VillainTrait $villainTrait){
+return $villainTrait;
+});
+
+Route::get('/forestEncounters', function (){
+return \App\ForestEncounter::all();
+});
+
+Route::get('/forestEncounters/{forestEncounter}', function(\App\ForestEncounter $forestEncounter){
+return $forestEncounter;
+});
+
+Route::get('/urbanEncounters', function (){
+return \App\UrbanEncounter::all();
+});
+
+Route::get('/urbanEncounters/{urbanEncounter}', function(\App\UrbanEncounter $urbanEncounter){
+return $urbanEncounter;
+});
