@@ -7,13 +7,13 @@
 @section('form-size', '6')
 
 @section('form_body')
-    @include("tiles.questions.text", ['field' =>'trait'])
+    @include("tiles.questions.text", ['field' =>'trait', 'required'=>true])
 
-    @include("tiles.questions.text", ['field' =>'type'])
+    @include("tiles.questions.select", ['field' =>'type', 'required'=>true,'data' =>['name'=>'Name', 'purpose' =>'Purpose', 'history' =>'History', 'location'=>'Location', 'creator'=>'Creator']])
 
     @include("tiles.questions.textArea", ['field' =>'description'])
 
-    @include("tiles.questions.number", ['field' =>'weight'])
+    @include("tiles.questions.number", ['field' =>'weight', 'validation'=>'min=1'])
 
     @include('tiles.questions.publicPrivate')
 @stop
@@ -35,6 +35,7 @@
 
             $scope.utils.runOnCreate(function(){
                 $scope.dungeonTrait = {};
+                $scope.dungeonTrait.weight = 1;
                 $scope.utils.getDefaultAccess(function(n){
                     $scope.dungeonTrait['public'] = n});
             });

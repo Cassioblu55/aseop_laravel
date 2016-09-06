@@ -17,7 +17,9 @@
 @stop
 
 @section('scripts')
+
     <script>
+    $('test').button('loading')
         app.controller("DungeonIndexController", ['$scope', "$controller","$http", function($scope, $controller, $http) {
 
             angular.extend(this, $controller('UtilsController', {$scope: $scope}));

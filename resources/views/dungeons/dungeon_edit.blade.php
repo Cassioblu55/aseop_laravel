@@ -53,22 +53,19 @@
                     <div class="col-md-4">
                         <select ng-model="trap.id" class="form-control">
                             <option value="">Any</option>
-                            <option ng-repeat="trapOption in trapOptions"
-                                    value="<% trapOption.id %>"> <% trapOption.name %></option>
+                            <option ng-repeat="trapOption in trapOptions" ng-selected="trap.id==trapOption.id" value="<% trapOption.id %>"> <% trapOption.name %></option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <select ng-model="trap.column" class="form-control">
                             <option value="">Any</option>
-                            <option ng-repeat="(value, letter) in trap.columnOptions"
-                                    value="<%value%>"><%letter%></option>
+                            <option ng-repeat="(value, letter) in trap.columnOptions"  ng-selected="trap.column==value" value="<%value%>"><%letter%></option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <select ng-model="trap.row" class="form-control">
                             <option value="">Any</option>
-                            <option ng-repeat="(key, value) in trap.rowOptions"
-                                    value="<%key%>"><%value%></option>
+                            <option ng-repeat="(key, value) in trap.rowOptions" ng-selected="trap.row==value" value="<%key%>"><%value%></option>
                         </select>
                     </div>
                 </div>
@@ -132,7 +129,7 @@
             $scope.utils.runOnCreate(function(){
                 $scope.dungeon = {};
                 $scope.utils.getDefaultAccess(function(n){
-                $scope.dungeon['public'] = n});
+                    $scope.dungeon['public'] = n});
                 $scope.dungeon.size = getRandomSize();
             });
 

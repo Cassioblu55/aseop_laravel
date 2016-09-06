@@ -19,6 +19,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('dungeons/generate', 'DungeonController@generate');
+Route::post('dungeons/createWithIdReturn', 'DungeonController@createWithIdReturn');
+
 Route::resource('dungeons', 'DungeonController',[
 	'parameters' => 'singular'
 ]);

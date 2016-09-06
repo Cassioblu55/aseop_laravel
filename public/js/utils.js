@@ -38,6 +38,18 @@ function convertListHashValuesToNumbers(array, list){
 	return array;
 }
 
+function getTrapSting(traps){
+	var trapStrings = [];
+	for(var i=0; i< traps.length; i++){
+		var trapString = []; var trap = traps[i];
+		trapString.push(trap.id+"");
+		trapString.push(trap.column);
+		trapString.push(trap.row);
+		trapStrings.push(trapString);
+	}
+	return JSON.stringify(trapStrings);
+}
+
 app.controller("UtilsController", ['$scope', "$http","$controller", function($scope, $http, $controller){
 	angular.extend(this, $controller("StandardUtilitiesController", {$scope: $scope}));
 
