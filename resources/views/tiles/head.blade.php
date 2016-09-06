@@ -1,6 +1,8 @@
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     @yield('additional_meta_data')
+
 
     <title>@yield('page_title')</title>
 
