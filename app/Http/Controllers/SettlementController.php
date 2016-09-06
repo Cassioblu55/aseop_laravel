@@ -34,6 +34,12 @@ class SettlementController extends Controller
 		return view($this->getControllerView("edit"), compact('settlement', 'headers'));
 	}
 
+
+	public function generate(){
+		$settlement = Settlement::generate();
+		return redirect()->action($this->getControllerAction('edit'), [$settlement]);
+	}
+
 	/**
 	 * Store a newly created resource in storage.
 	 *

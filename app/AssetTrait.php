@@ -12,12 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 class AssetTrait extends Model
 {
 
-	public function __construct(array $attributes= [])
-	{
-		parent::__construct($attributes);
-	}
-
-
 	public function getRandomByType($type){
 		$results = AssetTrait::where('type', $type);
 		if(count($results)){

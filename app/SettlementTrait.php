@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SettlementTrait extends Model
+class SettlementTrait extends AssetTrait
 {
 	protected $guarded = [];
 

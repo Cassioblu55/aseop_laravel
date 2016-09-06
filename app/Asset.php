@@ -11,7 +11,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class Asset extends Model
+abstract class Asset extends Model implements Generate
 {
 
 	private $traitTable;
@@ -24,12 +24,29 @@ class Asset extends Model
 		parent::__construct($attributes);
 	}
 
+	protected function setPublic(){
+		$this->setIfFeildNotPresent('public', function(){
+			return false;
+		});
+	}
+
+	protected function setIfFeildNotPresent($field, $funct){
+		if(!isSet($this[$field])){
+			$this[$field] = $funct();
+		}
+	}
+
 	protected function setFillable()
 	{
 		foreach ($this->fillableFromTraitTable as $type) {
-			$this[$type] = $this->traitTable->getRandomByType($type);
+			if(!isset($this[$type])){
+				$this[$type] = $this->getTraitRandomByType($type);
+			}
 		}
+	}
 
+	public function getTraitRandomByType($type){
+		return $this->traitTable->getRandomByType($type);
 	}
 
 }

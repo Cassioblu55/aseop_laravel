@@ -35,6 +35,11 @@ class NpcController extends Controller
 		return view($this->getControllerView("edit"), compact('npc', 'headers'));
 	}
 
+	public function generate(){
+		$npc = NonPlayerCharacter::generate();
+		return redirect()->action($this->getControllerAction('edit'), [$npc]);
+	}
+
 	/**
 	 * Store a newly created resource in storage.
 	 *

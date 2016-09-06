@@ -53,7 +53,7 @@ Route::get('/npcs', function (){
 });
 
 Route::get('/npcs/names', function (){
-	$queryData = NonPlayerCharacter::all(['id', 'first_name', 'last_name']);
+	$queryData = NonPlayerCharacter::all(['id', 'first_name', 'last_name'], false);
 	$data = [];
 	foreach ($queryData as $row){
 		$newRow = [];

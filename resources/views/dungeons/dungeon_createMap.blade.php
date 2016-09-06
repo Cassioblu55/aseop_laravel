@@ -57,7 +57,7 @@
                 var n = Math.random() * (max - min) + min;
 
                 $scope.traps = [];
-                for(var i=0; i<6; i++){
+                for(var i=0; i<n; i++){
                     $scope.traps.push({});
                 }
                 $scope.setRandomTraps();

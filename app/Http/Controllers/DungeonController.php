@@ -66,14 +66,11 @@ class DungeonController extends Controller
 	}
 
     public function generate(){;
-	    $dungeon = new Dungeon();
-	    $dungeon->addMissing();
+	    $dungeon = Dungeon::generate();
 	    return view($this->getControllerView("createMap"), compact('dungeon'));
     }
 
     public function createWithIdReturn(Request $request){
-	    $request['owner_id'] = Auth::user()->id;
-	    $request['approved'] = false;
 	    $dungeon = Dungeon::create($request->all());
 	    return $dungeon->id;
     }

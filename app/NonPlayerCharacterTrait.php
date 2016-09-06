@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class NonPlayerCharacterTrait extends Model
+class NonPlayerCharacterTrait extends AssetTrait
 {
 	protected $guarded = [];
 

@@ -34,6 +34,7 @@ Route::resource('traps', 'TrapController',[
 	'parameters' => 'singular'
 ]);
 
+Route::get('npcs/generate', 'NpcController@generate');
 Route::resource('npcs', 'NpcController',[
 	'parameters' => 'singular'
 ]);
@@ -42,6 +43,7 @@ Route::resource('npcTraits', 'NpcTraitController',[
 	'parameters' => 'singular'
 ]);
 
+Route::get('settlements/generate', 'SettlementController@generate');
 Route::resource('settlements', 'SettlementController',[
 	'parameters' => 'singular'
 ]);
