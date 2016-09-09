@@ -11,15 +11,15 @@
     @include('tiles.questions.selectFromRemote', ['field' => 'npc_id', 'remoteField'=>'npcs', 'remoteDisplayValue' => 'name'])
 
     @include('tiles.questions.text', ['field' => 'method_type'])
-    @include('tiles.questions.textarea', ['field' => 'method_description'])
+    @include('tiles.questions.textArea', ['field' => 'method_description'])
 
     @include('tiles.questions.text', ['field' => 'scheme_type'])
-    @include('tiles.questions.textarea', ['field' => 'scheme_description'])
+    @include('tiles.questions.textArea', ['field' => 'scheme_description'])
 
     @include('tiles.questions.text', ['field' => 'weakness_type'])
-    @include('tiles.questions.textarea', ['field' => 'weakness_description'])
+    @include('tiles.questions.textArea', ['field' => 'weakness_description'])
 
-    @include('tiles.questions.textarea', ['field' => 'other_information'])
+    @include('tiles.questions.textArea', ['field' => 'other_information'])
 
     @include('tiles.questions.publicPrivate')
 @stop
