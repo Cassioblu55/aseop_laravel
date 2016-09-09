@@ -9,7 +9,7 @@
 @section('form_body')
     @include("tiles.questions.text", ['field' =>'trait', 'required'=>true])
 
-    @include("tiles.questions.select", ['field' =>'type', 'required'=>true, 'data'=>['male_name' =>'Male Name', 'female_name' => 'Female Name', 'last_name'=>'Last Name','interaction'=>'Interaction', 'mannerism' =>'mannerism', 'bond'=>'Bond', 'appearance'=>'Apperance', 'talent'=>'talent', 'ideal'=>'ideal','ability'=>'Ability'
+    @include("tiles.questions.select", ['field' =>'type', 'required'=>true, 'data'=>['male_name' =>'Male Name', 'female_name' => 'Female Name', 'last_name'=>'Last Name','interaction'=>'Interaction', 'mannerism' =>'Mannerism', 'bond'=>'Bond', 'appearance'=>'Appearance', 'talent'=>'Talent', 'ideal'=>'Ideal','ability'=>'Ability'
     ]])
 
     @include('tiles.questions.publicPrivate')

@@ -9,7 +9,7 @@
 @section('form_body')
     @include("tiles.questions.text", ['field' =>'trait'])
 
-    @include("tiles.questions.text", ['field' =>'type'])
+    @include("tiles.questions.select", ['field' =>'type', 'required'=>true, 'data' =>['name'=>'Name', 'known_for'=>'Known For', 'notable_traits'=>'Notable Traits', 'ruler_status'=>'Ruler Status', 'current_calamit'=>'Current Calamity', 'race_relations'=> 'Race Relations']])
 
     @include('tiles.questions.publicPrivate')
 @stop
