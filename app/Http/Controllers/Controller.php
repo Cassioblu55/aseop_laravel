@@ -14,6 +14,10 @@ class Controller extends BaseController
 	const DEFAULT_RECORD_UPDATED_MESSAGE = "Record Updated Successfully";
 	const DEFAULT_RECORD_ADDED_MESSAGE = "Record Added Successfully";
 
+	const SHOW = "show";
+	const EDIT = "edit";
+	const INDEX = "index";
+
 	private $controllerNameSpace;
 	private $controllerProperName;
 	private $controllerViewPrefix;
@@ -80,4 +84,17 @@ class Controller extends BaseController
 	protected static function sendRecordAddedSuccessfully($message = self::DEFAULT_RECORD_ADDED_MESSAGE){
 		return ["successMessage" => $message];
 	}
+
+	protected function getIndexControllerAction(){
+		return $this->getControllerAction(self::INDEX);
+	}
+
+	protected function getEditControllerAction(){
+		return $this->getControllerAction(self::EDIT);
+	}
+
+	protected function getShowControllerAction(){
+		return $this->getControllerAction(self::SHOW);
+	}
+
 }

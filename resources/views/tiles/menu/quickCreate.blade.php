@@ -4,5 +4,6 @@
         <li><a href="{{url('/npcs/generate')}}">Non Player Character</a></li>
         <li><a href="{{url('/dungeons/generate')}}">Dungeon</a></li>
         <li><a href="{{url('/settlements/generate')}}">Settlements</a></li>
+        <li><a href="{{url('/taverns/generate')}}">Tavern</a></li>
     </ul>
 </li>

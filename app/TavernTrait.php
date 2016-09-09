@@ -2,9 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class TavernTrait extends Model
+class TavernTrait extends AssetTrait
 {
 	protected $guarded = [];
 

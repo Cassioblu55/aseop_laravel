@@ -56,6 +56,7 @@ Route::resource('monsters', 'MonsterController', [
 	'parameters' => 'singular'
 ]);
 
+Route::get('taverns/generate', 'TavernController@generate');
 Route::resource('taverns', 'TavernController',[
 	'parameters' => 'singular'
 ]);

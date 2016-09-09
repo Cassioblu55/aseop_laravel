@@ -19,7 +19,7 @@ class TavernController extends Controller
 
 	public function index()
 	{
-		return view($this->getControllerView('index'));
+		return view($this->getControllerView(self::INDEX));
 	}
 
 	/**
@@ -31,7 +31,7 @@ class TavernController extends Controller
 	{
 		$tavern = new Tavern();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView("edit"), compact('tavern', 'headers'));
+		return view($this->getControllerView(self::EDIT), compact('tavern', 'headers'));
 	}
 
 	/**
@@ -45,7 +45,12 @@ class TavernController extends Controller
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
 		Tavern::create($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully());
+	}
+
+	public function generate(){
+		$tavern = Tavern::generate();
+		return redirect()->action($this->getEditControllerAction(), [$tavern]);
 	}
 
 	/**
@@ -68,7 +73,7 @@ class TavernController extends Controller
 	public function edit(Tavern $tavern)
 	{
 		$headers = $this->getUpdateHeaders($tavern->id);
-		return view($this->getControllerView("edit"), compact('tavern', 'headers'));
+		return view($this->getControllerView(self::EDIT), compact('tavern', 'headers'));
 	}
 
 	/**
@@ -81,7 +86,7 @@ class TavernController extends Controller
 	public function update(Request $request, Tavern $tavern)
 	{
 		$tavern -> update($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
 	}
 
 	/**

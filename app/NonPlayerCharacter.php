@@ -60,6 +60,18 @@ class NonPlayerCharacter extends Asset
 		return $this->belongsTo('App\User', 'owner_id');
 	}
 
+	public function rules(){
+		return $this->hasMany('App\Settlement', 'ruler_id');
+	}
+
+	public function owns(){
+		return $this->hasMany('App\Tavern', 'tavern_owner_id');
+	}
+
+	public function villainous(){
+		return $this->hasOne('App\Villain', 'npc_id');
+	}
+
 	public function setMissing(){
 		$this->setPublic();
 		$this->setFillable();

@@ -7,9 +7,9 @@
 @section('form-size', '6')
 
 @section('form_body')
-    @include("tiles.questions.text", ['field' =>'trait'])
+    @include("tiles.questions.text", ['field' =>'trait', 'required' => true])
 
-    @include("tiles.questions.text", ['field' =>'type'])
+    @include("tiles.questions.select", ['field' =>'type','required'=>true, 'data' => ['first_name'=> 'First Name', 'last_name'=>'Last Name','type'=>'Type']])
 
     @include('tiles.questions.publicPrivate')
 @stop
