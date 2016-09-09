@@ -14,7 +14,7 @@ class Settlement extends Asset
 	const SMALL = "S";
 	const MEDIUM = "M";
 	const LARGE = "L";
-	const VALID_SIZE_OPTIONS = [self::SMALL, self::MEDIUM, self::LARGE];
+	const VALID_SIZE_OPTIONS = [self::SMALL =>'Small', self::MEDIUM=>'Medium', self::LARGE=>'Large'];
 
 	const SMALL_POPULATION_RANGE = ['min'=>20, 'max'=>75, 'std'=>5];
 	const MEDIUM_POPULATION_RANGE = ['min'=>76, 'max'=>300, 'std'=>10];
@@ -36,6 +36,15 @@ class Settlement extends Asset
 		parent::__construct($attributes,new $class() ,self::FILLABLE_FROM_TRAIT_TABLE);
 	}
 
+	public function getSizeDisplay(){
+		return self::VALID_SIZE_OPTIONS[$this->size];
+	}
+
+	protected function getDisplay($value, $displayHash){
+
+	}
+
+
 	public static function generate(){
 		$settlement = new Settlement();
 		$settlement->setMissing();
@@ -56,7 +65,7 @@ class Settlement extends Asset
 
 	private function setSize(){
 		$this->setIfFeildNotPresent('size', function(){
-			return Utils::getRandomFromArray(self::VALID_SIZE_OPTIONS);
+			return Utils::getRandomKeyFromHash(self::VALID_SIZE_OPTIONS);
 		});
 	}
 

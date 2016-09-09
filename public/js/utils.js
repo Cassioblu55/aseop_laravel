@@ -96,6 +96,36 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 		return that;
 	};
 
+	$scope.CreateShowUtil = function(CONFIG){
+		const HTTP_CALL_PROJECT_BASE = CONFIG.projectBase || PROJECT_BASE;
+		var utils = new Utils(CONFIG);
+		var that = {};
+
+		function setDisplay(runOnSuccess, runOnFailed){
+			var id = CONFIG.id;
+			if(id){
+				var url = utils.getLocalApiUrl()+"/"+id;
+				$http.get(url).then(function(response){
+					runOnSuccess(response.data);
+				}, function errorCallback(response){
+					if(!runOnFailed){
+						runOnFailed("ShowUtil.setDisplay", response.statusText);
+					}else {
+						runOnFailed(response);
+					}
+				});
+			}
+		}
+		that.setDisplay =  setDisplay;
+
+		function getDisplayFromHash(valueToReplace, displayHash, defaultIfNoneFound){
+			return (displayHash[valueToReplace]) ? displayHash[valueToReplace] : defaultIfNoneFound;
+		}
+		that.getDisplayFromHash = getDisplayFromHash;
+
+		return that;
+	};
+
 	$scope.CreateEditUtil = function(CONFIG){
 		const HTTP_CALL_PROJECT_BASE = CONFIG.projectBase || PROJECT_BASE;
 		var utils = new Utils(CONFIG);

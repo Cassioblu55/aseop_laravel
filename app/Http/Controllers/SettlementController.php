@@ -62,7 +62,7 @@ class SettlementController extends Controller
 	 */
 	public function show(Settlement $settlement)
 	{
-
+		return view($this->getControllerView(self::SHOW), compact('settlement'));
 	}
 
 	/**

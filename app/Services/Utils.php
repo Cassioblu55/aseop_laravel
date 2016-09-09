@@ -16,6 +16,10 @@ class Utils
 		return $array[rand(0, count($array)-1)];
 	}
 
+	public static function getRandomKeyFromHash($hash){
+		return self::getRandomFromArray(array_keys($hash));
+	}
+
 	public static function getBellCurveRange($configData) {
 		$configData = (object) $configData;
 		$min = $configData->min;

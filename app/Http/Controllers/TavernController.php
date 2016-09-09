@@ -61,7 +61,7 @@ class TavernController extends Controller
 	 */
 	public function show(Tavern $tavern)
 	{
-
+		return view($this->getControllerView('show'), compact('tavern'));
 	}
 
 	/**

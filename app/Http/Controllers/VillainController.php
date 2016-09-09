@@ -56,7 +56,7 @@ class VillainController extends Controller
      */
     public function show(Villain $villain)
     {
-
+	    return view($this->getControllerView(self::SHOW), compact('villain'));
     }
 
     /**

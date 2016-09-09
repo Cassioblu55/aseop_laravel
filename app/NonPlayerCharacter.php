@@ -15,7 +15,7 @@ class NonPlayerCharacter extends Asset
 
 	const FEMALE = 'F';
 	const MALE = 'M';
-	const VALID_SEX_OPTIONS = [self::MALE, self::FEMALE];
+	const VALID_SEX_OPTIONS = [self::MALE => 'Male', self::FEMALE => 'Female'];
 
 	const AGE_RANGE = ['min'=>16, 'max'=>50, 'std'=>5];
 
@@ -72,6 +72,18 @@ class NonPlayerCharacter extends Asset
 		return $this->hasOne('App\Villain', 'npc_id');
 	}
 
+	public function displayHeight(){
+		return floor($this->height/12)."' ".$this->height%12 .'"';
+	}
+
+	public function displaySex(){
+		return (self::VALID_SEX_OPTIONS[$this->sex]) ? self::VALID_SEX_OPTIONS[$this->sex] : 'Other';
+	}
+
+	public function displayName(){
+		return $this->first_name." ".$this->last_name;
+	}
+
 	public function setMissing(){
 		$this->setPublic();
 		$this->setFillable();
@@ -84,7 +96,7 @@ class NonPlayerCharacter extends Asset
 
 	private function setSex(){
 		$this->setIfFeildNotPresent('sex', function(){
-			return Utils::getRandomFromArray(self::VALID_SEX_OPTIONS);
+			return Utils::getRandomKeyFromHash(self::VALID_SEX_OPTIONS);
 		});
 	}
 

@@ -62,7 +62,7 @@ class NpcController extends Controller
 	 */
 	public function show(NonPlayerCharacter $npc)
 	{
-
+		return view($this->getControllerView(self::SHOW), compact('npc'));
 	}
 
 	/**
