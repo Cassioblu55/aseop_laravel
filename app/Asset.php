@@ -45,8 +45,17 @@ abstract class Asset extends Model implements Generate
 		}
 	}
 
-	public function getTraitRandomByType($type){
-		return $this->traitTable->getRandomByType($type);
+	public function getTraitRandomByType($type, $columns=['trait']){
+		$trait = $this->traitTable->getRandomByType($type);
+		if(count($columns) == 1){
+			return $trait[$columns[0]];
+		}else{
+			$data = [];
+			foreach ($columns as $column){
+				$data[$column] = $trait[$column];
+			}
+			return $data;
+		}
 	}
 
 }

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class VillainTrait extends Model
+class VillainTrait extends AssetTrait
 {
     protected $guarded = [];
 

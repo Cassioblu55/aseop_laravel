@@ -15,9 +15,11 @@ class AssetTrait extends Model
 	public function getRandomByType($type){
 		$results = AssetTrait::where('type', $type);
 		if(count($results)){
-			return $results->inRandomOrder()->first()['trait'];
+			return $results->inRandomOrder()->first();
 		}
 		return '';
 	}
+
+
 
 }

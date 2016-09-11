@@ -31,7 +31,7 @@ class VillainController extends Controller
     {
         $villain = new Villain();
         $headers = $this->getCreateHeaders();
-        return view($this->getControllerView("edit"), compact('villain', 'headers'));
+        return view($this->getControllerView(self::EDIT), compact('villain', 'headers'));
     }
 
     /**
@@ -44,8 +44,9 @@ class VillainController extends Controller
     {
         $request['owner_id'] = Auth::user()->id;
         $request['approved'] = false;
-        Villain::create($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+
+	    $dataHash = ['villain' => Villain::create($request->all())];
+	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage($dataHash));
     }
 
     /**
@@ -59,6 +60,12 @@ class VillainController extends Controller
 	    return view($this->getControllerView(self::SHOW), compact('villain'));
     }
 
+    public function generate(){
+    	$villain = Villain::generate();
+	    $dataHash = ['villain' => $villain];
+	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage($dataHash));
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -68,7 +75,7 @@ class VillainController extends Controller
     public function edit(Villain $villain)
     {
         $headers = $this->getUpdateHeaders($villain->id);
-        return view($this->getControllerView("edit"), compact('villain', 'headers'));
+        return view($this->getControllerView(self::EDIT), compact('villain', 'headers'));
     }
 
     /**
@@ -81,7 +88,8 @@ class VillainController extends Controller
     public function update(Request $request, Villain $villain)
     {
         $villain -> update($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+	    $dataHash = ['villain' => $villain];
+        return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage($dataHash));
     }
 
     /**

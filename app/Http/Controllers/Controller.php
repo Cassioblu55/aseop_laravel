@@ -11,6 +11,8 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+	const SUCCESS_MESSAGE = 'successMessage';
+
 	const DEFAULT_RECORD_UPDATED_MESSAGE = "Record Updated Successfully";
 	const DEFAULT_RECORD_ADDED_MESSAGE = "Record Added Successfully";
 
@@ -78,11 +80,11 @@ class Controller extends BaseController
 	}
 
 	protected static function sendRecordUpdatedSuccessfully($message = self::DEFAULT_RECORD_UPDATED_MESSAGE){
-		return ["successMessage" => $message];
+		return [self::SUCCESS_MESSAGE => $message];
 	}
 
 	protected static function sendRecordAddedSuccessfully($message = self::DEFAULT_RECORD_ADDED_MESSAGE){
-		return ["successMessage" => $message];
+		return [self::SUCCESS_MESSAGE => $message];
 	}
 
 	protected function getIndexControllerAction(){
@@ -95,6 +97,27 @@ class Controller extends BaseController
 
 	protected function getShowControllerAction(){
 		return $this->getControllerAction(self::SHOW);
+	}
+
+	protected static function addMessages($dataHash, array $urlParams){
+		$data = [];
+		foreach ($dataHash as $key =>$value){
+			$data[$key] = $value;
+		}
+		foreach ($urlParams as $urlParam => $urlParamValue) {
+			$data[$urlParam] = $urlParamValue;
+		}
+		return $data;
+	}
+
+	protected static function addUpdateSuccessMessage($dataHash){
+		$urlParams = [self::SUCCESS_MESSAGE => self::DEFAULT_RECORD_UPDATED_MESSAGE];
+		return self::addMessages($dataHash, $urlParams);
+	}
+
+	protected static function addAddedSuccessMessage($dataHash){
+		$urlParams = [self::SUCCESS_MESSAGE => self::DEFAULT_RECORD_ADDED_MESSAGE];
+		return self::addMessages($dataHash, $urlParams);
 	}
 
 }

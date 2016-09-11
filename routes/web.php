@@ -73,6 +73,7 @@ Route::resource('spells', 'SpellController',[
 'parameters' => 'singular'
 ]);
 
+Route::get('villains/generate', 'VillainController@generate');
 Route::resource('villains', 'VillainController',[
 'parameters' => 'singular'
 ]);
