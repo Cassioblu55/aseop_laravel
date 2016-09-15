@@ -8,10 +8,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
-
-abstract class Asset extends Model implements Generate
+abstract class Asset extends GenericModel implements Generate
 {
 
 	private $traitTable;
@@ -22,18 +19,6 @@ abstract class Asset extends Model implements Generate
 		$this->traitTable = $traitTable;
 		$this->fillableFromTraitTable = $fillableFromTraitTable;
 		parent::__construct($attributes);
-	}
-
-	protected function setPublic(){
-		$this->setIfFeildNotPresent('public', function(){
-			return false;
-		});
-	}
-
-	protected function setIfFeildNotPresent($field, $funct){
-		if(!isSet($this[$field])){
-			$this[$field] = $funct();
-		}
 	}
 
 	protected function setFillable()

@@ -64,7 +64,7 @@ class NpcTraitController extends Controller
 	public function edit(NonPlayerCharacterTrait $npcTrait)
 	{
 		$headers = $this->getUpdateHeaders($npcTrait->id);
-		return view($this->getEditControllerAction(), compact('npcTrait', 'headers'));
+		return view($this->getControllerView(self::EDIT), compact('npcTrait', 'headers'));
 	}
 
 	/**
@@ -79,6 +79,18 @@ class NpcTraitController extends Controller
 		$npcTrait -> update($request->all());
 		return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
 	}
+
+
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView("upload"), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = NonPlayerCharacterTrait::upload($request->fileToUpload);
+		return $response;
+	}
+
 
 	/**
 	 * Remove the specified resource from storage.

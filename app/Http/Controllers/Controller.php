@@ -91,6 +91,10 @@ class Controller extends BaseController
 		return (object) ["dataDefaults" => $this->getDefaultAdditionalData()];
 	}
 
+	protected function getUploadHeaders(){
+		return (object) ["postLocation" => $this->getPostLocation()."/upload","addOrSave" => "Add", "methodField" => "POST", "dataDefaults" => $this->getDefaultAdditionalData()];
+	}
+
 	private function getDefaultAdditionalData(){
 		$data = [];
 		$data['model'] = $this->controllerModelName;

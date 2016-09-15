@@ -5,6 +5,7 @@
 @section('controller', 'NpcTraitIndexController')
 
 @section('additionalHeaderContent')
+    <a class="btn btn-default pull-right" style="margin-left: 5px" href="{{url('/npcTraits/upload')}}">Upload</a>
     <a class="btn btn-primary pull-right" href="{{url('/npcTraits/create')}}">Add</a>
 @stop
 

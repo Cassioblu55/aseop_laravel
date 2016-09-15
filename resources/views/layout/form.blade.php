@@ -2,7 +2,7 @@
 
 @section('content')
     <div ng-controller="@yield('controller', $headers->dataDefaults->addEditController)">
-        <form action="{{$headers->postLocation}}" method="POST">
+        <form action="{{$headers->postLocation}}" method="POST" @yield('additional_form_params')>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             {{method_field($headers->methodField)}}
 

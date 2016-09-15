@@ -39,6 +39,8 @@ Route::resource('npcs', 'NpcController',[
 	'parameters' => 'singular'
 ]);
 
+Route::get('npcTraits/upload', 'NpcTraitController@upload');
+Route::post('npcTraits/upload', 'NpcTraitController@saveBatch');
 Route::resource('npcTraits', 'NpcTraitController',[
 	'parameters' => 'singular'
 ]);

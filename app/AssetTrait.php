@@ -7,9 +7,8 @@
  */
 
 namespace App;
-use Illuminate\Database\Eloquent\Model;
 
-class AssetTrait extends Model
+class AssetTrait extends GenericModel
 {
 
 	public function getRandomByType($type){
