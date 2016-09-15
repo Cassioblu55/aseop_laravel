@@ -7,6 +7,11 @@ function randomFromArray(array){
 	return array[Math.floor((Math.random() * array.length))];
 }
 
+function getFractionString(float){
+	var f = new Fraction(Number(float));
+	return (f.denominator > 1) ? f.numerator + '/' + f.denominator : f.numerator;
+}
+
 function cutString(string, n){
 	return string.substring(0, (string.length-n));
 }
@@ -97,7 +102,6 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 	};
 
 	$scope.CreateShowUtil = function(CONFIG){
-		const HTTP_CALL_PROJECT_BASE = CONFIG.projectBase || PROJECT_BASE;
 		var utils = new Utils(CONFIG);
 		var that = {};
 
@@ -127,7 +131,6 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 	};
 
 	$scope.CreateEditUtil = function(CONFIG){
-		const HTTP_CALL_PROJECT_BASE = CONFIG.projectBase || PROJECT_BASE;
 		var utils = new Utils(CONFIG);
 		var that = {};
 

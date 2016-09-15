@@ -25,11 +25,15 @@ class Controller extends BaseController
 	private $controllerViewPrefix;
 	private $controllerModelName;
 
+	private $tableName;
+
 	protected function setControllerNames($controllerName){
 		$this->setControllerNameSpace($controllerName."s");
 		$this->setControllerProperName(ucfirst($controllerName)."Controller");
 		$this->setControllerViewPrefix($controllerName);
 		$this->setControllerModelName($controllerName);
+		$this->setTableName($controllerName.'s');
+
 	}
 
 	protected function setControllerNameSpace($controllerNameSpace){
@@ -48,8 +52,16 @@ class Controller extends BaseController
 		$this->controllerModelName = $controllerModelName;
 	}
 
+	protected function setTableName($tableName){
+		$this->tableName = $tableName;
+	}
+
 	private function getPostLocation(){
 		return url($this->controllerNameSpace);
+	}
+
+	protected function getTableName(){
+		return $this->tableName;
 	}
 
 	protected function getControllerAction($controllerAction){
@@ -65,13 +77,30 @@ class Controller extends BaseController
 	}
 
 	protected function getUpdateHeaders($id){
+
+
 		return (object) ["createOrUpdate" => "Update", "postLocation" => $this->getPostLocation()."/".$id, "methodField" => "PATCH", "addOrSave" => "Save", "dataDefaults" => $this->getDefaultAdditionalData()];
+	}
+
+	protected function getIndexHeaders(){
+		return (object) ["dataDefaults" => $this->getDefaultAdditionalData()];
+	}
+
+	protected function getShowHeaders(){
+		return (object) ["dataDefaults" => $this->getDefaultAdditionalData()];
 	}
 
 	private function getDefaultAdditionalData(){
 		$data = [];
 		$data['model'] = $this->controllerModelName;
+		$data['addEditController'] = $this->getJsControllerName("AddEdit");
+		$data['indexController'] = $this->getJsControllerName("Index");
+		$data['showController'] = $this->getJsControllerName("Show");
 		return (object) $data;
+	}
+
+	private function getJsControllerName($middle){
+		return ucwords($this->controllerModelName.$middle."Controller");
 	}
 
 
@@ -118,6 +147,12 @@ class Controller extends BaseController
 	protected static function addAddedSuccessMessage($dataHash){
 		$urlParams = [self::SUCCESS_MESSAGE => self::DEFAULT_RECORD_ADDED_MESSAGE];
 		return self::addMessages($dataHash, $urlParams);
+	}
+
+	public function index()
+	{
+		$headers = $this->getIndexHeaders();
+		return view($this->getControllerView('index'), compact('headers'));
 	}
 
 }

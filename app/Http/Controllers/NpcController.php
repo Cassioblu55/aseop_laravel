@@ -18,10 +18,6 @@ class NpcController extends Controller
 		$this->middleware('auth', ['except' => ['show']]);
 	}
 
-	public function index()
-	{
-		return view($this->getControllerView('index'));
-	}
 
 	/**
 	 * Show the form for creating a new resource.
@@ -50,8 +46,8 @@ class NpcController extends Controller
 	{
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
-		NonPlayerCharacter::create($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+		$npc = NonPlayerCharacter::create($request->all());
+		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("npc")));
 	}
 
 	/**
@@ -62,7 +58,8 @@ class NpcController extends Controller
 	 */
 	public function show(NonPlayerCharacter $npc)
 	{
-		return view($this->getControllerView(self::SHOW), compact('npc'));
+		$headers = $this->getShowHeaders();
+		return view($this->getControllerView(self::SHOW), compact('npc', 'headers'));
 	}
 
 	/**
@@ -87,7 +84,7 @@ class NpcController extends Controller
 	public function update(Request $request, NonPlayerCharacter $npc)
 	{
 		$npc -> update($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('npc')));
 	}
 
 	/**

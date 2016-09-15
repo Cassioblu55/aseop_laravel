@@ -1,0 +1,1 @@
+<script src="{{url($src)}}" type="text/javascript"></script>

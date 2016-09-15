@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\Riddle;
+use App\Services\GetRandom;
 
 class RiddleController extends Controller
 {
@@ -15,11 +16,6 @@ class RiddleController extends Controller
 		$this->setControllerNames(self::CONTROLLER_NAME);
 
 		$this->middleware('auth', ['except' => ['show']]);
-	}
-
-	public function index()
-	{
-		return view($this->getControllerView('index'));
 	}
 
 	/**
@@ -44,8 +40,8 @@ class RiddleController extends Controller
 	{
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
-		Riddle::create($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+		$riddle = Riddle::create($request->all());
+		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("riddle")));
 	}
 
 	/**
@@ -56,7 +52,12 @@ class RiddleController extends Controller
 	 */
 	public function show(Riddle $riddle)
 	{
+		$headers = $this->getShowHeaders();
+		return view($this->getControllerView(self::SHOW), compact('riddle', 'headers'));
+	}
 
+	public function random(){
+		return redirect()->action($this->getShowControllerAction(), [Riddle::random()]);
 	}
 
 	/**
@@ -81,7 +82,7 @@ class RiddleController extends Controller
 	public function update(Request $request, Riddle $riddle)
 	{
 		$riddle -> update($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('riddle')));
 	}
 
 	/**

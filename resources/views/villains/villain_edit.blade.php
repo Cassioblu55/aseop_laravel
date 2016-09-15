@@ -36,6 +36,7 @@
 
             $scope.utils.getDataOnEdit(function(villain){
                 $scope.villain = villain;
+                $scope.villain.npc_id = $scope.villain.npc_id+"";
             });
 
             $scope.utils.runOnCreate(function(){

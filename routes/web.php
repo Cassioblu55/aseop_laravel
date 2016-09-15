@@ -65,6 +65,7 @@ Route::resource('tavernTraits', 'TavernTraitController',[
 	'parameters' => 'singular'
 ]);
 
+Route::get('riddles/random', 'RiddleController@random');
 Route::resource('riddles', 'RiddleController',[
 	'parameters' => 'singular'
 ]);
@@ -82,10 +83,12 @@ Route::resource('villainTraits', 'VillainTraitController',[
 'parameters' => 'singular'
 ]);
 
+Route::get('forestEncounters/random', 'ForestEncounterController@random');
 Route::resource('forestEncounters', 'ForestEncounterController',[
 'parameters' => 'singular'
 ]);
 
+Route::get('urbanEncounters/random', 'UrbanEncounterController@random');
 Route::resource('urbanEncounters', 'UrbanEncounterController',[
 'parameters' => 'singular'
 ]);

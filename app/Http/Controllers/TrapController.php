@@ -24,16 +24,6 @@ class TrapController extends Controller
 		$this->middleware('auth', ['except' => ['show']]);
 	}
 
-	/**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-	    return view($this->getControllerView("index"));
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -58,8 +48,8 @@ class TrapController extends Controller
 
 	    $request['owner_id'] = Auth::user()->id;
 	    $request['approved'] = false;
-	    Trap::create($request->all());
-	    return redirect()->action($this->getControllerAction("index"), self::sendRecordAddedSuccessfully());
+	    $trap = Trap::create($request->all());
+	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("trap")));
     }
 
     /**
@@ -68,9 +58,10 @@ class TrapController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Trap $trap)
     {
-        //
+	    $headers = $this->getShowHeaders();
+	    return view($this->getControllerView(self::SHOW), compact('trap', 'headers'));
     }
 
     /**
@@ -97,7 +88,7 @@ class TrapController extends Controller
 	    $this->validate($request, self::defaultValidation);
 
 	    $trap -> update($request->all());
-	    return redirect()->action($this->getControllerAction("index"), self::sendRecordUpdatedSuccessfully());
+	    return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('trap')));
     }
 
     /**

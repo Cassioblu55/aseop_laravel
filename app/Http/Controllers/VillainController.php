@@ -17,11 +17,6 @@ class VillainController extends Controller
         $this->middleware('auth', ['except' => ['show']]);
     }
 
-    public function index()
-    {
-        return view($this->getControllerView('index'));
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -45,8 +40,8 @@ class VillainController extends Controller
         $request['owner_id'] = Auth::user()->id;
         $request['approved'] = false;
 
-	    $dataHash = ['villain' => Villain::create($request->all())];
-	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage($dataHash));
+	    $villain = Villain::create($request->all());
+	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("villain")));
     }
 
     /**
@@ -57,13 +52,13 @@ class VillainController extends Controller
      */
     public function show(Villain $villain)
     {
-	    return view($this->getControllerView(self::SHOW), compact('villain'));
+	    $headers = $this->getShowHeaders();
+	    return view($this->getControllerView(self::SHOW), compact('villain', 'headers'));
     }
 
     public function generate(){
     	$villain = Villain::generate();
-	    $dataHash = ['villain' => $villain];
-	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage($dataHash));
+	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact('villain')));
     }
 
     /**

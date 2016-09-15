@@ -1,6 +1,6 @@
 <div class="panel  panel-default">
     <div class="panel-heading">
-        <h1 class="panel-title">{{$settlement->name}}</h1>
+        <h1 class="panel-title">{{(isset($title) && $title==true) ? $title : $settlement->name}}</h1>
     </div>
     <div class="panel-body">
         <div class="row">

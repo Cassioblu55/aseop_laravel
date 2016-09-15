@@ -17,11 +17,6 @@ class ForestEncounterController extends Controller
         $this->middleware('auth', ['except' => ['show']]);
     }
 
-    public function index()
-    {
-        return view($this->getControllerView('index'));
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -44,8 +39,8 @@ class ForestEncounterController extends Controller
     {
         $request['owner_id'] = Auth::user()->id;
         $request['approved'] = false;
-        ForestEncounter::create($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+	    $forestEncounter = ForestEncounter::create($request->all());
+	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("forestEncounter")));
     }
 
     /**
@@ -56,8 +51,13 @@ class ForestEncounterController extends Controller
      */
     public function show(ForestEncounter $forestEncounter)
     {
-
+    	$headers = $this->getShowHeaders();
+	    return view($this->getControllerView(self::SHOW), compact('forestEncounter', 'headers'));
     }
+
+	public function random(){
+		return redirect()->action($this->getShowControllerAction(), [ForestEncounter::random()]);
+	}
 
     /**
      * Show the form for editing the specified resource.
@@ -81,7 +81,7 @@ class ForestEncounterController extends Controller
     public function update(Request $request, ForestEncounter $forestEncounter)
     {
         $forestEncounter -> update($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+	    return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('forestEncounter')));
     }
 
     /**

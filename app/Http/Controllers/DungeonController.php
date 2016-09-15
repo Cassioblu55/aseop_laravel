@@ -22,10 +22,7 @@ class DungeonController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
-	{
-		return view($this->getControllerView("index"));
-	}
+
 
 	/**
 	 * Show the form for creating a new resource.
@@ -50,8 +47,8 @@ class DungeonController extends Controller
 	{
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
-		Dungeon::create($request->all());
-		return redirect()->action($this->getControllerAction("index"), self::sendRecordAddedSuccessfully());
+		$dungeon = Dungeon::create($request->all());
+		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact('dungeon')));
 	}
 
 	/**
@@ -62,7 +59,8 @@ class DungeonController extends Controller
 	 */
 	public function show(Dungeon $dungeon)
 	{
-
+		$headers = $this->getShowHeaders();
+		return view($this->getControllerView(self::SHOW), compact('dungeon', 'headers'));
 	}
 
     public function generate(){;
@@ -97,7 +95,7 @@ class DungeonController extends Controller
 	public function update(Request $request, Dungeon $dungeon)
 	{
 		$dungeon -> update($request->all());
-		return redirect()->action($this->getControllerAction("index"), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('dungeon')));
 	}
 
 	/**

@@ -30,6 +30,7 @@
 
             $scope.utils.getDataOnEdit(function(tavern){
                 $scope.tavern = tavern;
+                $scope.tavern.tavern_owner_id = $scope.tavern.tavern_owner_id+'';
             });
 
             $scope.utils.runOnCreate(function(){

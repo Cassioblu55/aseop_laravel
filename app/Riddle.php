@@ -2,9 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Riddle extends Model
+class Riddle extends Random
 {
 	protected $guarded = [];
 
@@ -12,4 +10,8 @@ class Riddle extends Model
 	{
 		return $this->belongsTo('App\User', 'owner_id');
 	}
+
+
+
+
 }

@@ -17,11 +17,6 @@ class VillainTraitController extends Controller
         $this->middleware('auth', ['except' => ['show']]);
     }
 
-    public function index()
-    {
-        return view($this->getControllerView('index'));
-    }
-
     /**
      * Show the form for creating a new resource.
      *

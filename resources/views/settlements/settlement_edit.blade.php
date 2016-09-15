@@ -2,8 +2,6 @@
 
 @section('form_title', "$headers->createOrUpdate <% settlement.name || 'Settlement' %>")
 
-@section('controller', "SettlementsAddEditController")
-
 @section('form-size', '6')
 
 @section('form_body')
@@ -14,7 +12,7 @@
     @include("tiles.questions.textArea", ['field' =>'ruler_status'])
     @include("tiles.questions.textArea", ['field' =>'current_calamity'])
 
-    @include("tiles.questions.number", ['field' =>'population', 'validation'=>'min=0'])
+    @include("tiles.questions.number", ['field' =>'population', 'validation'=>'min=0 required=required'])
 
     @include('tiles.questions.select', ['field' => 'size', 'required' => true,'data' => ['S' => 'Small', 'M' => 'Medium' , 'L' => 'Large']])
 
@@ -33,7 +31,7 @@
 
 @section('scripts')
     <script>
-        app.controller("SettlementsAddEditController", ['$scope', "$controller", function($scope, $controller){
+        app.controller("SettlementAddEditController", ['$scope', "$controller", function($scope, $controller){
             angular.extend(this, $controller('UtilsController', {$scope: $scope}));
 
 
@@ -42,6 +40,7 @@
 
             $scope.utils.getDataOnEdit(function(settlement){
                 $scope.settlement = settlement;
+                $scope.settlement.ruler_id = $scope.settlement.ruler_id+"";
             });
 
             $scope.utils.runOnCreate(function(){

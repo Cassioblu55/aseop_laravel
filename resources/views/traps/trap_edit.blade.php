@@ -19,7 +19,7 @@
     @include('tiles.rolls.roll_display_panel')
     <input type="text" style="display: none;" name="rolls" ng-model="trap.rolls" />
 
-    @include("tiles.questions.number", ['field' =>'weight'])
+    @include("tiles.questions.number", ['field' =>'weight', 'validation' => 'min=0', 'required'=>true])
 
     @include('tiles.questions.publicPrivate')
 
@@ -47,6 +47,7 @@
 
             $scope.utils.runOnCreate(function(){
                 $scope.trap = {};
+                $scope.trap.weight = 1;
                 $scope.utils.getDefaultAccess(function(n){
                     $scope.trap['public'] = n});
             });

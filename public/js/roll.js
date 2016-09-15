@@ -20,7 +20,7 @@ function getDiceValue(rollString){
 	that.amount = Number(rollString.split("d")[0]);
 	that.kind = Number(rollString.split("d")[1].split("+")[0]);
 	that.modifer = Number(rollString.split("+")[1]);
-	that.stringValue = rollString;
+	that.stringValue = rollString.trim();
 	that.id = $.guid++;
 	return that;
 }

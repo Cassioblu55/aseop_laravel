@@ -17,11 +17,6 @@ class SpellController extends Controller
         $this->middleware('auth', ['except' => ['show']]);
     }
 
-    public function index()
-    {
-        return view($this->getControllerView('index'));
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -44,8 +39,8 @@ class SpellController extends Controller
     {
         $request['owner_id'] = Auth::user()->id;
         $request['approved'] = false;
-        Spell::create($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+	    $spell = Spell::create($request->all());
+	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("spell")));
     }
 
     /**
@@ -56,7 +51,8 @@ class SpellController extends Controller
      */
     public function show(Spell $spell)
     {
-
+	    $headers = $this->getShowHeaders();
+	    return view($this->getControllerView(self::SHOW), compact('spell', 'headers'));
     }
 
     /**
@@ -81,7 +77,7 @@ class SpellController extends Controller
     public function update(Request $request, Spell $spell)
     {
         $spell -> update($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+	    return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('spell')));
     }
 
     /**

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UrbanEncounter extends Model
+class UrbanEncounter extends Random
 {
     protected $guarded = [];
 

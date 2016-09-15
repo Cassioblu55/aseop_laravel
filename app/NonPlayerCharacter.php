@@ -15,7 +15,8 @@ class NonPlayerCharacter extends Asset
 
 	const FEMALE = 'F';
 	const MALE = 'M';
-	const VALID_SEX_OPTIONS = [self::MALE => 'Male', self::FEMALE => 'Female'];
+	const NONE = 'N';
+	const VALID_SEX_OPTIONS = [self::MALE => 'Male', self::FEMALE => 'Female', self::NONE => 'None'];
 
 	const AGE_RANGE = ['min'=>16, 'max'=>50, 'std'=>5];
 
@@ -77,7 +78,7 @@ class NonPlayerCharacter extends Asset
 	}
 
 	public function displaySex(){
-		return (self::VALID_SEX_OPTIONS[$this->sex]) ? self::VALID_SEX_OPTIONS[$this->sex] : 'Other';
+		return (array_key_exists($this->sex, self::VALID_SEX_OPTIONS)) ? self::VALID_SEX_OPTIONS[$this->sex] : 'Other';
 	}
 
 	public function displayName(){

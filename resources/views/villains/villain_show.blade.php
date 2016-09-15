@@ -1,10 +1,11 @@
-@extends('layout.app')
+@extends('layout.show')
 
-@section('content')
-    <div ng-controller="VillainShowController">
+@section('show_title', $villain->npc->displayName())
+
+@section('show_body')
         <div class="container-fluid">
 
-            @include('npcs.npc_display', ['npc' => $villain->npc, 'hide' => true])
+            @include('npcs.npc_display', ['npc' => $villain->npc, 'hide' => true, 'title' => 'Info'])
 
             @include('villains.villain_display', ['villain'=>$villain, 'hide'=>true])
 
@@ -36,7 +37,6 @@
                 </div>
             @endif
         </div>
-    </div>
 @stop
 
 @section('scripts')

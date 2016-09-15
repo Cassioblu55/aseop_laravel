@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-    <div ng-controller="@yield('controller')">
+    <div ng-controller="@yield('controller', $headers->dataDefaults->addEditController)">
         <form action="{{$headers->postLocation}}" method="POST">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             {{method_field($headers->methodField)}}
@@ -18,7 +18,7 @@
 
                         <div class="panel-footer">
                             <button class="btn btn-primary" type="submit">{{$headers->addOrSave}}</button>
-                            <a href="@yield('back_location')" class="btn btn-default">Back</a>
+                            <a href="@yield('back_location', '..')" class="btn btn-default">Back</a>
 
                             @yield('form_footer')
                         </div>

@@ -19,16 +19,6 @@ class DungeonTraitController extends Controller
 	}
 
 	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index()
-	{
-		return view($this->getControllerView('index'));
-	}
-
-	/**
 	 * Show the form for creating a new resource.
 	 *
 	 * @return \Illuminate\Http\Response
@@ -62,7 +52,7 @@ class DungeonTraitController extends Controller
 	 */
 	public function show(DungeonTrait $dungeonTrait)
 	{
-
+		$headers = $this->getShowHeaders();
 	}
 
 	/**

@@ -19,8 +19,9 @@ elixir(function(mix) {
 
     mix.styles(['node_modules/angular-ui-grid/ui-grid.css',
         "node_modules/bootstrap/dist/css/bootstrap.css",
-        "node_modules/bootstrap/dist/css/bootstrap-theme.css"
-    ], 'public/css/app.css', './')
+        "node_modules/bootstrap/dist/css/bootstrap-theme.css",
+        'resources/assets/css/layout.css'
+    ], 'public/css/app.css', './');
 
     mix.version(['css/app.css', 'js/app.js']);
 

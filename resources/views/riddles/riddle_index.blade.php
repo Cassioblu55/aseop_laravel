@@ -2,8 +2,6 @@
 
 @section('panelTitle', 'My Riddles')
 
-@section('controller', 'RiddleIndexController')
-
 @section('additionalHeaderContent')
     <a class="btn btn-primary pull-right" href="{{url('/riddles/create')}}">Add</a>
 @stop

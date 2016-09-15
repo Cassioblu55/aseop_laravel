@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-    <div ng-controller="@yield('controller')">
+    <div ng-controller="@yield('controller', $headers->dataDefaults->showController)">
             <div class="container-fluid">
                 <div class="col-md-@yield('show-size')">
                     <div class="panel panel-default">
@@ -13,8 +13,8 @@
                         </div>
 
                         <div class="panel-footer">
-                            <a href="@yield('back_location')" class="btn btn-default">Back</a>
-                            <a class="btn btn-default" href="@yield('edit_link')" type="submit">Edit</a>
+                            <a href="@yield('back_location', '.')" class="btn btn-default">Back</a>
+                            <a class="btn btn-default" href="@yield('edit_link', URL::current()."/edit")" type="submit">Edit</a>
 
                             @yield('show_footer')
                         </div>

@@ -9343,4 +9343,8 @@ fieldset[disabled] .btn-danger.active {
 }
 /*# sourceMappingURL=bootstrap-theme.css.map */
 
+.showDisplay {
+    white-space: pre-wrap;
+    overflow: auto;
+}
 /*# sourceMappingURL=app.css.map */

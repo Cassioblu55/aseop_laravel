@@ -2,7 +2,6 @@
 
 @section('form_title', "$headers->createOrUpdate <% riddle.name || 'Riddle' %>")
 
-@section('controller', "TavernAddEditController")
 
 @section('form-size', '6')
 
@@ -15,18 +14,16 @@
 
     @include("tiles.questions.textArea", ['field' =>'hint'])
 
-    @include("tiles.questions.number", ['field' => 'weight', 'validation'=>'min=1'])
+    @include("tiles.questions.number", ['field' => 'weight', 'validation'=>'min=1', 'required'=>true])
 
     @include("tiles.questions.textArea", ['field' =>'other_information'])
 
     @include('tiles.questions.publicPrivate')
 @stop
 
-@section('back_location', url('/riddles'))
-
 @section('scripts')
     <script>
-        app.controller("TavernAddEditController", ['$scope', "$controller", function($scope, $controller){
+        app.controller("RiddleAddEditController", ['$scope', "$controller", function($scope, $controller){
             angular.extend(this, $controller('UtilsController', {$scope: $scope}));
 
             const CONFIG = {localResource: 'riddles', defaultCheckObjectPresent: "{{$riddle->id}}"};
@@ -38,6 +35,7 @@
 
             $scope.utils.runOnCreate(function(){
                 $scope.riddle = {};
+                $scope.riddle.weight = 1;
                 $scope.utils.getDefaultAccess(function(n){
                     $scope.riddle['public'] = n});
             });

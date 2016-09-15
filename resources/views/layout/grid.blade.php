@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-    <div ng-controller="@yield("controller")">
+    <div ng-controller="@yield("controller", $headers->dataDefaults->indexController)">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">

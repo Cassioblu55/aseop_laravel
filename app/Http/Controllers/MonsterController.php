@@ -18,11 +18,6 @@ class MonsterController extends Controller
 		$this->middleware('auth', ['except' => ['show']]);
 	}
 
-	public function index()
-	{
-		return view($this->getControllerView('index'));
-	}
-
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -57,7 +52,8 @@ class MonsterController extends Controller
 	 */
 	public function show(Monster $monster)
 	{
-
+		$headers = $this->getShowHeaders();
+		return view($this->getControllerView(self::SHOW), compact('monster', 'headers'));
 	}
 
 	/**
@@ -82,7 +78,7 @@ class MonsterController extends Controller
 	public function update(Request $request, Monster $monster)
 	{
 		$monster -> update($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('monster')));
 	}
 
 	/**

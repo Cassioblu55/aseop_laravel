@@ -17,11 +17,6 @@ class Base_nameController extends Controller
         $this->middleware('auth', ['except' => ['show']]);
     }
 
-    public function index()
-    {
-        return view($this->getControllerView('index'));
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -31,7 +26,7 @@ class Base_nameController extends Controller
     {
         $base_name = new Base_name();
         $headers = $this->getCreateHeaders();
-        return view($this->getControllerView("edit"), compact('base_name', 'headers'));
+        return view($this->getControllerView(self::EDIT), compact('base_name', 'headers'));
     }
 
     /**
@@ -45,7 +40,7 @@ class Base_nameController extends Controller
         $request['owner_id'] = Auth::user()->id;
         $request['approved'] = false;
         Base_name::create($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+        return redirect()->action($this->getControllerAction(self::INDEX), self::sendRecordAddedSuccessfully());
     }
 
     /**
@@ -68,7 +63,7 @@ class Base_nameController extends Controller
     public function edit(Base_name $base_name)
     {
         $headers = $this->getUpdateHeaders($base_name->id);
-        return view($this->getControllerView("edit"), compact('base_name', 'headers'));
+        return view($this->getControllerView(self::EDIT), compact('base_name', 'headers'));
     }
 
     /**
@@ -81,7 +76,7 @@ class Base_nameController extends Controller
     public function update(Request $request, Base_name $base_name)
     {
         $base_name -> update($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+        return redirect()->action($this->getControllerAction(self::INDEX), self::sendRecordUpdatedSuccessfully());
     }
 
     /**

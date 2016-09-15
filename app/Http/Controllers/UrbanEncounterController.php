@@ -17,11 +17,6 @@ class UrbanEncounterController extends Controller
         $this->middleware('auth', ['except' => ['show']]);
     }
 
-    public function index()
-    {
-        return view($this->getControllerView('index'));
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -44,8 +39,8 @@ class UrbanEncounterController extends Controller
     {
         $request['owner_id'] = Auth::user()->id;
         $request['approved'] = false;
-        UrbanEncounter::create($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+	    $urbanEncounter = UrbanEncounter::create($request->all());
+	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("urbanEncounter")));
     }
 
     /**
@@ -54,10 +49,14 @@ class UrbanEncounterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(UrbanEncounter $urbanEncounter)
-    {
+	public function show(UrbanEncounter $urbanEncounter){
+		$headers = $this->getShowHeaders();
+		return view($this->getControllerView(self::SHOW), compact('urbanEncounter', 'headers'));
+	}
 
-    }
+	public function random(){
+		return redirect()->action($this->getShowControllerAction(), [UrbanEncounter::random()]);
+	}
 
     /**
      * Show the form for editing the specified resource.
@@ -81,7 +80,7 @@ class UrbanEncounterController extends Controller
     public function update(Request $request, UrbanEncounter $urbanEncounter)
     {
         $urbanEncounter -> update($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+	    return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('urbanEncounter')));
     }
 
     /**

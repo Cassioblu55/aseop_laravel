@@ -17,11 +17,6 @@ class SettlementController extends Controller
 		$this->middleware('auth', ['except' => ['show']]);
 	}
 
-	public function index()
-	{
-		return view($this->getControllerView('index'));
-	}
-
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -50,8 +45,8 @@ class SettlementController extends Controller
 	{
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
-		Settlement::create($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+		$settlement = Settlement::create($request->all());
+		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact('settlement')));
 	}
 
 	/**
@@ -62,7 +57,8 @@ class SettlementController extends Controller
 	 */
 	public function show(Settlement $settlement)
 	{
-		return view($this->getControllerView(self::SHOW), compact('settlement'));
+		$headers = $this->getShowHeaders();
+		return view($this->getControllerView(self::SHOW), compact('settlement', 'headers'));
 	}
 
 	/**
@@ -87,7 +83,7 @@ class SettlementController extends Controller
 	public function update(Request $request, Settlement $settlement)
 	{
 		$settlement -> update($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('settlement')));
 	}
 
 	/**

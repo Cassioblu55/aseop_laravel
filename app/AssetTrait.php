@@ -19,7 +19,4 @@ class AssetTrait extends Model
 		}
 		return '';
 	}
-
-
-
 }

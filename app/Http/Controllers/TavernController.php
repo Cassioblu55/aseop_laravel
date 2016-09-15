@@ -17,11 +17,6 @@ class TavernController extends Controller
 		$this->middleware('auth', ['except' => ['show']]);
 	}
 
-	public function index()
-	{
-		return view($this->getControllerView(self::INDEX));
-	}
-
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -44,8 +39,8 @@ class TavernController extends Controller
 	{
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
-		Tavern::create($request->all());
-		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully());
+		$tavern = Tavern::create($request->all());
+		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("tavern")));
 	}
 
 	public function generate(){
@@ -61,7 +56,8 @@ class TavernController extends Controller
 	 */
 	public function show(Tavern $tavern)
 	{
-		return view($this->getControllerView('show'), compact('tavern'));
+		$headers = $this->getShowHeaders();
+		return view($this->getControllerView('show'), compact('tavern', 'headers'));
 	}
 
 	/**
@@ -86,7 +82,7 @@ class TavernController extends Controller
 	public function update(Request $request, Tavern $tavern)
 	{
 		$tavern -> update($request->all());
-		return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('tavern')));
 	}
 
 	/**
