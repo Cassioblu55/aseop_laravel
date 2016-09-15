@@ -43,10 +43,8 @@
                 };
 
                 $http(req).then(function(response){
-                    $window.location.href ="{{url('/dungeons')}}/"+response.data+"/edit";
+                    $window.location.href ="{{url('/dungeons')}}/"+response.data+"?successMessage=Dungeon Successfully added";
                 });
-
-
 
             });
 
@@ -61,6 +59,22 @@
                     $scope.traps.push({});
                 }
                 $scope.setRandomTraps();
+
+                addTrapsToMap();
+
+                $scope.stringifyMap($scope.map.getTiles());
+            }
+
+            function addTrapsToMap(){
+                for(var i=0; i<$scope.traps.length; i++){
+                    //Set aviable options for each trap row
+                    var trap = $scope.traps[i];
+                    $scope.traps[i].rowOptions = $scope.map.activeRows(trap.column);
+                    $scope.traps[i].columnOptions = $scope.map.activeColumns(trap.row);
+                    if(trap.row && trap.column){
+                        $scope.map.setTrap(trap.column,trap.row);
+                    }
+                }
             }
 
         }]);

@@ -33,7 +33,7 @@ class NpcController extends Controller
 
 	public function generate(){
 		$npc = NonPlayerCharacter::generate();
-		return redirect()->action($this->getControllerAction('edit'), [$npc]);
+		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("npc")));
 	}
 
 	/**

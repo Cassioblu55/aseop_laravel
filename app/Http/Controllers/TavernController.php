@@ -45,7 +45,7 @@ class TavernController extends Controller
 
 	public function generate(){
 		$tavern = Tavern::generate();
-		return redirect()->action($this->getEditControllerAction(), [$tavern]);
+		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("tavern")));
 	}
 
 	/**

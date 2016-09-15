@@ -32,7 +32,7 @@ class SettlementController extends Controller
 
 	public function generate(){
 		$settlement = Settlement::generate();
-		return redirect()->action($this->getControllerAction('edit'), [$settlement]);
+		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact('settlement')));
 	}
 
 	/**
