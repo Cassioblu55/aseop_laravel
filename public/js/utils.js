@@ -156,7 +156,7 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 			$http.get(url).then(function(response){
 				runOnSuccess(response.data);
 			}, function errorCallback(response){
-				runOnFailed("getDefaultAccess", response.statusText);
+				utils.runOnFailed("getDefaultAccess", response.statusText);
 			});
 		}
 		that.getDefaultAccess = getDefaultAccess;
@@ -236,7 +236,7 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 						refresh();
 					}
 				}, function errorCallback(response){
-					runOnFailed("deleteObjectFromGrid", response.statusText);
+					utils.runOnFailed("deleteObjectFromGrid", response.statusText);
 				});
 			}
 		}
