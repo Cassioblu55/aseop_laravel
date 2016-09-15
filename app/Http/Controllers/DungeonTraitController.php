@@ -27,7 +27,7 @@ class DungeonTraitController extends Controller
 	{
 		$dungeonTrait = new DungeonTrait();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView("edit"), compact('dungeonTrait', 'headers'));
+		return view($this->getControllerView(self::EDIT), compact('dungeonTrait', 'headers'));
 	}
 
 	/**
@@ -53,6 +53,7 @@ class DungeonTraitController extends Controller
 	public function show(DungeonTrait $dungeonTrait)
 	{
 		$headers = $this->getShowHeaders();
+		return view($this->getControllerView(self::SHOW), compact('dungeonTrait', 'headers'));
 	}
 
 	/**
@@ -64,7 +65,7 @@ class DungeonTraitController extends Controller
 	public function edit(DungeonTrait $dungeonTrait)
 	{
 		$headers = $this->getUpdateHeaders($dungeonTrait->id);
-		return view($this->getControllerView("edit"), compact('dungeonTrait', 'headers'));
+		return view($this->getControllerView(self::EDIT), compact('dungeonTrait', 'headers'));
 	}
 
 	/**
@@ -77,7 +78,7 @@ class DungeonTraitController extends Controller
 	public function update(Request $request, DungeonTrait $dungeonTrait)
 	{
 		$dungeonTrait -> update($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
 	}
 
 	/**

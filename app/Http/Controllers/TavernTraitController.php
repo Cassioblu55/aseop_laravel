@@ -26,7 +26,7 @@ class TavernTraitController extends Controller
 	{
 		$tavernTrait = new TavernTrait();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView("edit"), compact('tavernTrait', 'headers'));
+		return view($this->getEditControllerAction(), compact('tavernTrait', 'headers'));
 	}
 
 	/**
@@ -40,7 +40,7 @@ class TavernTraitController extends Controller
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
 		TavernTrait::create($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+		return redirect()->action($this->getControllerAction(self::CREATE), self::sendRecordAddedSuccessfully());
 	}
 
 	/**
@@ -49,9 +49,10 @@ class TavernTraitController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show(TavernTrait $tavenTrait)
+	public function show(TavernTrait $tavernTrait)
 	{
-
+		$headers = $this->getShowHeaders();
+		return view($this->getControllerView(self::SHOW), compact('tavernTrait', 'headers'));
 	}
 
 	/**
@@ -63,7 +64,7 @@ class TavernTraitController extends Controller
 	public function edit(TavernTrait $tavernTrait)
 	{
 		$headers = $this->getUpdateHeaders($tavernTrait->id);
-		return view($this->getControllerView("edit"), compact('tavernTrait', 'headers'));
+		return view($this->getEditControllerAction(), compact('tavernTrait', 'headers'));
 	}
 
 	/**
@@ -76,7 +77,7 @@ class TavernTraitController extends Controller
 	public function update(Request $request, TavernTrait $tavernTrait)
 	{
 		$tavernTrait -> update($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
 	}
 
 	/**

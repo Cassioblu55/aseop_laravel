@@ -41,7 +41,7 @@ class SettlementTraitController extends Controller
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
 		SettlementTrait::create($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+		return redirect()->action($this->getControllerAction(self::CREATE), self::sendRecordAddedSuccessfully());
 	}
 
 	/**
@@ -52,7 +52,8 @@ class SettlementTraitController extends Controller
 	 */
 	public function show(SettlementTrait $settlementTrait)
 	{
-
+		$headers = $this->getShowHeaders();
+		return view($this->getControllerView(self::SHOW), compact('settlementTrait', 'headers'));
 	}
 
 	/**
@@ -64,7 +65,7 @@ class SettlementTraitController extends Controller
 	public function edit(SettlementTrait $settlementTrait)
 	{
 		$headers = $this->getUpdateHeaders($settlementTrait->id);
-		return view($this->getControllerView("edit"), compact('settlementTrait', 'headers'));
+		return view($this->getEditControllerAction(), compact('settlementTrait', 'headers'));
 	}
 
 	/**
@@ -77,7 +78,7 @@ class SettlementTraitController extends Controller
 	public function update(Request $request, SettlementTrait $settlementTrait)
 	{
 		$settlementTrait -> update($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
 	}
 
 	/**

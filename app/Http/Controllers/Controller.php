@@ -19,6 +19,7 @@ class Controller extends BaseController
 	const SHOW = "show";
 	const EDIT = "edit";
 	const INDEX = "index";
+	const CREATE =  "create";
 
 	private $controllerNameSpace;
 	private $controllerProperName;

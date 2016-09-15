@@ -26,7 +26,7 @@ class VillainTraitController extends Controller
     {
         $villainTrait = new VillainTrait();
         $headers = $this->getCreateHeaders();
-        return view($this->getControllerView("edit"), compact('villainTrait', 'headers'));
+        return view($this->getEditControllerAction(), compact('villainTrait', 'headers'));
     }
 
     /**
@@ -40,7 +40,7 @@ class VillainTraitController extends Controller
         $request['owner_id'] = Auth::user()->id;
         $request['approved'] = false;
         VillainTrait::create($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+        return redirect()->action($this->getControllerAction(self::CREATE), self::sendRecordAddedSuccessfully());
     }
 
     /**
@@ -51,7 +51,8 @@ class VillainTraitController extends Controller
      */
     public function show(VillainTrait $villainTrait)
     {
-
+	    $headers = $this->getShowHeaders();
+	    return view($this->getControllerView(self::SHOW), compact('villainTrait', 'headers'));
     }
 
     /**
@@ -63,7 +64,7 @@ class VillainTraitController extends Controller
     public function edit(VillainTrait $villainTrait)
     {
         $headers = $this->getUpdateHeaders($villainTrait->id);
-        return view($this->getControllerView("edit"), compact('villainTrait', 'headers'));
+        return view($this->getEditControllerAction(), compact('villainTrait', 'headers'));
     }
 
     /**
@@ -76,7 +77,7 @@ class VillainTraitController extends Controller
     public function update(Request $request, VillainTrait $villainTrait)
     {
         $villainTrait -> update($request->all());
-        return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+        return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
     }
 
     /**

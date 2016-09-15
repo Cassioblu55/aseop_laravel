@@ -26,7 +26,7 @@ class NpcTraitController extends Controller
 	{
 		$npcTrait = new NonPlayerCharacterTrait();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView("edit"), compact('npcTrait', 'headers'));
+		return view($this->getControllerView(self::EDIT), compact('npcTrait', 'headers'));
 	}
 
 	/**
@@ -40,7 +40,7 @@ class NpcTraitController extends Controller
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
 		NonPlayerCharacterTrait::create($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+		return redirect()->action($this->getControllerAction(self::CREATE), self::sendRecordAddedSuccessfully());
 	}
 
 	/**
@@ -51,7 +51,8 @@ class NpcTraitController extends Controller
 	 */
 	public function show(NonPlayerCharacterTrait $npcTrait)
 	{
-
+		$headers = $this->getShowHeaders();
+		return view($this->getControllerView(self::SHOW), compact('npcTrait', 'headers'));
 	}
 
 	/**
@@ -63,7 +64,7 @@ class NpcTraitController extends Controller
 	public function edit(NonPlayerCharacterTrait $npcTrait)
 	{
 		$headers = $this->getUpdateHeaders($npcTrait->id);
-		return view($this->getControllerView("edit"), compact('npcTrait', 'headers'));
+		return view($this->getEditControllerAction(), compact('npcTrait', 'headers'));
 	}
 
 	/**
@@ -76,7 +77,7 @@ class NpcTraitController extends Controller
 	public function update(Request $request, NonPlayerCharacterTrait $npcTrait)
 	{
 		$npcTrait -> update($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordUpdatedSuccessfully());
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
 	}
 
 	/**
