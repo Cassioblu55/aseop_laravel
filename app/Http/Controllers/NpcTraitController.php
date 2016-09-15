@@ -88,7 +88,7 @@ class NpcTraitController extends Controller
 
 	public function saveBatch(Request $request){
 		$response = NonPlayerCharacterTrait::upload($request->fileToUpload);
-		return $response;
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
 	}
 
 

@@ -43,7 +43,7 @@ class NonPlayerCharacterTrait extends AssetTrait implements Upload
 			}
 		}
 
-		return "$uploadCount records added, $uploadFailedCount records could not be uploaded";
+		return "$uploadCount records added $uploadFailedCount records could not be uploaded";
 	}
 
 }
