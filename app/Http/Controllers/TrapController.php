@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
 use App\Trap;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +33,7 @@ class TrapController extends Controller
     {
 	    $trap = new Trap();
 	    $headers = $this->getCreateHeaders();
-	    return view($this->getControllerView("edit"), compact('trap', 'headers'));
+	    return view($this->getControllerView(Messages::EDIT), compact('trap', 'headers'));
     }
 
     /**
@@ -61,7 +61,7 @@ class TrapController extends Controller
     public function show(Trap $trap)
     {
 	    $headers = $this->getShowHeaders();
-	    return view($this->getControllerView(self::SHOW), compact('trap', 'headers'));
+	    return view($this->getControllerView(Messages::SHOW), compact('trap', 'headers'));
     }
 
     /**
@@ -73,7 +73,7 @@ class TrapController extends Controller
     public function edit(Trap $trap)
     {
 	    $headers = $this->getUpdateHeaders($trap->id);
-	    return view($this->getControllerView("edit"), compact('trap', 'headers'));
+	    return view($this->getControllerView(Messages::EDIT), compact('trap', 'headers'));
     }
 
     /**
@@ -100,5 +100,6 @@ class TrapController extends Controller
     public function destroy(Trap $trap)
     {
         $trap->delete();
+	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
     }
 }

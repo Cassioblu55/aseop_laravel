@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use App\NonPlayerCharacter;
 use App\Http\Requests;
@@ -28,7 +29,7 @@ class NpcController extends Controller
 	{
 		$npc = new NonPlayerCharacter();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView("edit"), compact('npc', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('npc', 'headers'));
 	}
 
 	public function generate(){
@@ -59,7 +60,7 @@ class NpcController extends Controller
 	public function show(NonPlayerCharacter $npc)
 	{
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView(self::SHOW), compact('npc', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('npc', 'headers'));
 	}
 
 	/**
@@ -96,5 +97,6 @@ class NpcController extends Controller
 	public function destroy(NonPlayerCharacter $npc)
 	{
 		$npc->delete();
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
 	}
 }

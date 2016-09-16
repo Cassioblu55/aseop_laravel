@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -26,7 +27,7 @@ class UrbanEncounterController extends Controller
     {
         $urbanEncounter = new UrbanEncounter();
         $headers = $this->getCreateHeaders();
-        return view($this->getControllerView("edit"), compact('urbanEncounter', 'headers'));
+        return view($this->getControllerView(Messages::EDIT), compact('urbanEncounter', 'headers'));
     }
 
     /**
@@ -51,7 +52,7 @@ class UrbanEncounterController extends Controller
      */
 	public function show(UrbanEncounter $urbanEncounter){
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView(self::SHOW), compact('urbanEncounter', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('urbanEncounter', 'headers'));
 	}
 
 	public function random(){
@@ -67,7 +68,7 @@ class UrbanEncounterController extends Controller
     public function edit(UrbanEncounter $urbanEncounter)
     {
         $headers = $this->getUpdateHeaders($urbanEncounter->id);
-        return view($this->getControllerView("edit"), compact('urbanEncounter', 'headers'));
+        return view($this->getControllerView(Messages::EDIT), compact('urbanEncounter', 'headers'));
     }
 
     /**
@@ -92,5 +93,6 @@ class UrbanEncounterController extends Controller
     public function destroy(UrbanEncounter $urbanEncounter)
     {
         $urbanEncounter->delete();
+	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
     }
 }

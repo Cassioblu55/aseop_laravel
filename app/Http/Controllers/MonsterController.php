@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -27,7 +28,7 @@ class MonsterController extends Controller
 	{
 		$monster = new Monster();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView("edit"), compact('monster', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('monster', 'headers'));
 	}
 
 	/**
@@ -41,7 +42,7 @@ class MonsterController extends Controller
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
 		Monster::create($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully());
 	}
 
 	/**
@@ -53,7 +54,7 @@ class MonsterController extends Controller
 	public function show(Monster $monster)
 	{
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView(self::SHOW), compact('monster', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('monster', 'headers'));
 	}
 
 	/**
@@ -65,7 +66,7 @@ class MonsterController extends Controller
 	public function edit(Monster $monster)
 	{
 		$headers = $this->getUpdateHeaders($monster->id);
-		return view($this->getControllerView("edit"), compact('monster', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('monster', 'headers'));
 	}
 
 	/**
@@ -90,5 +91,6 @@ class MonsterController extends Controller
 	public function destroy(Monster $monster)
 	{
 		$monster->delete();
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
 	}
 }

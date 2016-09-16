@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -27,7 +28,7 @@ class DungeonTraitController extends Controller
 	{
 		$dungeonTrait = new DungeonTrait();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView(self::EDIT), compact('dungeonTrait', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('dungeonTrait', 'headers'));
 	}
 
 	/**
@@ -41,7 +42,7 @@ class DungeonTraitController extends Controller
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
 		DungeonTrait::create($request->all());
-		return redirect()->action($this->getControllerAction('index'), self::sendRecordAddedSuccessfully());
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully());
 	}
 
 	/**
@@ -53,7 +54,7 @@ class DungeonTraitController extends Controller
 	public function show(DungeonTrait $dungeonTrait)
 	{
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView(self::SHOW), compact('dungeonTrait', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('dungeonTrait', 'headers'));
 	}
 
 	/**
@@ -65,7 +66,7 @@ class DungeonTraitController extends Controller
 	public function edit(DungeonTrait $dungeonTrait)
 	{
 		$headers = $this->getUpdateHeaders($dungeonTrait->id);
-		return view($this->getControllerView(self::EDIT), compact('dungeonTrait', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('dungeonTrait', 'headers'));
 	}
 
 	/**
@@ -87,8 +88,9 @@ class DungeonTraitController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy(DungeonTrait $trait)
+	public function destroy(DungeonTrait $dungeonTrait)
 	{
-		$trait->delete();
+		$dungeonTrait->delete();
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
 	}
 }

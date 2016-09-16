@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -26,7 +27,7 @@ class ForestEncounterController extends Controller
     {
         $forestEncounter = new ForestEncounter();
         $headers = $this->getCreateHeaders();
-        return view($this->getControllerView("edit"), compact('forestEncounter', 'headers'));
+        return view($this->getControllerView(Messages::EDIT), compact('forestEncounter', 'headers'));
     }
 
     /**
@@ -52,7 +53,7 @@ class ForestEncounterController extends Controller
     public function show(ForestEncounter $forestEncounter)
     {
     	$headers = $this->getShowHeaders();
-	    return view($this->getControllerView(self::SHOW), compact('forestEncounter', 'headers'));
+	    return view($this->getControllerView(Messages::SHOW), compact('forestEncounter', 'headers'));
     }
 
 	public function random(){
@@ -68,7 +69,7 @@ class ForestEncounterController extends Controller
     public function edit(ForestEncounter $forestEncounter)
     {
         $headers = $this->getUpdateHeaders($forestEncounter->id);
-        return view($this->getControllerView("edit"), compact('forestEncounter', 'headers'));
+        return view($this->getControllerView(Messages::EDIT), compact('forestEncounter', 'headers'));
     }
 
     /**
@@ -93,5 +94,6 @@ class ForestEncounterController extends Controller
     public function destroy(ForestEncounter $forestEncounter)
     {
         $forestEncounter->delete();
+	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
     }
 }

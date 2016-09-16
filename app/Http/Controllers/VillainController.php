@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -26,7 +27,7 @@ class VillainController extends Controller
     {
         $villain = new Villain();
         $headers = $this->getCreateHeaders();
-        return view($this->getControllerView(self::EDIT), compact('villain', 'headers'));
+        return view($this->getControllerView(Messages::EDIT), compact('villain', 'headers'));
     }
 
     /**
@@ -53,7 +54,7 @@ class VillainController extends Controller
     public function show(Villain $villain)
     {
 	    $headers = $this->getShowHeaders();
-	    return view($this->getControllerView(self::SHOW), compact('villain', 'headers'));
+	    return view($this->getControllerView(Messages::SHOW), compact('villain', 'headers'));
     }
 
     public function generate(){
@@ -70,7 +71,7 @@ class VillainController extends Controller
     public function edit(Villain $villain)
     {
         $headers = $this->getUpdateHeaders($villain->id);
-        return view($this->getControllerView(self::EDIT), compact('villain', 'headers'));
+        return view($this->getControllerView(Messages::EDIT), compact('villain', 'headers'));
     }
 
     /**
@@ -96,5 +97,6 @@ class VillainController extends Controller
     public function destroy(Villain $villain)
     {
         $villain->delete();
+	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
     }
 }

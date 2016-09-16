@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 use App\Dungeon;
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,7 +34,7 @@ class DungeonController extends Controller
 	{
 		$dungeon = new Dungeon();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView("edit"), compact('dungeon', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('dungeon', 'headers'));
 
 	}
 
@@ -60,7 +61,7 @@ class DungeonController extends Controller
 	public function show(Dungeon $dungeon)
 	{
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView(self::SHOW), compact('dungeon', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('dungeon', 'headers'));
 	}
 
     public function generate(){;
@@ -82,7 +83,7 @@ class DungeonController extends Controller
 	public function edit(Dungeon $dungeon)
 	{
 		$headers = $this->getUpdateHeaders($dungeon->id);
-		return view($this->getControllerView("edit"), compact('dungeon', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('dungeon', 'headers'));
 	}
 
 	/**
@@ -107,5 +108,6 @@ class DungeonController extends Controller
 	public function destroy(Dungeon $dungeon)
 	{
 		$dungeon->delete();
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
 	}
 }

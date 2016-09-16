@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -26,7 +27,7 @@ class SettlementController extends Controller
 	{
 		$settlement = new Settlement();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView("edit"), compact('settlement', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('settlement', 'headers'));
 	}
 
 
@@ -58,7 +59,7 @@ class SettlementController extends Controller
 	public function show(Settlement $settlement)
 	{
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView(self::SHOW), compact('settlement', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('settlement', 'headers'));
 	}
 
 	/**
@@ -70,7 +71,7 @@ class SettlementController extends Controller
 	public function edit(Settlement $settlement)
 	{
 		$headers = $this->getUpdateHeaders($settlement->id);
-		return view($this->getControllerView("edit"), compact('settlement', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('settlement', 'headers'));
 	}
 
 	/**
@@ -95,5 +96,6 @@ class SettlementController extends Controller
 	public function destroy(Settlement $settlement)
 	{
 		$settlement->delete();
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
 	}
 }

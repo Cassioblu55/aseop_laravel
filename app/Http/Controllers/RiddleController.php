@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -27,7 +28,7 @@ class RiddleController extends Controller
 	{
 		$riddle = new Riddle();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView("edit"), compact('riddle', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('riddle', 'headers'));
 	}
 
 	/**
@@ -53,7 +54,7 @@ class RiddleController extends Controller
 	public function show(Riddle $riddle)
 	{
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView(self::SHOW), compact('riddle', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('riddle', 'headers'));
 	}
 
 	public function random(){
@@ -69,7 +70,7 @@ class RiddleController extends Controller
 	public function edit(Riddle $riddle)
 	{
 		$headers = $this->getUpdateHeaders($riddle->id);
-		return view($this->getControllerView("edit"), compact('riddle', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('riddle', 'headers'));
 	}
 
 	/**
@@ -94,5 +95,6 @@ class RiddleController extends Controller
 	public function destroy(Riddle $riddle)
 	{
 		$riddle->delete();
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
 	}
 }

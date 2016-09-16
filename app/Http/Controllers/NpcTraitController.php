@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -26,7 +27,7 @@ class NpcTraitController extends Controller
 	{
 		$npcTrait = new NonPlayerCharacterTrait();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView(self::EDIT), compact('npcTrait', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('npcTrait', 'headers'));
 	}
 
 	/**
@@ -40,7 +41,7 @@ class NpcTraitController extends Controller
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
 		NonPlayerCharacterTrait::create($request->all());
-		return redirect()->action($this->getControllerAction(self::CREATE), self::sendRecordAddedSuccessfully());
+		return redirect()->action($this->getControllerAction(Messages::CREATE), self::sendRecordAddedSuccessfully());
 	}
 
 	/**
@@ -52,7 +53,7 @@ class NpcTraitController extends Controller
 	public function show(NonPlayerCharacterTrait $npcTrait)
 	{
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView(self::SHOW), compact('npcTrait', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('npcTrait', 'headers'));
 	}
 
 	/**
@@ -64,7 +65,7 @@ class NpcTraitController extends Controller
 	public function edit(NonPlayerCharacterTrait $npcTrait)
 	{
 		$headers = $this->getUpdateHeaders($npcTrait->id);
-		return view($this->getControllerView(self::EDIT), compact('npcTrait', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('npcTrait', 'headers'));
 	}
 
 	/**
@@ -83,7 +84,7 @@ class NpcTraitController extends Controller
 
 	public function upload(){
 		$headers = $this->getUploadHeaders();
-		return view($this->getControllerView("upload"), compact('headers'));
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
 	}
 
 	public function saveBatch(Request $request){
@@ -101,5 +102,6 @@ class NpcTraitController extends Controller
 	public function destroy(NonPlayerCharacterTrait $npcTrait)
 	{
 		$npcTrait->delete();
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
 	}
 }

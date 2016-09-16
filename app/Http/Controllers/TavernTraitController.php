@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use App\TavernTrait;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ class TavernTraitController extends Controller
 	{
 		$tavernTrait = new TavernTrait();
 		$headers = $this->getCreateHeaders();
-		return view($this->getEditControllerAction(), compact('tavernTrait', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('tavernTrait', 'headers'));
 	}
 
 	/**
@@ -40,7 +41,7 @@ class TavernTraitController extends Controller
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
 		TavernTrait::create($request->all());
-		return redirect()->action($this->getControllerAction(self::CREATE), self::sendRecordAddedSuccessfully());
+		return redirect()->action($this->getControllerAction(Messages::CREATE), self::sendRecordAddedSuccessfully());
 	}
 
 	/**
@@ -52,7 +53,7 @@ class TavernTraitController extends Controller
 	public function show(TavernTrait $tavernTrait)
 	{
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView(self::SHOW), compact('tavernTrait', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('tavernTrait', 'headers'));
 	}
 
 	/**
@@ -64,7 +65,7 @@ class TavernTraitController extends Controller
 	public function edit(TavernTrait $tavernTrait)
 	{
 		$headers = $this->getUpdateHeaders($tavernTrait->id);
-		return view($this->getEditControllerAction(), compact('tavernTrait', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('tavernTrait', 'headers'));
 	}
 
 	/**
@@ -89,5 +90,6 @@ class TavernTraitController extends Controller
 	public function destroy(TavernTrait $tavernTrait)
 	{
 		$tavernTrait->delete();
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
 	}
 }

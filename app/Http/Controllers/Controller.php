@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -10,16 +11,6 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
-	const SUCCESS_MESSAGE = 'successMessage';
-
-	const DEFAULT_RECORD_UPDATED_MESSAGE = "Record Updated Successfully";
-	const DEFAULT_RECORD_ADDED_MESSAGE = "Record Added Successfully";
-
-	const SHOW = "show";
-	const EDIT = "edit";
-	const INDEX = "index";
-	const CREATE =  "create";
 
 	private $controllerNameSpace;
 	private $controllerProperName;
@@ -113,24 +104,32 @@ class Controller extends BaseController
 		return (object) ["postLocation" => $this->getPostLocation(), "methodField" => "POST"];
 	}
 
-	protected static function sendRecordUpdatedSuccessfully($message = self::DEFAULT_RECORD_UPDATED_MESSAGE){
-		return [self::SUCCESS_MESSAGE => $message];
+	protected static function sendRecordUpdatedSuccessfully($message = Messages::DEFAULT_RECORD_UPDATED_MESSAGE){
+		return [Messages::SUCCESS_MESSAGE => $message];
 	}
 
-	protected static function sendRecordAddedSuccessfully($message = self::DEFAULT_RECORD_ADDED_MESSAGE){
-		return [self::SUCCESS_MESSAGE => $message];
+	protected static function sendRecordAddedSuccessfully($message = Messages::DEFAULT_RECORD_ADDED_MESSAGE){
+		return [Messages::SUCCESS_MESSAGE => $message];
+	}
+
+	protected static function sendSucessMesage($message){
+		return [Messages::SUCCESS_MESSAGE => $message];
+	}
+
+	protected static function sendSuccessfullyDeletedMesage(){
+		return [Messages::SUCCESS_MESSAGE => Messages::DEFAULT_RECORD_DELETED_MESSAGE];
 	}
 
 	protected function getIndexControllerAction(){
-		return $this->getControllerAction(self::INDEX);
+		return $this->getControllerAction(Messages::INDEX);
 	}
 
 	protected function getEditControllerAction(){
-		return $this->getControllerAction(self::EDIT);
+		return $this->getControllerAction(Messages::EDIT);
 	}
 
 	protected function getShowControllerAction(){
-		return $this->getControllerAction(self::SHOW);
+		return $this->getControllerAction(Messages::SHOW);
 	}
 
 	protected static function addMessages($dataHash, array $urlParams){
@@ -145,12 +144,12 @@ class Controller extends BaseController
 	}
 
 	protected static function addUpdateSuccessMessage($dataHash){
-		$urlParams = [self::SUCCESS_MESSAGE => self::DEFAULT_RECORD_UPDATED_MESSAGE];
+		$urlParams = [Messages::SUCCESS_MESSAGE => Messages::DEFAULT_RECORD_UPDATED_MESSAGE];
 		return self::addMessages($dataHash, $urlParams);
 	}
 
 	protected static function addAddedSuccessMessage($dataHash){
-		$urlParams = [self::SUCCESS_MESSAGE => self::DEFAULT_RECORD_ADDED_MESSAGE];
+		$urlParams = [Messages::SUCCESS_MESSAGE => Messages::DEFAULT_RECORD_ADDED_MESSAGE];
 		return self::addMessages($dataHash, $urlParams);
 	}
 

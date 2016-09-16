@@ -224,24 +224,6 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 		}
 		that.formatPublicPrivate = formatPublicPrivate;
 
-		function destory(object, confirmName, url, callback, doNotRefresh) {
-			confirmName = confirmName || object.name || "this object";
-			if(window.confirm("Are you sure you want to delete "+confirmName+"?")){
-				url = url || utils.getLocalUrl()+"/"+object.id;
-				$http.delete(url).then(function(response){
-					if(callback){
-						callback(response);
-					}
-					if(!doNotRefresh){
-						refresh();
-					}
-				}, function errorCallback(response){
-					utils.runOnFailed("deleteObjectFromGrid", response.statusText);
-				});
-			}
-		}
-		that.destory = destory;
-
 		function getLocalRowUrlWithId(){
 			return utils.getLocalUrl() + "/<%row.entity.id%>";
 		}
@@ -256,9 +238,6 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 				if (!CONFIG.noShowColumn) {
 					href = getLocalRowUrlWithId();
 					columns.unshift(getShowCell(href));
-				}
-				if (!CONFIG.noDeleteColumn) {
-					columns.push(getDeleteCell());
 				}
 			}
 
@@ -279,12 +258,6 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 		function getEditCell(href){
 			const  EDIT_BUTTON_HTML = getGridLink(href, "Edit", "btn-default");
 			return {field: 'edit', enableFiltering: false, width: 52, cellTemplate: EDIT_BUTTON_HTML};
-		}
-
-		function getDeleteCell(clickAction){
-			const CLICK_ACTION = clickAction || "grid.appScope.gridModel.destory(row.entity)";
-			const DELETE_BUTTON_HTML = getGridButton(CLICK_ACTION, "Delete", "btn-danger");
-			return {field: 'delete',  enableFiltering: false, width: 67,  cellTemplate: DELETE_BUTTON_HTML};
 		}
 
 		function getShowCell(href){

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -26,7 +27,7 @@ class SpellController extends Controller
     {
         $spell = new Spell();
         $headers = $this->getCreateHeaders();
-        return view($this->getControllerView("edit"), compact('spell', 'headers'));
+        return view($this->getControllerView(Messages::EDIT), compact('spell', 'headers'));
     }
 
     /**
@@ -52,7 +53,7 @@ class SpellController extends Controller
     public function show(Spell $spell)
     {
 	    $headers = $this->getShowHeaders();
-	    return view($this->getControllerView(self::SHOW), compact('spell', 'headers'));
+	    return view($this->getControllerView(Messages::SHOW), compact('spell', 'headers'));
     }
 
     /**
@@ -64,7 +65,7 @@ class SpellController extends Controller
     public function edit(Spell $spell)
     {
         $headers = $this->getUpdateHeaders($spell->id);
-        return view($this->getControllerView("edit"), compact('spell', 'headers'));
+        return view($this->getControllerView(Messages::EDIT), compact('spell', 'headers'));
     }
 
     /**
@@ -89,5 +90,6 @@ class SpellController extends Controller
     public function destroy(Spell $spell)
     {
         $spell->delete();
+	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
     }
 }

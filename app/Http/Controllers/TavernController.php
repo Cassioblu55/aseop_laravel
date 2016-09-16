@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use App\Tavern;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ class TavernController extends Controller
 	{
 		$tavern = new Tavern();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView(self::EDIT), compact('tavern', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('tavern', 'headers'));
 	}
 
 	/**
@@ -57,7 +58,7 @@ class TavernController extends Controller
 	public function show(Tavern $tavern)
 	{
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView('show'), compact('tavern', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('tavern', 'headers'));
 	}
 
 	/**
@@ -94,5 +95,6 @@ class TavernController extends Controller
 	public function destroy(Tavern $tavern)
 	{
 		$tavern->delete();
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
 	}
 }

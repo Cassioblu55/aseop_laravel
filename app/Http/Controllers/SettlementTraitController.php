@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Settlement;
+use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -27,7 +27,7 @@ class SettlementTraitController extends Controller
 	{
 		$settlementTrait = new SettlementTrait();
 		$headers = $this->getCreateHeaders();
-		return view($this->getControllerView("edit"), compact('settlementTrait', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('settlementTrait', 'headers'));
 	}
 
 	/**
@@ -41,7 +41,7 @@ class SettlementTraitController extends Controller
 		$request['owner_id'] = Auth::user()->id;
 		$request['approved'] = false;
 		SettlementTrait::create($request->all());
-		return redirect()->action($this->getControllerAction(self::CREATE), self::sendRecordAddedSuccessfully());
+		return redirect()->action($this->getControllerAction(Messages::CREATE), self::sendRecordAddedSuccessfully());
 	}
 
 	/**
@@ -53,7 +53,7 @@ class SettlementTraitController extends Controller
 	public function show(SettlementTrait $settlementTrait)
 	{
 		$headers = $this->getShowHeaders();
-		return view($this->getControllerView(self::SHOW), compact('settlementTrait', 'headers'));
+		return view($this->getControllerView(Messages::SHOW), compact('settlementTrait', 'headers'));
 	}
 
 	/**
@@ -90,5 +90,6 @@ class SettlementTraitController extends Controller
 	public function destroy(SettlementTrait $settlementTrait)
 	{
 		$settlementTrait->delete();
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
 	}
 }
