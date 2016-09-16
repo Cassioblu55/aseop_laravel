@@ -44,6 +44,16 @@ class SettlementTraitController extends Controller
 		return redirect()->action($this->getControllerAction(Messages::CREATE), self::sendRecordAddedSuccessfully());
 	}
 
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = SettlementTrait::upload($request->fileToUpload);
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
+	}
+
 	/**
 	 * Display the specified resource.
 	 *
@@ -65,7 +75,7 @@ class SettlementTraitController extends Controller
 	public function edit(SettlementTrait $settlementTrait)
 	{
 		$headers = $this->getUpdateHeaders($settlementTrait->id);
-		return view($this->getEditControllerAction(), compact('settlementTrait', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('settlementTrait', 'headers'));
 	}
 
 	/**

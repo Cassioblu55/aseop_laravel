@@ -44,6 +44,16 @@ class VillainTraitController extends Controller
         return redirect()->action($this->getControllerAction(Messages::CREATE), self::sendRecordAddedSuccessfully());
     }
 
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = VillainTrait::upload($request->fileToUpload);
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
+	}
+
     /**
      * Display the specified resource.
      *

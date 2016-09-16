@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Services\CSVParser;
+use App\Services\AddBatchAssets;
 
 class NonPlayerCharacterTrait extends AssetTrait implements Upload
 {
@@ -20,30 +20,27 @@ class NonPlayerCharacterTrait extends AssetTrait implements Upload
 
 	public static function upload($filePath)
 	{
-		$uploadCount = 0;
-		$uploadFailedCount = 0;
+		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
 
-		$csvParser = new CSVParser($filePath, self::UPLOAD_COLUMNS);
-		$csvData = $csvParser->getCSVData();
+		$runOnCreate = function($row){
+			$npcTrait = new self();
+			$npcTrait->setUploadValues($row);
+			return (isSet($npcTrait->id));
+		};
 
-		foreach ($csvData as $row){
-			$npcTrait = new NonPlayerCharacterTrait();
-			$npcTrait[self::TYPE]  = $row[self::TYPE];
-			$npcTrait[self::COL_TRAIT]  = $row[self::COL_TRAIT];
-			$npcTrait->setPublic();
-			$npcTrait->setOwnerId();
-			$npcTrait->setApproved();
+		$runOnUpdate = function($row){
+			$npcTrait = self::where(self::ID, $row[self::ID])->first();
+			$npcTrait->setUploadValues($row);
+			return (isSet($npcTrait->id));
+		};
 
-			$npcTrait->save();
+		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+	}
 
-			if(isset($npcTrait->id)){
-				$uploadCount++;
-			}else{
-				$uploadFailedCount++;
-			}
-		}
-
-		return "$uploadCount records added $uploadFailedCount records could not be uploaded";
+	private function setUploadValues($row){
+		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
+		$this->setRequiredMissing();
+		isSet($this->id) ? $this->update() : $this->save();
 	}
 
 }

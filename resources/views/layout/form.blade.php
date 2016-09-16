@@ -18,7 +18,7 @@
 
                         <div class="panel-footer">
                             <button class="btn btn-primary" type="submit">{{$headers->addOrSave}}</button>
-                            <a href="@yield('back_location', '..')" class="btn btn-default">Back</a>
+                            <a href="@yield('back_location', '.')" class="btn btn-default">Back</a>
 
                             @yield('form_footer')
                         </div>

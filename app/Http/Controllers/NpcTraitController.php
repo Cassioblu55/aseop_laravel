@@ -92,7 +92,6 @@ class NpcTraitController extends Controller
 		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
 	}
 
-
 	/**
 	 * Remove the specified resource from storage.
 	 *

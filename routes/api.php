@@ -153,6 +153,14 @@ Route::get('/villainTraits', function (){
 return \App\VillainTrait::all();
 });
 
+Route::get('/villainTraits/types', function (){
+	return \App\VillainTrait::getVaildTypes();
+});
+
+Route::get('/villainTraits/kinds', function (){
+	return \App\VillainTrait::getValidKindsByType();
+});
+
 Route::get('/villainTraits/{villainTrait}', function(\App\VillainTrait $villainTrait){
 return $villainTrait;
 });

@@ -26,6 +26,8 @@ Route::resource('dungeons', 'DungeonController',[
 	'parameters' => 'singular'
 ]);
 
+Route::get('dungeonTraits/upload', 'DungeonTraitController@upload');
+Route::post('dungeonTraits/upload', 'DungeonTraitController@saveBatch');
 Route::resource('dungeonTraits', 'DungeonTraitController',[
 	'parameters' => 'singular'
 ]);
@@ -50,6 +52,8 @@ Route::resource('settlements', 'SettlementController',[
 	'parameters' => 'singular'
 ]);
 
+Route::get('settlementTraits/upload', 'SettlementTraitController@upload');
+Route::post('settlementTraits/upload', 'SettlementTraitController@saveBatch');
 Route::resource('settlementTraits', 'SettlementTraitController',[
 	'parameters' => 'singular'
 ]);
@@ -63,6 +67,8 @@ Route::resource('taverns', 'TavernController',[
 	'parameters' => 'singular'
 ]);
 
+Route::get('tavernTraits/upload', 'TavernTraitController@upload');
+Route::post('tavernTraits/upload', 'TavernTraitController@saveBatch');
 Route::resource('tavernTraits', 'TavernTraitController',[
 	'parameters' => 'singular'
 ]);
@@ -81,6 +87,8 @@ Route::resource('villains', 'VillainController',[
 'parameters' => 'singular'
 ]);
 
+Route::get('villainTraits/upload', 'VillainTraitController@upload');
+Route::post('villainTraits/upload', 'VillainTraitController@saveBatch');
 Route::resource('villainTraits', 'VillainTraitController',[
 'parameters' => 'singular'
 ]);

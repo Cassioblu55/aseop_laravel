@@ -1,6 +1,6 @@
 @extends('layout.show')
 
-@section('show_title', $villainTrait->trait)
+@section('show_title', $villainTrait->kind)
 
 @section('show_body')
     <div class="container-fluid">
@@ -9,8 +9,8 @@
             {{$villainTrait->type}}
         </div>
 
-        <div class="">
-            {{$villainTrait->kind}}
+        <div class="showDisplay">
+            {{$villainTrait->description}}
         </div>
 
     </div>

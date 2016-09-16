@@ -83,7 +83,7 @@ class Controller extends BaseController
 	}
 
 	protected function getUploadHeaders(){
-		return (object) ["postLocation" => $this->getPostLocation()."/upload","addOrSave" => "Add", "methodField" => "POST", "dataDefaults" => $this->getDefaultAdditionalData()];
+		return (object) ["postLocation" => $this->getPostLocation()."/upload","addOrSave" => "Upload", "methodField" => "POST", "dataDefaults" => $this->getDefaultAdditionalData()];
 	}
 
 	private function getDefaultAdditionalData(){

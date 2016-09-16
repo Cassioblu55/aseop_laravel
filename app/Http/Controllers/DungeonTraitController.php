@@ -45,6 +45,16 @@ class DungeonTraitController extends Controller
 		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully());
 	}
 
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = DungeonTrait::upload($request->fileToUpload);
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
+	}
+
 	/**
 	 * Display the specified resource.
 	 *

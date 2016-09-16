@@ -5,6 +5,7 @@
 @section('controller', 'SettlementTraitIndexController')
 
 @section('additionalHeaderContent')
+    <a class="btn btn-default pull-right" style="margin-left: 5px" href="{{url('/settlementTraits/upload')}}">Upload</a>
     <a class="btn btn-primary pull-right" href="{{url('/settlementTraits/create')}}">Add</a>
 @stop
 

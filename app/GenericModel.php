@@ -14,28 +14,65 @@ use Illuminate\Support\Facades\Auth;
 abstract class GenericModel extends Model
 {
 
+	const ID = 'id';
+	const COL_PUBLIC = 'public';
+	const APPROVED = 'approved';
+	const OWNER_ID = 'owner_id';
+
+	const DEFAULT_ADDITIONAL_REQUIRED_COLUMNS = [self::ID,self::COL_PUBLIC, self::APPROVED, self::OWNER_ID];
+
 	function __construct(array $attributes = array()){
 		parent::__construct($attributes);
 	}
 
-	protected function setPublic(){
+	protected function setRequiredMissing(){
+		$this->setApproved();
+		$this->setPublic();
+		$this->setOwnerId();
+	}
+
+	private function setPublic(){
 		$this->setIfFeildNotPresent('public', function(){
-			return false;
+			return $this->getDefaultPublicValue();
 		});
 	}
 
-	protected function setIfFeildNotPresent($field, $funct){
+	private function getDefaultPublicValue(){
+		return false;
+	}
+
+	private function setOwnerId(){
+		$this->setIfFeildNotPresent('owner_id', function(){
+			return $this->getDefaultOwnerIdValue();
+		});
+	}
+
+	private function getDefaultOwnerIdValue(){
+		return Auth::user()->id;
+	}
+
+	private function setApproved(){
+		$this->setIfFeildNotPresent('approved', function(){
+			return $this->getDefaultApprovedValue();
+		});
+	}
+
+	private function getDefaultApprovedValue(){
+		return false;
+	}
+
+	public function setIfFeildNotPresent($field, $funct){
 		if(!isSet($this[$field])){
 			$this[$field] = $funct();
 		}
 	}
 
-	protected function setOwnerId(){
-		$this['owner_id'] = Auth::user()->id;
-	}
-
-	protected function setApproved(){
-		$this['approved'] = false;
+	public function addUploadColumns($row, $columns){
+		foreach ($columns as $column){
+			if(isSet($row[$column])){
+				$this[$column] = $row[$column];
+			}
+		}
 	}
 
 }

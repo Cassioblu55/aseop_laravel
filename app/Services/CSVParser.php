@@ -6,7 +6,7 @@
  * Time: 12:51 AM
  */
 
-namespace app\Services;
+namespace App\Services;
 
 class CSVParser{
 
@@ -14,9 +14,8 @@ class CSVParser{
 	private $columns;
 	private $max;
 	private $separator;
-	private $orderedDataColumns;
 
-	public function __construct($filePath, array $columns, $max=1000, $separator=","){
+	public function __construct($filePath, array $columns,$max=1000, $separator=","){
 		$this->columns = $columns;
 		$this->filePath = $filePath;
 		$this->max = $max;
@@ -27,29 +26,35 @@ class CSVParser{
 		$csvData = [];
 
 		$data = array_map("str_getcsv", file($this->filePath,FILE_SKIP_EMPTY_LINES));
-		$this->setOrderedDataColumns(array_shift($data));
 
-		foreach ($data as $i=>$row) {
-			$csvData[$i] = array_combine($this->getOrderedDataColumns(), $row);
+		$desiredColumnsWithIndex = $this->getDesiredColumnsWithIndex(array_shift($data));
+
+		foreach ($data as $row) {
+			$rowWithDesiredData = $this->getDesiredData($row, $desiredColumnsWithIndex);
+			array_push($csvData, $rowWithDesiredData);
 		}
 
 		return $csvData;
 	}
 
-	private function setOrderedDataColumns($dataColumns){
-		$orderedDataColumns = [];
-		foreach ($this->columns as $column){
-			foreach ($dataColumns as $dataColumn){
-				if($column == $dataColumn){
-					array_push($orderedDataColumns, $dataColumn);
+	private function getDesiredColumnsWithIndex($dataColumns){
+		$desiredColumnsWithIndex = [];
+		foreach ($dataColumns as $i => $dataColumn){
+			foreach ($this->columns as $column){
+				if($dataColumn == $column){
+					$desiredColumnsWithIndex[$dataColumn] = $i;
 				}
 			}
 		}
-		$this->orderedDataColumns = $orderedDataColumns;
+		return $desiredColumnsWithIndex;
 	}
 
-	private function getOrderedDataColumns(){
-		return $this->orderedDataColumns;
+	private function getDesiredData($row, $desiredColumnsWithIndex){
+		$rowWithDesiredData = [];
+		foreach ($desiredColumnsWithIndex as $column => $index){
+			$rowWithDesiredData[$column] = $row[$index];
+		}
+		return $rowWithDesiredData;
 	}
 
 }

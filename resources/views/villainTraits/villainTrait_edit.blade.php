@@ -7,9 +7,24 @@
 @section('form-size', '6')
 
 @section('form_body')
-    @include('tiles.questions.text', ['field'=>'type'])
 
-    @include('tiles.questions.textArea', ['field'=>'kind'])
+    <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+        <label class="control-label" for="type_inputDiv">Type</label>
+        <select id="type_inputDiv" required="required" class="form-control" name="type" ng-model="villainTrait.type">
+            <option disabled="disabled" value="">Choose One</option>
+            <option ng-repeat="key in getKeysFromHash(validTypes) " value="<% key %>" ng-selected="villainTrait.type == key"><%validTypes[key]%></option>
+        </select>
+        @include('tiles.error', ['errorName' => "type"])
+    </div>
+
+    <div class="form-group {{ $errors->has('kind') ? 'has-error' : '' }}">
+        <label class="control-label" for="kind_inputDiv">Type</label>
+        <select id="kind_inputDiv" required="required" class="form-control" name="kind" ng-model="villainTrait.kind">
+            <option disabled="disabled" value="">Choose One</option>
+            <option ng-repeat="value in currentValidKinds " value="<% value %>" ng-selected="villianTrait.kind == value"><% value%></option>
+        </select>
+        @include('tiles.error', ['errorName' => "kind"])
+    </div>
 
     @include('tiles.questions.textArea', ['field'=>'description'])
 
@@ -28,6 +43,7 @@
             $scope.utils = $scope.CreateEditUtil(CONFIG);
 
             $scope.utils.getDataOnEdit(function(villainTrait){
+                console.log(villainTrait);
                 $scope.villainTrait = villainTrait;
             });
 
@@ -35,6 +51,31 @@
                 $scope.villainTrait = {};
                 $scope.utils.getDefaultAccess(function(n){
                     $scope.villainTrait['public'] = n});
+            });
+
+            $scope.setFromGet("{{url('/api/villainTraits/types')}}", function(data){
+                $scope.validTypes = data;
+                $scope.setFromGet("{{url('/api/villainTraits/kinds')}}", function(data){
+                    $scope.validKinds = data;
+                    if($scope.villainTrait.type){
+                        $scope.currentValidKinds =  $scope.validKinds[$scope.villainTrait.type];
+
+                    }
+                });
+            });
+
+            $scope.getKeysFromHash = function(hash){
+                if(hash){
+                    return Object.keys(hash);
+                }
+                return null;
+            };
+
+            $scope.$watch('villainTrait.type', function(val){
+                if(val && $scope.validKinds){
+                    $scope.villainTrait.kind = '';
+                    $scope.currentValidKinds =  $scope.validKinds[val];
+                }
             });
 
         }]);
