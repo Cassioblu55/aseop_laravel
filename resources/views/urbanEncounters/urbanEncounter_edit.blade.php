@@ -74,7 +74,9 @@
 
             $scope.utils.getDataOnEdit(function(urbanEncounter){
                 $scope.urbanEncounter = urbanEncounter;
-                $scope.rollValues = getDiceValues($scope.urbanEncounter.rolls);
+                if($scope.urbanEncounter.rolls){
+                    $scope.rollValues = getDiceValues($scope.urbanEncounter.rolls);
+                }
                 $scope.numberOfRolls = $scope.rollValues.length;
             });
 

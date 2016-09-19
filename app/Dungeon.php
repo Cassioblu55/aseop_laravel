@@ -66,15 +66,15 @@ class Dungeon extends Asset implements Upload
 		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
 
 		$runOnCreate = function($row){
-			$dungeonTrait = new self();
-			$dungeonTrait->setUploadValues($row);
-			return (isSet($dungeonTrait->id));
+			$dungeon = new self();
+			$dungeon->setUploadValues($row);
+			return (isSet($dungeon->id));
 		};
 
 		$runOnUpdate = function($row){
-			$dungeonTrait = self::where(self::ID, $row[self::ID])->first();
-			$dungeonTrait->setUploadValues($row);
-			return ($dungeonTrait->presentValuesEqual($row));
+			$dungeon = self::where(self::ID, $row[self::ID])->first();
+			$dungeon->setUploadValues($row);
+			return ($dungeon->presentValuesEqual($row));
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);

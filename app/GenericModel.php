@@ -17,9 +17,8 @@ abstract class GenericModel extends Model
 	const ID = 'id';
 	const COL_PUBLIC = 'public';
 	const APPROVED = 'approved';
-	const OWNER_ID = 'owner_id';
 
-	const DEFAULT_ADDITIONAL_REQUIRED_COLUMNS = [self::ID,self::COL_PUBLIC, self::APPROVED, self::OWNER_ID];
+	const DEFAULT_ADDITIONAL_REQUIRED_COLUMNS = [self::ID,self::COL_PUBLIC, self::APPROVED];
 
 	function __construct(array $attributes = array()){
 		parent::__construct($attributes);
@@ -77,7 +76,7 @@ abstract class GenericModel extends Model
 
 	public function allRequiredPresent($arrayOfRequiredFields){
 		foreach ($arrayOfRequiredFields as $field){
-			if(!isset($this[$field])){return false;}
+			if(!isset($this[$field]) || $this[$field] ==''){return false;}
 		}
 		return true;
 	}
@@ -86,7 +85,7 @@ abstract class GenericModel extends Model
 		foreach ($row as $key => $value){
 			if($this[$key] != $value){return false;}
 		}
-		return false;
+		return true;
 	}
 
 	public function setJsonFromRowIfPresent($field, $row){

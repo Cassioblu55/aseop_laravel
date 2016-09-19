@@ -44,6 +44,16 @@ class UrbanEncounterController extends Controller
 	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("urbanEncounter")));
     }
 
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = UrbanEncounter::upload($request->fileToUpload);
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
+	}
+
     /**
      * Display the specified resource.
      *

@@ -4,7 +4,7 @@
     <script type="text/javascript" src="{{asset('js/roll.js')}}"></script>
 @stop
 
-@section('form_title', "$headers->createOrUpdate <% settlement.name || 'Settlement' %>")
+@section('form_title', "$headers->createOrUpdate <% monster.name || 'Monster' %>")
 
 @section('controller', "SettlementsAddEditController")
 
@@ -15,7 +15,7 @@
 
     <div class="row">
         <div class="col-md-3">
-            @include("tiles.questions.number", ['field' =>'challenge', 'validation'=>'min=0'])
+            @include("tiles.questions.float", ['field' =>'challenge', 'validation'=>'min=0 step="0.1"'])
         </div>
 
         <div class="col-md-3">
@@ -396,17 +396,17 @@
                 else{
                     $scope.action_modal = {};
                 }
-            }
+            };
 
             $scope.utils.getDataOnEdit(function(monster){
                 $scope.monster = convertValuesToNumbers(monster, valueToNumberList);
-                $scope.monster.stats = (monster.stats) ? JSON.parse(convertValuesToNumbers($scope.monster.stats, $scope.statsValues)) : {};
+                $scope.monster.stats = (monster.stats) ? convertValuesToNumbers($scope.monster.stats, $scope.statsValues).parseEscape() : {};
                 $scope.skills = (monster.skills) ? convertListHashValuesToNumbers($scope.monster.skills.parseEscape(), ['modifer']) : [];
-                $scope.languages = (monster.languages) ? $scope.monster.languages.parseEscape() : [];
-                $scope.senses = (monster.senses) ? $scope.monster.senses.parseEscape() : [];
-                $scope.abilities = (monster.abilities) ? $scope.monster.abilities.parseEscape() : [];
-                $scope.actions = (monster.actions) ? $scope.monster.actions.parseEscape() : [];
-                $scope.found_places = (monster.found) ? $scope.monster.found.parseEscape() : [];
+                $scope.languages = (monster.languages) ? $scope.monster.languages.parseEscape([]) : [];
+                $scope.senses = (monster.senses) ? $scope.monster.senses.parseEscape([]) : [];
+                $scope.abilities = (monster.abilities) ? $scope.monster.abilities.parseEscape([]) : [];
+                $scope.actions = (monster.actions) ? $scope.monster.actions.parseEscape([]) : [];
+                $scope.found_places = (monster.found) ? $scope.monster.found.parseEscape([]) : [];
                 $scope.monster.hit_points = (monster.hit_points) ? getDiceValue(monster.hit_points) : {};
             });
 

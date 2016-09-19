@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\NonPlayerCharacterTrait;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 use App\NonPlayerCharacter;
@@ -50,6 +51,17 @@ class NpcController extends Controller
 		$npc = NonPlayerCharacter::create($request->all());
 		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("npc")));
 	}
+
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = NonPlayerCharacter::upload($request->fileToUpload);
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
+	}
+
 
 	/**
 	 * Display the specified resource.

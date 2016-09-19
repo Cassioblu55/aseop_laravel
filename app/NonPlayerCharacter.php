@@ -3,16 +3,23 @@
 namespace App;
 
 use App\Services\Utils;
-use Illuminate\Support\Facades\Auth;
+use App\Services\AddBatchAssets;
 use Illuminate\Support\Facades\DB;
 
-class NonPlayerCharacter extends Asset
+class NonPlayerCharacter extends Asset implements Upload 
 {
 	protected $guarded = [];
 
 	const TRAIT_TABLE = NonPlayerCharacterTrait::class;
-	const FILLABLE_FROM_TRAIT_TABLE = ['last_name', 'flaw','interaction', 'mannerism','bond','appearance','talent','ideal','ability'];
 
+	const FIRST_NAME = 'first_name', LAST_NAME = 'last_name', AGE = 'age', HEIGHT = 'height', WEIGHT = 'weight', FLAW = 'flaw', INTERACTION = 'interaction', MANNERISM = 'mannerism', BOND = 'bond', APPEARANCE = 'appearance', TALENT = 'talent', IDEAL = 'ideal', ABILITY = 'ability', OTHER_INFORMATION = 'other_information';
+
+	const FILLABLE_FROM_TRAIT_TABLE = [self::LAST_NAME, self::FLAW,self::INTERACTION, self::MANNERISM,self::BOND,self::APPEARANCE,self::TALENT,self::IDEAL,self::ABILITY];
+
+	const UPLOAD_COLUMNS = [self::FIRST_NAME,self::LAST_NAME, self::AGE, self::HEIGHT,self::WEIGHT, self::FLAW,self::INTERACTION, self::MANNERISM,self::BOND,self::APPEARANCE,self::TALENT,self::IDEAL,self::ABILITY, self::OTHER_INFORMATION];
+	
+	const REQUIRED_COLUMNS = [self::FIRST_NAME, self::AGE, self::HEIGHT, self::WEIGHT];
+	
 	const FEMALE = 'F';
 	const MALE = 'M';
 	const NONE = 'N';
@@ -34,8 +41,6 @@ class NonPlayerCharacter extends Asset
 	public static function generate(){
 		$npc = new NonPlayerCharacter();
 		$npc->setMissing();
-		$npc['owner_id'] = Auth::user()->id;
-		$npc['approved'] = false;
 		$npc->save();
 		return $npc;
 	}
@@ -86,13 +91,13 @@ class NonPlayerCharacter extends Asset
 	}
 
 	public function setMissing(){
-		$this->setPublic();
 		$this->setFillable();
 		$this->setSex();
 		$this->setName();
 		$this->setAge();
 		$this->setHeight();
 		$this->setWeight();
+		$this->setRequiredMissing();
 	}
 
 	private function setSex(){
@@ -136,4 +141,37 @@ class NonPlayerCharacter extends Asset
 			}
 		});
 	}
+
+	public static function upload($filePath)
+	{
+		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
+
+		$runOnCreate = function($row){
+			$npc = new self();
+			$npc->setUploadValues($row);
+			return (isSet($npc->id));
+		};
+
+		$runOnUpdate = function($row){
+			$npc = self::where(self::ID, $row[self::ID])->first();
+			$npc->setUploadValues($row);
+			return ($npc->presentValuesEqual($row));
+		};
+
+		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+	}
+
+	private function setUploadValues($row){
+		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
+		$this->setRequiredMissing();
+		if($this->isValid()){
+			isSet($this->id) ? $this->update() : $this->save();
+		}
+	}
+
+	public function isValid(){
+		$allRequiredPresent = $this->allRequiredPresent(self::REQUIRED_COLUMNS);
+		return $allRequiredPresent;
+	}
+	
 }

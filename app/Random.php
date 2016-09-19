@@ -8,10 +8,9 @@
 
 namespace app;
 
+use App\GenericModel;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Random extends Model
+class Random extends GenericModel
 {
 
 	public static function random(){

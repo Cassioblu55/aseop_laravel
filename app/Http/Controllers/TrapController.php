@@ -36,6 +36,16 @@ class TrapController extends Controller
 	    return view($this->getControllerView(Messages::EDIT), compact('trap', 'headers'));
     }
 
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = Trap::upload($request->fileToUpload);
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
+	}
+
     /**
      * Store a newly created resource in storage.
      *

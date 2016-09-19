@@ -88,6 +88,16 @@ class VillainController extends Controller
         return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage($dataHash));
     }
 
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = Villain::upload($request->fileToUpload);
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
+	}
+
     /**
      * Remove the specified resource from storage.
      *

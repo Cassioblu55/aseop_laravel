@@ -44,6 +44,16 @@ class TavernController extends Controller
 		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("tavern")));
 	}
 
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = Tavern::upload($request->fileToUpload);
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
+	}
+
 	public function generate(){
 		$tavern = Tavern::generate();
 		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("tavern")));

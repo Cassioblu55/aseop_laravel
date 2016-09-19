@@ -1,0 +1,2 @@
+name,hit_points,stats,skills,languages,challenge,xp,speed,armor,abilities,actions,found,senses
+broken,1d6+5,"{\"strength\":1,\"dexterity\":4,\"constitution\":4,\"intelligence\":5,\"wisdom\":4,\"charisma\":3}","[{\"skill\":\"Animal Handling\",\"modifier\":1,\"modifer\":0}]","[{\"language\":\"Common\"},{\"language\":\"Chjklhelestial\"}]"hjkl,0.50,30,30,10,"[{\"name\":\"foo\",\"description\":\"ability bar\"}]","[{\"name\":\"action foo\",\"description\":\"bar\"}]hjhjk","[{\"found\":\"Fresh kkkjWater\"},hjkl{\"found\":\"Fresh Water\"}]","[{\"sense\":\"dark sense 40ft\"}]hhjjk"

@@ -74,7 +74,9 @@
 
             $scope.utils.getDataOnEdit(function(forestEncounter){
                 $scope.forestEncounter = forestEncounter;
-                $scope.rollValues = getDiceValues($scope.forestEncounter.rolls);
+                if($scope.forestEncounter.rolls){
+                    $scope.rollValues = getDiceValues($scope.forestEncounter.rolls);
+                }
                 $scope.numberOfRolls = $scope.rollValues.length;
             });
 

@@ -44,6 +44,16 @@ class ForestEncounterController extends Controller
 	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("forestEncounter")));
     }
 
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = ForestEncounter::upload($request->fileToUpload);
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
+	}
+
     /**
      * Display the specified resource.
      *

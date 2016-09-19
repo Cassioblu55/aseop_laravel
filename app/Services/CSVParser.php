@@ -52,7 +52,9 @@ class CSVParser{
 	private function getDesiredData($row, $desiredColumnsWithIndex){
 		$rowWithDesiredData = [];
 		foreach ($desiredColumnsWithIndex as $column => $index){
-			$rowWithDesiredData[$column] = $row[$index];
+			if(count($row) > $index){
+				$rowWithDesiredData[$column] = $row[$index];
+			}
 		}
 		return $rowWithDesiredData;
 	}
