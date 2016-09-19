@@ -16,7 +16,7 @@
 
     @include('tiles.questions.select', ['field' => 'size', 'required' => true,'data' => ['S' => 'Small', 'M' => 'Medium' , 'L' => 'Large']])
 
-    @include('tiles.questions.selectFromRemote', ['field' =>'ruler_id', 'remoteField'=> 'npcs' ,'remoteDisplayValue' => 'name'])
+    @include('tiles.questions.selectWithModelOptions', ['field' =>'ruler_id', 'remoteField'=> 'npcs' ,'remoteDisplayValue' => 'name'])
 
     @include("tiles.questions.text", ['field' =>'race_relations'])
 

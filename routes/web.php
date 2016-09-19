@@ -19,6 +19,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('dungeons/upload', 'DungeonController@upload');
+Route::post('dungeons/upload', 'DungeonController@saveBatch');
+
 Route::get('dungeons/generate', 'DungeonController@generate');
 Route::post('dungeons/createWithIdReturn', 'DungeonController@createWithIdReturn');
 

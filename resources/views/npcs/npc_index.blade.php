@@ -5,6 +5,7 @@
 @section('controller', 'NpcIndexController')
 
 @section('additionalHeaderContent')
+    <a class="btn btn-default pull-right" style="margin-left: 5px" href="{{url('/npcs/upload')}}">Upload</a>
     <a class="btn btn-primary pull-right" href="{{url('/npcs/create')}}">Add</a>
 @stop
 

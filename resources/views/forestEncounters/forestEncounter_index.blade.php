@@ -5,6 +5,7 @@
 @section('controller', 'ForestEncounterIndexController')
 
 @section('additionalHeaderContent')
+    <a class="btn btn-default pull-right" style="margin-left: 5px" href="{{url('/forestEncounters/upload')}}">Upload</a>
     <a class="btn btn-primary pull-right" href="{{url('/forestEncounters/create')}}">Add</a>
 @stop
 

@@ -11,7 +11,7 @@
 
     @include("tiles.questions.text", ['field' =>'type'])
 
-    @include("tiles.questions.selectFromRemote", ['field' => 'tavern_owner_id', 'remoteField'=>'npcs', 'remoteDisplayValue' => 'name'])
+    @include("tiles.questions.selectWithModelOptions", ['field' => 'tavern_owner_id', 'remoteField'=>'npcs', 'remoteDisplayValue' => 'name'])
 
     @include("tiles.questions.textArea", ['field' =>'other_information'])
 

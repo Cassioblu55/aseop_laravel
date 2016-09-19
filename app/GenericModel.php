@@ -75,4 +75,24 @@ abstract class GenericModel extends Model
 		}
 	}
 
+	public function allRequiredPresent($arrayOfRequiredFields){
+		foreach ($arrayOfRequiredFields as $field){
+			if(!isset($this[$field])){return false;}
+		}
+		return true;
+	}
+
+	public function presentValuesEqual($row){
+		foreach ($row as $key => $value){
+			if($this[$key] != $value){return false;}
+		}
+		return false;
+	}
+
+	public function setJsonFromRowIfPresent($field, $row){
+		if(isset($row[$field])){
+			$this[$field] = stripcslashes($row[$field]);
+		}
+	}
+
 }

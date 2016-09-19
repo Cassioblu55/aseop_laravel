@@ -3,6 +3,7 @@
 @section('panelTitle', 'My Riddles')
 
 @section('additionalHeaderContent')
+    <a class="btn btn-default pull-right" style="margin-left: 5px" href="{{url('/riddles/upload')}}">Upload</a>
     <a class="btn btn-primary pull-right" href="{{url('/riddles/create')}}">Add</a>
 @stop
 

@@ -1,6 +1,6 @@
 @extends('layout.form', ['controller'=> false])
 
-@section('form_title', 'Upload Dungeon Traits')
+@section('form_title', 'Upload Dungeons')
 @section('additional_form_params', 'enctype="multipart/form-data"')
 
 @section('form_body')

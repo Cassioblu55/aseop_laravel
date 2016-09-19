@@ -74,6 +74,16 @@ class DungeonController extends Controller
 	    return $dungeon->id;
     }
 
+	public function upload(){
+		$headers = $this->getUploadHeaders();
+		return view($this->getControllerView(Messages::UPLOAD), compact('headers'));
+	}
+
+	public function saveBatch(Request $request){
+		$response = Dungeon::upload($request->fileToUpload);
+		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully($response));
+	}
+
 	/**
 	 * Show the form for editing the specified resource.
 	 *

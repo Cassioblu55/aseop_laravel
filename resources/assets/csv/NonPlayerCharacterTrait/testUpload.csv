@@ -1,3 +1,3 @@
-trait,type,id
-Sam,male_name,23
-Janey,female_name,24
+trait,type
+Sam,male_name
+Janey,female_name

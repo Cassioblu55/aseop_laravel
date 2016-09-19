@@ -5,6 +5,7 @@
 @section('controller', 'DungeonIndexController')
 
 @section('additionalHeaderContent')
+    <a class="btn btn-default pull-right" style="margin-left: 5px" href="{{url('/dungeons/upload')}}">Upload</a>
     <a class="btn btn-primary pull-right" href="{{url('/dungeons/create')}}">Add</a>
 @stop
 

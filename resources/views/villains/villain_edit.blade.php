@@ -8,7 +8,7 @@
 
 @section('form_body')
 
-    @include('tiles.questions.selectFromRemote', ['field' => 'npc_id', 'remoteField'=>'npcs', 'remoteDisplayValue' => 'name'])
+    @include('tiles.questions.selectWithModelOptions', ['field' => 'npc_id', 'remoteField'=>'npcs', 'remoteDisplayValue' => 'name'])
 
     @include('tiles.questions.text', ['field' => 'method_type'])
     @include('tiles.questions.textArea', ['field' => 'method_description'])

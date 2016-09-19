@@ -42,7 +42,6 @@ class DungeonTrait extends AssetTrait implements Upload
 
 	private function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
-		echo $this->weight;
 		$this->setRequiredMissing();
 		isSet($this->id) ? $this->update() : $this->save();
 	}

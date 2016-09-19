@@ -92,6 +92,7 @@ class Controller extends BaseController
 		$data['addEditController'] = $this->getJsControllerName("AddEdit");
 		$data['indexController'] = $this->getJsControllerName("Index");
 		$data['showController'] = $this->getJsControllerName("Show");
+		$data['uploadController'] = $this->getJsControllerName("Upload");
 		return (object) $data;
 	}
 

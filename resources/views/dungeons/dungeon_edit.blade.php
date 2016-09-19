@@ -120,16 +120,27 @@
 
             $scope.utils.getDataOnEdit(function(dungeon){
                 $scope.dungeon = dungeon;
-                $scope.map = map(JSON.parse(dungeon.map));
-                $scope.map.setActiveTiles();
-                $scope.traps = stringToTraps(dungeon.traps);
+                try{
+                    $scope.map = map(JSON.parse(dungeon.map));
+                    $scope.map.setActiveTiles();
+                }catch(e){
+                    console.log("Map could not be used, generating new map.");
+                    $scope.generateMap();
+                }
+                try{
+                    $scope.traps = stringToTraps(dungeon.traps);
+                }catch(e){
+                    console.log("Traps could not be used, clearing traps.");
+                    $scope.traps = [];
+                    $scope.dungeon.traps = [];
+                }
+
                 $scope.trapNumber = ($scope.traps) ? $scope.traps.length : 0;
             });
 
             $scope.utils.runOnCreate(function(){
                 $scope.dungeon = {};
-                $scope.utils.getDefaultAccess(function(n){
-                    $scope.dungeon['public'] = n});
+                $scope.utils.getDefaultAccess(function(n){$scope.dungeon['public'] = n});
                 $scope.dungeon.size = getRandomSize();
             });
 
@@ -156,9 +167,11 @@
             });
 
             $scope.$watch('traps', function(val){
-                if(val && val.length > 0){
-                    //Remove all traps in map
+                //Remove all traps in map
+                if($scope.map){
                     $scope.map.removeTraps();
+                }
+                if(val && val.length > 0){
                     for(var i=0; i<val.length; i++){
                         //Set aviable options for each trap row
                         var trap = val[i];
@@ -168,14 +181,25 @@
                             $scope.map.setTrap(trap.column,trap.row);
                         }
                     }
+                }else{
+                    val = [];
+                }
+                if($scope.map){
                     $scope.stringifyMap($scope.map.getTiles());
+                }
+                if($scope.dungeon){
                     $scope.dungeon.traps = getTrapString(val);
                 }
             }, true);
 
             $scope.$watch('dungeon.map', function(val){
                 if(val){
-                    drawMap(JSON.parse(val));
+                    try{
+                        drawMap(JSON.parse(val));
+                    }catch(e){
+                        console.log("Map could not be used, generating new map.");
+                        $scope.generateMap();
+                    }
                 }
             });
 
