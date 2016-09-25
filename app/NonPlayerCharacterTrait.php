@@ -46,6 +46,10 @@ class NonPlayerCharacterTrait extends AssetTrait implements Upload
 
 		$runOnUpdate = function($row){
 			$npcTrait = self::where(self::ID, $row[self::ID])->first();
+			if($npcTrait==null){
+				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				return false;
+			}
 			$npcTrait->setUploadValues($row);
 			return ($npcTrait->presentValuesEqual($row));
 		};

@@ -48,6 +48,10 @@ class TavernTrait extends AssetTrait implements Upload
 
 		$runOnUpdate = function($row){
 			$tavernTrait = self::where(self::ID, $row[self::ID])->first();
+			if($tavernTrait==null){
+				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				return false;
+			}
 			$tavernTrait->setUploadValues($row);
 			return ($tavernTrait->presentValuesEqual($row));
 		};

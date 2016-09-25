@@ -53,6 +53,10 @@ class DungeonTrait extends AssetTrait implements Upload
 
 		$runOnUpdate = function($row){
 			$dungeonTrait = self::where(self::ID, $row[self::ID])->first();
+			if($dungeonTrait==null){
+				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				return false;
+			}
 			$dungeonTrait->setUploadValues($row);
 			return ($dungeonTrait->presentValuesEqual($row));
 		};

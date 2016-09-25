@@ -89,15 +89,19 @@ class Villain extends Asset
 		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
 
 		$runOnCreate = function($row){
-			$urbanEncounter = new self();
-			$urbanEncounter->setUploadValues($row);
-			return (isSet($urbanEncounter->id));
+			$villain = new self();
+			$villain->setUploadValues($row);
+			return (isSet($villain->id));
 		};
 
 		$runOnUpdate = function($row){
-			$urbanEncounter = self::where(self::ID, $row[self::ID])->first();
-			$urbanEncounter->setUploadValues($row);
-			return ($urbanEncounter->presentValuesEqual($row));
+			$villain = self::where(self::ID, $row[self::ID])->first();
+			if($villain==null){
+				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				return false;
+			}
+			$villain->setUploadValues($row);
+			return ($villain->presentValuesEqual($row));
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);

@@ -64,6 +64,10 @@ class Spell extends GenericModel implements Upload
 
 	    $runOnUpdate = function($row){
 		    $spell = self::where(self::ID, $row[self::ID])->first();
+		    if($spell==null){
+			    Logging::log("Id ".$row[self::ID]." not found", self::class);
+			    return false;
+		    }
 		    $spell->setUploadValues($row);
 		    return ($spell->presentValuesEqual($row));
 	    };

@@ -18,8 +18,8 @@ class Logging{
 		$this->classCallingName = $classCallingName;
 	}
 
-	public function logError($message, $ignoreDefaltPrefix = false){
-		if(self::shouldLog()){
+	public function logError($message, $ignoreDefaltPrefix = false, $alwaysLog=false){
+		if(self::shouldLog() || $alwaysLog){
 			if($ignoreDefaltPrefix){
 				Log::error($message);
 			}else{
@@ -28,8 +28,8 @@ class Logging{
 		}
 	}
 
-	public function logWarning($message, $ignoreDefaltPrefix = false){
-		if(self::shouldLog()) {
+	public function logWarning($message, $ignoreDefaltPrefix = false, $alwaysLog=false){
+		if(self::shouldLog() || $alwaysLog) {
 			if ($ignoreDefaltPrefix) {
 				Log::warning($message);
 			} else {
@@ -38,8 +38,8 @@ class Logging{
 		}
 	}
 
-	public function logInfo($message, $ignoreDefaltPrefix = false){
-		if(self::shouldLog()) {
+	public function logInfo($message, $ignoreDefaltPrefix = false, $alwaysLog=false){
+		if(self::shouldLog() || $alwaysLog) {
 			if ($ignoreDefaltPrefix) {
 				Log::info($message);
 			} else {
@@ -48,11 +48,21 @@ class Logging{
 		}
 	}
 
+	public static function log($message, $class=null, $alwaysLog=false){
+		if(self::shouldLog() || $alwaysLog) {
+			if($class != null){
+				return Log::info($class . ": " . $message);
+			}else{
+				return Log::info($message);
+			}
+		}
+	}
+
 	public function ping(){
 		$this->logInfo('ping');
 	}
 
-	private function shouldLog(){
+	private static function shouldLog(){
 		return env('LOG', false);
 	}
 

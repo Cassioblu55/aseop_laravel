@@ -48,6 +48,10 @@ class SettlementTrait extends AssetTrait implements Upload
 
 		$runOnUpdate = function($row){
 			$settlementTrait = self::where(self::ID, $row[self::ID])->first();
+			if($settlementTrait==null){
+				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				return false;
+			}
 			$settlementTrait->setUploadValues($row);
 			return ($settlementTrait->presentValuesEqual($row));
 		};

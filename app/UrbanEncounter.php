@@ -43,6 +43,10 @@ class UrbanEncounter extends Random
 
 		$runOnUpdate = function($row){
 			$urbanEncounter = self::where(self::ID, $row[self::ID])->first();
+			if($urbanEncounter==null){
+				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				return false;
+			}
 			$urbanEncounter->setUploadValues($row);
 			return ($urbanEncounter->presentValuesEqual($row));
 		};

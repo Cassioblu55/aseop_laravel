@@ -168,6 +168,10 @@ class NonPlayerCharacter extends Asset implements Upload
 
 		$runOnUpdate = function($row){
 			$npc = self::where(self::ID, $row[self::ID])->first();
+			if($npc==null){
+				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				return false;
+			}
 			$npc->setUploadValues($row);
 			return ($npc->presentValuesEqual($row));
 		};

@@ -81,6 +81,10 @@ class Dungeon extends Asset implements Upload
 
 		$runOnUpdate = function($row){
 			$dungeon = self::where(self::ID, $row[self::ID])->first();
+			if($dungeon==null){
+				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				return false;
+			}
 			$dungeon->setUploadValues($row);
 			return ($dungeon->presentValuesEqual($row));
 		};

@@ -89,6 +89,10 @@ class Tavern extends Asset
 
 		$runOnUpdate = function($row){
 			$tavern = self::where(self::ID, $row[self::ID])->first();
+			if($tavern==null){
+				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				return false;
+			}
 			$tavern->setUploadValues($row);
 			return ($tavern->presentValuesEqual($row));
 		};

@@ -63,6 +63,10 @@ class VillainTrait extends AssetTrait implements Upload
 
 		$runOnUpdate = function($row){
 			$villainTrait = self::where(self::ID, $row[self::ID])->first();
+			if($villainTrait==null){
+				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				return false;
+			}
 			$villainTrait->setUploadValues($row);
 			return ($villainTrait->presentValuesEqual($row));
 		};
