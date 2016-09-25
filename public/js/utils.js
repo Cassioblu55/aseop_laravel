@@ -272,8 +272,20 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 		if(!stat){return "";}
 		var modifer = (stat) ? Math.floor((stat-10)/2): 0;
 		return (modifer >0) ? "+"+modifer : modifer;
-	}
+	};
 
-
+	const IGNORE_CAPITALIZE = ['the', 'of', 'and', 'at', 'to', 'or'];
+	$scope.capitalizeEachWord = function(string, capitalizeAll){
+		var stringArray = string.split(" ");
+		var newString = '';
+		angular.forEach(stringArray, function (string, index) {
+			if(!(index != 0 && !capitalizeAll && IGNORE_CAPITALIZE.indexOf(string) != -1)){
+				newString += string[0].toUpperCase() + string.slice(1)+" ";
+			}else{
+				newString += string+" ";
+			}
+		});
+		return newString.trim();
+	};
 
 }]);

@@ -154,7 +154,7 @@ return \App\VillainTrait::all();
 });
 
 Route::get('/villainTraits/types', function (){
-	return \App\VillainTrait::getVaildTypes();
+	return \App\VillainTrait::getValidTraits();
 });
 
 Route::get('/villainTraits/kinds', function (){

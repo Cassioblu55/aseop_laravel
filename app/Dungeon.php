@@ -2,13 +2,15 @@
 
 namespace App;
 
+use App\Services\Logging;
 use App\Services\Utils;
-use Illuminate\Support\Facades\Auth;
 use App\Services\AddBatchAssets;
 
 class Dungeon extends Asset implements Upload
 {
 	protected $guarded = [];
+
+	private $logging;
 
 	const TRAIT_TABLE = DungeonTrait::class;
 
@@ -18,12 +20,17 @@ class Dungeon extends Asset implements Upload
 
 	const UPLOAD_COLUMNS = [self::NAME, self::PURPOSE, self::HISTORY, self::LOCATION, self::CREATOR, self::SIZE, self::OTHER_INFORMATION, self::MAP, self::TRAPS];
 
-	const REQUIRED_COLUMNS = [self::NAME, self::MAP, self::SIZE, self::TRAPS];
-
 	const SMALL = "S";
 	const MEDIUM = "M";
 	const LARGE = "L";
 	const VALID_SIZE_OPTIONS = [self::SMALL, self::MEDIUM, self::LARGE];
+
+	protected $rules = [
+		self::NAME =>'required|max:255',
+		self::SIZE => 'required|in:'.self::SMALL.','.self::MEDIUM.','.self::LARGE,
+		self::MAP => 'required|json',
+		self::TRAPS => 'required|json'
+	];
 
 	public function user()
 	{
@@ -32,6 +39,7 @@ class Dungeon extends Asset implements Upload
 
 	function __construct(array $attributes= array())
 	{
+		$this->logging = new Logging(self::class);
 		$class = self::TRAIT_TABLE;
 		parent::__construct($attributes,new $class() ,self::FILLABLE_FROM_TRAIT_TABLE);
 	}
@@ -87,8 +95,10 @@ class Dungeon extends Asset implements Upload
 		$this->setJsonFromRowIfPresent(self::TRAPS, $row);
 		$this->setTraps();
 
-		if($this->isValid()){
+		if($this->validate()){
 			isSet($this->id) ? $this->update() : $this->save();
+		}else{
+			$this->logging->logError($this->getErrorMessage());
 		}
 	}
 

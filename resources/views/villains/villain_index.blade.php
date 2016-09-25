@@ -5,6 +5,7 @@
 @section('controller', 'VillainIndexController')
 
 @section('additionalHeaderContent')
+    <a class="btn btn-default pull-right" style="margin-left: 5px" href="{{url('/villains/upload')}}">Upload</a>
     <a class="btn btn-primary pull-right" href="{{url('/villains/create')}}">Add</a>
 @stop
 

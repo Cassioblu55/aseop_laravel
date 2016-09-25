@@ -3,10 +3,15 @@
 namespace App;
 
 use App\Services\AddBatchAssets;
+use App\Services\Logging;
+use Illuminate\Support\Facades\Validator;
+
 
 class VillainTrait extends AssetTrait implements Upload
 {
     protected $guarded = [];
+
+	private $logging;
 
 	const TYPE = 'type';
 	const KIND = 'kind';
@@ -18,18 +23,33 @@ class VillainTrait extends AssetTrait implements Upload
 	const METHOD = 'method';
 	const SCHEME = 'scheme';
 
-	const VALID_TYPES = [self::WEAKNESS => 'Weakness', self::METHOD => 'Method', self::SCHEME => 'Scheme'];
+	const VALID_TYPES = [self::WEAKNESS, self::METHOD, self::SCHEME,];
 
 	const VALID_SCHEME_KINDS = ['Immortality','Influence','Magic','Mayhem','Passion','Power','Revenge','Wealth'];
 
-	const VAILD_WEAKNESS_KINDS = ['Hidden Object','Love Avenged','Artifact','Special Weapon','Truth Revealed','Ancient Prophecy','Forgiveness','Mystic Bargain'];
+	const VALID_WEAKNESS_KINDS = ['Hidden Object','Love Avenged','Artifact','Special Weapon','Truth Revealed','Ancient Prophecy','Forgiveness','Mystic Bargain'];
 
-	const VAILD_METHOD_KINDS = ['Agricultural devastation','Bounty hunting or assassination','Captivity or coercion','Confidence scams','Defamation','Dueling','Execution','Impersonation or disguise','Lying or perjury','Magical mayhem','Murder','Neglect','Politics','Religion','Stalking','Theft or Property Crime','Torture','Vice','Warfare'];
+	const VALID_METHOD_KINDS = ['Agricultural devastation','Bounty hunting or assassination','Captivity or coercion','Confidence scams','Defamation','Dueling','Execution','Impersonation or disguise','Lying or perjury','Magical mayhem','Murder','Neglect','Politics','Religion','Stalking','Theft or Property Crime','Torture','Vice','Warfare'];
 
     public function user()
     {
-        return $this->belongsTo('App\User', 'owner_id');
+        return $this->belongsTo('App\User', self::OWNER_ID);
     }
+
+	protected $rules = [];
+
+	function __construct(array $attributes = array())
+	{
+		$this->logging = new Logging(self::class);
+
+		$typeValidation = $this->getInArrayRule(self::VALID_TYPES, 'required|max:255');
+		$this->addCustomRule(self::TYPE,$typeValidation);
+
+
+
+
+		parent::__construct($attributes);
+	}
 
 	public static function upload($filePath)
 	{
@@ -44,7 +64,7 @@ class VillainTrait extends AssetTrait implements Upload
 		$runOnUpdate = function($row){
 			$villainTrait = self::where(self::ID, $row[self::ID])->first();
 			$villainTrait->setUploadValues($row);
-			return (isSet($villainTrait->id));
+			return ($villainTrait->presentValuesEqual($row));
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
@@ -53,18 +73,52 @@ class VillainTrait extends AssetTrait implements Upload
 	private function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
-		isSet($this->id) ? $this->update() : $this->save();
+		if($this->validate()){
+			isSet($this->id) ? $this->update() : $this->save();
+		}else{
+			$this->logging->logError($this->getErrorMessage());
+		}
+
 	}
+
+	public function validate($overrideDefaultValidationRules = false)
+	{
+		$firstRoundValid = parent::validate($overrideDefaultValidationRules);
+
+		$secondRoundValidationRules = [
+				self::KIND => $this->getKindValidationRule()
+			];
+
+		return $firstRoundValid ? $this->runValidation($secondRoundValidationRules) : $firstRoundValid ;
+	}
+
+	private function getKindValidationRule(){
+		switch ($this->type) {
+			case self::WEAKNESS:
+				$rule = $this->getInArrayRule(self::VALID_WEAKNESS_KINDS, 'required|max:255');
+				break;
+			case self::SCHEME:
+				$rule = $this->getInArrayRule(self::VALID_SCHEME_KINDS, 'required|max:255');
+				break;
+			case self::METHOD:
+				$rule = $this->getInArrayRule(self::VALID_METHOD_KINDS, 'required|max:255');
+				break;
+			default:
+				$rule = 'required|max:255';
+		}
+		return $rule;
+	}
+
 
 	public static function getValidKindsByType(){
 		return [
-			self::WEAKNESS => self::VAILD_WEAKNESS_KINDS,
+			self::WEAKNESS => self::VALID_WEAKNESS_KINDS,
 			self::SCHEME => self::VALID_SCHEME_KINDS,
-			self::METHOD => self::VAILD_METHOD_KINDS
+			self::METHOD => self::VALID_METHOD_KINDS
 		];
 	}
 
-	public static function getVaildTypes(){
+	public static function getValidTraitTypes(){
 		return self::VALID_TYPES;
 	}
 }

@@ -12,16 +12,16 @@
         <label class="control-label" for="type_inputDiv">Type</label>
         <select id="type_inputDiv" required="required" class="form-control" name="type" ng-model="villainTrait.type">
             <option disabled="disabled" value="">Choose One</option>
-            <option ng-repeat="key in getKeysFromHash(validTypes) " value="<% key %>" ng-selected="villainTrait.type == key"><%validTypes[key]%></option>
+            <option ng-repeat="key in getKeysFromHash(validKinds) " value="<% key %>" ng-selected="villainTrait.type == key"><%capitalizeEachWord(key)%></option>
         </select>
         @include('tiles.error', ['errorName' => "type"])
     </div>
 
     <div class="form-group {{ $errors->has('kind') ? 'has-error' : '' }}">
-        <label class="control-label" for="kind_inputDiv">Type</label>
+        <label class="control-label" for="kind_inputDiv">Kind</label>
         <select id="kind_inputDiv" required="required" class="form-control" name="kind" ng-model="villainTrait.kind">
             <option disabled="disabled" value="">Choose One</option>
-            <option ng-repeat="value in currentValidKinds " value="<% value %>" ng-selected="villianTrait.kind == value"><% value%></option>
+            <option ng-repeat="value in currentValidKinds " value="<% value %>" ng-selected="villianTrait.kind == value"><% capitalizeEachWord(value)%></option>
         </select>
         @include('tiles.error', ['errorName' => "kind"])
     </div>
@@ -53,16 +53,21 @@
                     $scope.villainTrait['public'] = n});
             });
 
-            $scope.setFromGet("{{url('/api/villainTraits/types')}}", function(data){
-                $scope.validTypes = data;
-                $scope.setFromGet("{{url('/api/villainTraits/kinds')}}", function(data){
-                    $scope.validKinds = data;
-                    if($scope.villainTrait.type){
-                        $scope.currentValidKinds =  $scope.validKinds[$scope.villainTrait.type];
 
-                    }
-                });
+            $scope.setFromGet("{{url('/api/villainTraits/kinds')}}", function(data){
+                $scope.validKinds = data;
+                if($scope.villainTrait.type){
+                    $scope.currentValidKinds =  $scope.validKinds[$scope.villainTrait.type];
+
+                }
             });
+
+            String.prototype.toCamelCase = function() {
+                return this.replace(/^([A-Z])|\s(\w)/g, function(match, p1, p2, offset) {
+                    if (p2) return p2.toUpperCase();
+                    return p1.toLowerCase();
+                });
+            };
 
             $scope.getKeysFromHash = function(hash){
                 if(hash){

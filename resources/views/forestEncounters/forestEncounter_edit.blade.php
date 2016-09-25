@@ -90,6 +90,10 @@
                        }
                    }
                 }
+                if(val == 0){
+                    $scope.rollValues = [];
+                }
+
             });
 
             $scope.$watch("rollValues", function(val){

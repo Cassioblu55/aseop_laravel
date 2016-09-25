@@ -8,4 +8,8 @@ class StringUtils
 		return ucwords(str_replace("_", " " , $string));
 	}
 
+	public static function isEmptyJson($jsonObject){
+		return json_encode($jsonObject) == "{}";
+	}
+
 }

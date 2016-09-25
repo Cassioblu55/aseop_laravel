@@ -1,2 +1,2 @@
-title,description,id
-uploadedEncouner3,desc,4
+title,description,id,rolls
+testUpload,foobar,3,"2d4+4,5d4+3"

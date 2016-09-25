@@ -6,12 +6,15 @@
  * Time: 2:53 PM
  */
 
-namespace app;
+namespace App;
 
-use App\GenericModel;
-
-class Random extends GenericModel
+abstract class Random extends GenericModel
 {
+
+	function __construct(array $attributes= array())
+	{
+		parent::__construct($attributes);
+	}
 
 	public static function random(){
 		return self::inRandomOrder()->first();

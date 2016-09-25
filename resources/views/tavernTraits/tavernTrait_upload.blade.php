@@ -1,6 +1,6 @@
 @extends('layout.form', ['controller'=> false])
 
-@section('form_title', 'Upload Settlement Traits')
+@section('form_title', 'Upload Tavern Traits')
 @section('additional_form_params', 'enctype="multipart/form-data"')
 
 @section('form_body')

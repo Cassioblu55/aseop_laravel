@@ -1,20 +1,36 @@
 <?php
 
 namespace App;
+use App\Services\Logging;
 use App\Services\Utils;
 use Illuminate\Support\Facades\Auth;
+use App\Services\AddBatchAssets;
 
-class Settlement extends Asset
+class Settlement extends Asset implements Upload
 {
-	protected $guarded = [];
-
-	const TRAIT_TABLE = SettlementTrait::class;
-	const FILLABLE_FROM_TRAIT_TABLE = ['name', 'known_for', 'notable_traits','ruler_status', 'current_calamity', 'race_relations'];
+	private $logging;
 
 	const SMALL = "S";
 	const MEDIUM = "M";
 	const LARGE = "L";
 	const VALID_SIZE_OPTIONS = [self::SMALL =>'Small', self::MEDIUM=>'Medium', self::LARGE=>'Large'];
+
+	const SIZE = 'size', NAME = 'name', KNOWN_FOR = 'known_for', NOTABLE_TRAITS = 'notable_traits', RULER_STATUS = 'ruler_status', CURRENT_CALAMITY = 'current_calamity', RULER_ID = 'ruler_id', POPULATION = 'population', OTHER_INFORMATION = 'other_information', RACE_RELATIONS = 'race_relations';
+
+	protected $rules = [
+		self::SIZE => 'required|in:'.self::SMALL.','.self::MEDIUM.','.self::LARGE,
+		self::NAME =>'required|max:255',
+		self::RULER_ID => 'required|integer|exists:non_player_characters,id',
+		self::POPULATION => 'required|integer|min:0'
+	];
+
+	protected $guarded = [];
+
+	const UPLOAD_COLUMNS = [self::NAME, self::KNOWN_FOR, self::NOTABLE_TRAITS, self::RULER_ID, self::RULER_STATUS, self::CURRENT_CALAMITY, self::POPULATION, self::SIZE, self::OTHER_INFORMATION, self::RACE_RELATIONS];
+
+	const TRAIT_TABLE = SettlementTrait::class;
+
+	const FILLABLE_FROM_TRAIT_TABLE = [self::NAME, self::KNOWN_FOR, self::NOTABLE_TRAITS, self::RULER_STATUS, self::CURRENT_CALAMITY, self::RACE_RELATIONS];
 
 	const SMALL_POPULATION_RANGE = ['min'=>20, 'max'=>75, 'std'=>5];
 	const MEDIUM_POPULATION_RANGE = ['min'=>76, 'max'=>300, 'std'=>10];
@@ -32,6 +48,7 @@ class Settlement extends Asset
 
 	function __construct(array $attributes= array())
 	{
+		$this->logging = new Logging(self::class);
 		$class = self::TRAIT_TABLE;
 		parent::__construct($attributes,new $class() ,self::FILLABLE_FROM_TRAIT_TABLE);
 	}
@@ -39,11 +56,6 @@ class Settlement extends Asset
 	public function getSizeDisplay(){
 		return self::VALID_SIZE_OPTIONS[$this->size];
 	}
-
-	protected function getDisplay($value, $displayHash){
-
-	}
-
 
 	public static function generate(){
 		$settlement = new Settlement();
@@ -58,9 +70,8 @@ class Settlement extends Asset
 		$this->setRuler();
 		$this->setSize();
 		$this->setPopulation();
-
 		$this->setFillable();
-		$this->setPublic();
+		$this->setRequiredMissing();
 	}
 
 	private function setSize(){
@@ -88,4 +99,34 @@ class Settlement extends Asset
 			return Utils::getBellCurveRange($configData);
 		});
 	}
+
+	public static function upload($filePath){
+		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
+
+		$runOnCreate = function($row){
+			$settlement = new self();
+			$settlement->setUploadValues($row);
+			return (isSet($settlement->id));
+		};
+
+		$runOnUpdate = function($row){
+			$settlement = self::where(self::ID, $row[self::ID])->first();
+			$settlement->setUploadValues($row);
+			return ($settlement->presentValuesEqual($row));
+		};
+
+		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+	}
+
+	private function setUploadValues($row){
+		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
+		$this->setRequiredMissing();
+
+		if($this->validate()){
+			isSet($this->id) ? $this->update() : $this->save();
+		}else{
+			$this->logging->logError("Could not save, errors: ".json_encode($this->errors()));
+		}
+	}
+
 }

@@ -89,6 +89,9 @@
                             $scope.rollValues.push({});
                         }
                     }
+                    if(val == 0){
+                        $scope.rollValues = [];
+                    }
                 }
             });
 

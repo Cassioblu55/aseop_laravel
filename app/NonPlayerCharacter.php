@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\Logging;
 use App\Services\Utils;
 use App\Services\AddBatchAssets;
 use Illuminate\Support\Facades\DB;
@@ -10,16 +11,29 @@ class NonPlayerCharacter extends Asset implements Upload
 {
 	protected $guarded = [];
 
+	private $logging;
+
 	const TRAIT_TABLE = NonPlayerCharacterTrait::class;
 
-	const FIRST_NAME = 'first_name', LAST_NAME = 'last_name', AGE = 'age', HEIGHT = 'height', WEIGHT = 'weight', FLAW = 'flaw', INTERACTION = 'interaction', MANNERISM = 'mannerism', BOND = 'bond', APPEARANCE = 'appearance', TALENT = 'talent', IDEAL = 'ideal', ABILITY = 'ability', OTHER_INFORMATION = 'other_information';
+	const FIRST_NAME = 'first_name', LAST_NAME = 'last_name', AGE = 'age', HEIGHT = 'height', WEIGHT = 'weight', FLAW = 'flaw', INTERACTION = 'interaction', MANNERISM = 'mannerism', BOND = 'bond', APPEARANCE = 'appearance', TALENT = 'talent', IDEAL = 'ideal', ABILITY = 'ability', OTHER_INFORMATION = 'other_information', SEX = 'sex';
 
 	const FILLABLE_FROM_TRAIT_TABLE = [self::LAST_NAME, self::FLAW,self::INTERACTION, self::MANNERISM,self::BOND,self::APPEARANCE,self::TALENT,self::IDEAL,self::ABILITY];
 
-	const UPLOAD_COLUMNS = [self::FIRST_NAME,self::LAST_NAME, self::AGE, self::HEIGHT,self::WEIGHT, self::FLAW,self::INTERACTION, self::MANNERISM,self::BOND,self::APPEARANCE,self::TALENT,self::IDEAL,self::ABILITY, self::OTHER_INFORMATION];
+	const MALE_NAME = 'male_name', FEMALE_NAME = 'female_name';
+	const ADDITIONAL_FILLABLE_FROM_TRAIT_TABLE = [self::MALE_NAME, self::FEMALE_NAME];
+
+
+	const UPLOAD_COLUMNS = [self::FIRST_NAME,self::LAST_NAME, self::AGE, self::HEIGHT,self::WEIGHT, self::FLAW,self::INTERACTION, self::MANNERISM,self::BOND,self::APPEARANCE,self::TALENT,self::IDEAL,self::ABILITY, self::OTHER_INFORMATION, self::SEX];
 	
-	const REQUIRED_COLUMNS = [self::FIRST_NAME, self::AGE, self::HEIGHT, self::WEIGHT];
-	
+	protected $rules = [
+		self::FIRST_NAME => 'required|max:255',
+		self::LAST_NAME => 'max:255',
+		self::AGE => 'required|integer|min:0',
+		self::SEX =>'required|alpha|size:1',
+		self::HEIGHT => 'required|min:0|integer',
+		self::WEIGHT => 'required|min:0|integer',
+	];
+
 	const FEMALE = 'F';
 	const MALE = 'M';
 	const NONE = 'N';
@@ -35,6 +49,7 @@ class NonPlayerCharacter extends Asset implements Upload
 
 	function __construct(array $attributes= array()){
 		$class = self::TRAIT_TABLE;
+		$this->logging = new Logging(self::class);
 		parent::__construct($attributes,new $class() ,self::FILLABLE_FROM_TRAIT_TABLE);
 	}
 
@@ -54,7 +69,6 @@ class NonPlayerCharacter extends Asset implements Upload
 		}else{
 			return $instance->newQuery()->get($columns);
 		}
-
 	}
 
 	private static function getBlackListedIds(){
@@ -157,21 +171,21 @@ class NonPlayerCharacter extends Asset implements Upload
 			$npc->setUploadValues($row);
 			return ($npc->presentValuesEqual($row));
 		};
-
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
 	private function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
-		if($this->isValid()){
+		if($this->validate()){
 			isSet($this->id) ? $this->update() : $this->save();
+		}else{
+			$this->logging->logError($this->getErrorMessage());
 		}
 	}
 
-	public function isValid(){
-		$allRequiredPresent = $this->allRequiredPresent(self::REQUIRED_COLUMNS);
-		return $allRequiredPresent;
+	public static function getAllValidTraitTypes(){
+		return array_merge(self::ADDITIONAL_FILLABLE_FROM_TRAIT_TABLE, self::FILLABLE_FROM_TRAIT_TABLE);
 	}
-	
+
 }
