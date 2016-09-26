@@ -46,7 +46,7 @@ class Trap extends GenericModel
 		$runOnUpdate = function($row){
 			$trap = self::where(self::ID, $row[self::ID])->first();
 			if($trap==null){
-				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
 			$trap->setUploadValues($row);

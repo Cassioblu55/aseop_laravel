@@ -15,19 +15,19 @@
 
     <div class="row">
         <div class="col-md-3">
-            @include("tiles.questions.float", ['field' =>'challenge', 'validation'=>'min=0 step="0.1"'])
+            @include("tiles.questions.float", ['field' =>'challenge', 'validation'=>'min=0 step="0.1"', 'required' => true])
         </div>
 
         <div class="col-md-3">
-            @include("tiles.questions.number", ['field' =>'speed', 'validation'=>'min=0'])
+            @include("tiles.questions.number", ['field' =>'speed', 'validation'=>'min=0', 'required' => true])
         </div>
 
         <div class="col-md-3">
-            @include("tiles.questions.number", ['field' =>'armor', 'validation'=>'min=0'])
+            @include("tiles.questions.number", ['field' =>'armor', 'validation'=>'min=0', 'required' => true])
         </div>
 
         <div class="col-md-3">
-            @include("tiles.questions.number", ['field' =>'xp', 'validation'=>'min=0'])
+            @include("tiles.questions.number", ['field' =>'xp', 'validation'=>'min=0', 'required' => true])
         </div>
 
     </div>
@@ -42,17 +42,17 @@
             <div class="panel-body">
                 <div class="col-md-4 form-group">
                     <label>Amount</label>
-                    <input type="number" min=0 class="form-control" ng-model="monster.hit_points.amount">
+                    <input type="number" min=0 class="form-control" required="required" ng-model="monster.hit_points.amount">
                     <div>Min <%getDiceMin(monster.hit_points)%></div>
                 </div>
                 <div class="col-md-4 form-group">
                     <label>Kind</label>
-                    <input type="number" min=0 class="form-control" ng-model="monster.hit_points.kind">
+                    <input type="number" min=0 class="form-control" required="required" ng-model="monster.hit_points.kind">
                     <div>Max <%getDiceMax(monster.hit_points)%></div>
                 </div>
                 <div class="col-md-4 form-group">
                     <label>Modifer</label>
-                    <input type="number" min=0 class="form-control" ng-model="monster.hit_points.modifer">
+                    <input type="number" min=0 class="form-control" required="required" ng-model="monster.hit_points.modifer">
                     <div>Average <%getDiceAverage(monster.hit_points)%></div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
             <div class="col-md-2 form-group">
                 <label for="<%stat%>"><%capitalizeFirstLetter(stat)%></label>
                 <div class="input-group">
-                    <input type="number" id="<%stat%>" class="form-control" ng-model="monster.stats[stat]" min=0 max=30>
+                    <input type="number" id="<%stat%>" required="required" class="form-control" ng-model="monster.stats[stat]" min=0 max=30>
                     <span class="input-group-addon"><% getModifer(monster.stats[stat])%></span>
                 </div>
             </div>

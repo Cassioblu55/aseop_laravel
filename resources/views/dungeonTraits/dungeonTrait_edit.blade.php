@@ -7,9 +7,9 @@
 @section('form-size', '6')
 
 @section('form_body')
-    @include("tiles.questions.text", ['field' =>'trait', 'required'=>true])
+    @include("tiles.questions.text", ['field' =>'trait'])
 
-    @include("tiles.questions.select", ['field' =>'type', 'required'=>true,'data' =>['name'=>'Name', 'purpose' =>'Purpose', 'history' =>'History', 'location'=>'Location', 'creator'=>'Creator']])
+    @include("tiles.questions.selectFromModelArray", ['field' =>'type','required'=>true,'modelData' =>'validTypes'] )
 
     @include("tiles.questions.textArea", ['field' =>'description'])
 
@@ -31,6 +31,10 @@
             $scope.utils.getDataOnEdit(function(dungeonTrait){
                 $scope.dungeonTrait = dungeonTrait;
                 $scope.dungeonTrait.weight = Number($scope.dungeonTrait.weight);
+            });
+
+            $scope.setFromGet("{{url('/api/dungeonTraits/types')}}", function(data){
+                $scope.validTypes = data;
             });
 
             $scope.utils.runOnCreate(function(){

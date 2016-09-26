@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 use App\TavernTrait;
@@ -11,11 +12,17 @@ use App\Http\Requests;
 class TavernTraitController extends Controller
 {
 	const CONTROLLER_NAME = "tavernTrait";
+	
+	private $logging;
 
 	public function __construct(){
 		$this->setControllerNames(self::CONTROLLER_NAME);
+		
+		$this->logging = new Logging(self::class);
 
 		$this->middleware('auth', ['except' => ['show']]);
+
+		parent::__construct(self::class);
 	}
 
 	/**
@@ -38,10 +45,9 @@ class TavernTraitController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		$request['owner_id'] = Auth::user()->id;
-		$request['approved'] = false;
-		TavernTrait::create($request->all());
-		return redirect()->action($this->getControllerAction(Messages::CREATE), self::sendRecordAddedSuccessfully());
+		$tavernTrait = new TavernTrait($request->all());
+		$tavernTrait->setRequiredMissing();
+		return $this->validateAndRedirect($tavernTrait, true);
 	}
 
 	public function upload(){
@@ -88,7 +94,7 @@ class TavernTraitController extends Controller
 	public function update(Request $request, TavernTrait $tavernTrait)
 	{
 		$tavernTrait -> update($request->all());
-		return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
+		return $this->validateAndRedirect($tavernTrait, true);
 	}
 
 	/**

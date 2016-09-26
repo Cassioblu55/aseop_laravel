@@ -2,22 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\NonPlayerCharacterTrait;
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 use App\NonPlayerCharacter;
 use App\Http\Requests;
-use Illuminate\Support\Facades\Auth;
 
 class NpcController extends Controller
 {
 
 	const CONTROLLER_NAME = "npc";
 
+	private $logging;
+
 	public function __construct(){
 		$this->setControllerNames(self::CONTROLLER_NAME);
 
+		$this->logging = new Logging(self::class);
+
 		$this->middleware('auth', ['except' => ['show']]);
+
+		parent::__construct(self::class);
 	}
 
 
@@ -46,10 +51,9 @@ class NpcController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		$request['owner_id'] = Auth::user()->id;
-		$request['approved'] = false;
-		$npc = NonPlayerCharacter::create($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("npc")));
+		$npc = new NonPlayerCharacter($request->all());
+		$npc->setRequiredMissing();
+		return $this->validateAndRedirect($npc, false, 'npc');
 	}
 
 	public function upload(){
@@ -97,7 +101,7 @@ class NpcController extends Controller
 	public function update(Request $request, NonPlayerCharacter $npc)
 	{
 		$npc -> update($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('npc')));
+		return $this->validateAndRedirect($npc, false, 'npc');
 	}
 
 	/**

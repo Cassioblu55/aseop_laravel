@@ -27,8 +27,9 @@ class Spell extends GenericModel implements Upload
 	const VALID_SPELL_TYPES = [self::ABJURATION, self::ALCHEMY, self::APPORTATION, self::CHARM_MAGIC, self::CONJURATION_MAGIC, self::DIVINATION, self::ELEMENTAL_MAGIC, self::ENCHANTMENT, self::EVOCATION, self::HEALING_MAGIC, self::ILLUSION, self::INVOCATION, self::NATURE_MAGIC, self::NECROMANCY, self::SCRYING, self::THAUMATURGY, self::TRANSFORMATION];
 
 	protected $rules = [
-		self::LEVEL => 'required|min:0|max:9',
-		self::RANGE => 'required|min:0'
+		self::LEVEL => 'required|min:0|max:9|integer',
+		self::RANGE => 'required|min:0|integer',
+		self::DESCRIPTION => 'required'
 	];
 
 	function __construct(array $attributes = array())
@@ -65,7 +66,7 @@ class Spell extends GenericModel implements Upload
 	    $runOnUpdate = function($row){
 		    $spell = self::where(self::ID, $row[self::ID])->first();
 		    if($spell==null){
-			    Logging::log("Id ".$row[self::ID]." not found", self::class);
+			    Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 			    return false;
 		    }
 		    $spell->setUploadValues($row);

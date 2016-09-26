@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,11 +12,17 @@ use App\VillainTrait;
 class VillainTraitController extends Controller
 {
     const CONTROLLER_NAME = "villainTrait";
+	
+	private $logging;
 
     public function __construct(){
         $this->setControllerNames(self::CONTROLLER_NAME);
+	    
+	    $this->logging = new Logging(self::class);
 
         $this->middleware('auth', ['except' => ['show']]);
+
+	    parent::__construct(self::class);
     }
 
     /**
@@ -38,10 +45,9 @@ class VillainTraitController extends Controller
      */
     public function store(Request $request)
     {
-        $request['owner_id'] = Auth::user()->id;
-        $request['approved'] = false;
-        VillainTrait::create($request->all());
-        return redirect()->action($this->getControllerAction(Messages::CREATE), self::sendRecordAddedSuccessfully());
+	    $villainTrait = new VillainTrait($request->all());
+	    $villainTrait->setRequiredMissing();
+	    return $this->validateAndRedirect($villainTrait, true);
     }
 
 	public function upload(){
@@ -88,7 +94,7 @@ class VillainTraitController extends Controller
     public function update(Request $request, VillainTrait $villainTrait)
     {
         $villainTrait -> update($request->all());
-        return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
+	    return $this->validateAndRedirect($villainTrait, true);
     }
 
     /**

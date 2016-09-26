@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -17,11 +18,17 @@ class TrapController extends Controller
 	];
 
 	const CONTROLLER_NAME  = "trap";
+	
+	private $logging;
 
 	public function __construct(){
 		$this->setControllerNames(self::CONTROLLER_NAME);
+		
+		$this->logging = new Logging(self::class);
 
 		$this->middleware('auth', ['except' => ['show']]);
+
+		parent::__construct(self::class);
 	}
 
     /**
@@ -54,12 +61,9 @@ class TrapController extends Controller
      */
     public function store(Request $request)
     {
-	    $this->validate($request, self::defaultValidation);
-
-	    $request['owner_id'] = Auth::user()->id;
-	    $request['approved'] = false;
-	    $trap = Trap::create($request->all());
-	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("trap")));
+	    $trap = new Trap($request->all());
+	    $trap->setRequiredMissing();
+	    return $this->validateAndRedirect($trap, true);
     }
 
     /**
@@ -95,10 +99,8 @@ class TrapController extends Controller
      */
     public function update(Request $request, Trap $trap)
     {
-	    $this->validate($request, self::defaultValidation);
-
 	    $trap -> update($request->all());
-	    return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('trap')));
+	    return $this->validateAndRedirect($trap, true);
     }
 
     /**

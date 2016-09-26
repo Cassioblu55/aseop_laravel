@@ -14,11 +14,11 @@ abstract class Asset extends GenericModel implements Generate
 	private $traitTable;
 	private $fillableFromTraitTable;
 
-	function __construct(array $attributes, AssetTrait $traitTable, $fillableFromTraitTable)
+	function __construct(array $attributes, AssetTrait $traitTable, $fillableFromTraitTable, $callingClassName = self::class)
 	{
 		$this->traitTable = $traitTable;
 		$this->fillableFromTraitTable = $fillableFromTraitTable;
-		parent::__construct($attributes);
+		parent::__construct($attributes, $callingClassName);
 	}
 
 	protected function setFillable()

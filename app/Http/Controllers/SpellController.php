@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\Spell;
 
@@ -12,10 +12,16 @@ class SpellController extends Controller
 {
     const CONTROLLER_NAME = "spell";
 
+	private $logging;
+
     public function __construct(){
         $this->setControllerNames(self::CONTROLLER_NAME);
 
+	    $this->logging = new Logging(self::class);
+
         $this->middleware('auth', ['except' => ['show']]);
+
+	    parent::__construct(self::class);
     }
 
     /**
@@ -38,10 +44,9 @@ class SpellController extends Controller
      */
     public function store(Request $request)
     {
-        $request['owner_id'] = Auth::user()->id;
-        $request['approved'] = false;
-	    $spell = Spell::create($request->all());
-	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("spell")));
+	    $spell = new Spell($request->all());
+	    $spell->setRequiredMissing();
+	    return $this->validateAndRedirect($spell);
     }
 
 	public function upload(){
@@ -88,7 +93,7 @@ class SpellController extends Controller
     public function update(Request $request, Spell $spell)
     {
         $spell -> update($request->all());
-	    return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('spell')));
+	    return $this->validateAndRedirect($spell);
     }
 
     /**

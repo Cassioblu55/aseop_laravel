@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\NonPlayerCharacterTrait;
 
@@ -12,10 +12,16 @@ class NpcTraitController extends Controller
 {
 	const CONTROLLER_NAME = "npcTrait";
 
+	private $logging;
+
 	public function __construct(){
 		$this->setControllerNames(self::CONTROLLER_NAME);
 
+		$this->logging = new Logging(self::class);
+
 		$this->middleware('auth', ['except' => ['show']]);
+
+		parent::__construct(self::class);
 	}
 
 	/**
@@ -38,10 +44,9 @@ class NpcTraitController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		$request['owner_id'] = Auth::user()->id;
-		$request['approved'] = false;
-		NonPlayerCharacterTrait::create($request->all());
-		return redirect()->action($this->getControllerAction(Messages::CREATE), self::sendRecordAddedSuccessfully());
+		$npcTrait = new NonPlayerCharacterTrait($request->all());
+		$npcTrait->setRequiredMissing();
+		return $this->validateAndRedirect($npcTrait, true, 'npcTrait');
 	}
 
 	/**
@@ -78,7 +83,7 @@ class NpcTraitController extends Controller
 	public function update(Request $request, NonPlayerCharacterTrait $npcTrait)
 	{
 		$npcTrait -> update($request->all());
-		return redirect()->action($this->getIndexControllerAction(), self::sendRecordUpdatedSuccessfully());
+		return $this->validateAndRedirect($npcTrait, true, 'npcTrait');
 	}
 
 

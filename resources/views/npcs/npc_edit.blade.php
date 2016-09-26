@@ -18,10 +18,10 @@
 
     <div class="row">
         <div class="col-md-6">
-            @include("tiles.questions.number", ['field' =>'age', 'validation'=>'min=0'])
+            @include("tiles.questions.number", ['field' =>'age', 'validation'=>'min=0', 'required'=> true])
         </div>
         <div class="col-md-6">
-            @include("tiles.questions.select", ['field'=>'sex', 'data'=>['M'=> 'Male', 'F' => 'Female', 'N' =>'None','O' =>'Other']])
+            @include("tiles.questions.select", ['field'=>'sex', 'data'=>['M'=> 'Male', 'F' => 'Female', 'N' =>'None','O' =>'Other'], 'required'=> true])
         </div>
     </div>
 
@@ -30,11 +30,11 @@
             <div class="row">
                 <div class="col-sm-6 form-group">
                     <label for="feet">Feet</label>
-                    <input type="number" id="feet" class="form-control" min="0" ng-model="npc.feet" placeholder="Feet" />
+                    <input type="number" id="feet" required="required" class="form-control" min="0" ng-model="npc.feet" placeholder="Feet" />
                 </div>
                 <div class="col-sm-6 form-group">
                     <label for="inches">Inches</label>
-                    <input type="number" id="inches" class="form-control" min="0" max="11" ng-model="npc.inches" placeholder="Inches" />
+                    <input type="number" id="inches" required="required" value="0" class="form-control" min="0" max="11" ng-model="npc.inches" placeholder="Inches" />
                 </div>
 
                 <input class="hidden" type="number" name="height" ng-model="npc.height"/>
@@ -46,7 +46,7 @@
             <div class="form-group {{ $errors->has("weight") ? 'has-error' : '' }}">
                 <label for="weight">Weight</label>
                 <div class="input-group">
-                    <input type="number" id="weight" class="form-control" name="weight" min="1" ng-model="npc.weight" placeholder="Weight" />
+                    <input type="number" id="weight" class="form-control" required="required" name="weight" min="1" ng-model="npc.weight" placeholder="Weight" />
                     <div class="input-group-addon">lbs</div>
                 </div>
                 @include('tiles.error', ['errorName' => "weight"])

@@ -82,7 +82,7 @@ class Dungeon extends Asset implements Upload
 		$runOnUpdate = function($row){
 			$dungeon = self::where(self::ID, $row[self::ID])->first();
 			if($dungeon==null){
-				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
 			$dungeon->setUploadValues($row);
@@ -104,12 +104,6 @@ class Dungeon extends Asset implements Upload
 		}else{
 			$this->logging->logError($this->getErrorMessage());
 		}
-	}
-
-	public function isValid(){
-		$allRequiredPresent = $this->allRequiredPresent(self::REQUIRED_COLUMNS);
-		$vaildSize = in_array($this->size, self::VALID_SIZE_OPTIONS);
-		return $allRequiredPresent && $vaildSize;
 	}
 
 }

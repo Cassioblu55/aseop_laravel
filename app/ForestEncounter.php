@@ -4,7 +4,6 @@ namespace App;
 
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
-use Illuminate\Contracts\Logging\Log;
 
 class ForestEncounter extends Random implements Upload
 {
@@ -45,7 +44,7 @@ class ForestEncounter extends Random implements Upload
 		$runOnUpdate = function($row){
 			$forestEncounter = self::where(self::ID, $row[self::ID])->first();
 			if($forestEncounter==null){
-				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
 			$forestEncounter->setUploadValues($row);

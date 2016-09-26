@@ -64,7 +64,7 @@ class VillainTrait extends AssetTrait implements Upload
 		$runOnUpdate = function($row){
 			$villainTrait = self::where(self::ID, $row[self::ID])->first();
 			if($villainTrait==null){
-				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
 			$villainTrait->setUploadValues($row);
@@ -93,7 +93,7 @@ class VillainTrait extends AssetTrait implements Upload
 				self::KIND => $this->getKindValidationRule()
 			];
 
-		return $firstRoundValid ? $this->runValidation($secondRoundValidationRules) : $firstRoundValid ;
+		return ($firstRoundValid ? $this->runValidation($secondRoundValidationRules) : $firstRoundValid ) && !$this->duplicateFound();
 	}
 
 	private function getKindValidationRule(){
@@ -125,4 +125,5 @@ class VillainTrait extends AssetTrait implements Upload
 	public static function getValidTraitTypes(){
 		return self::VALID_TYPES;
 	}
+
 }

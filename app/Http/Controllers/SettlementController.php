@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use app\Services\Logging;
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,9 +13,16 @@ class SettlementController extends Controller
 {
 	const CONTROLLER_NAME = "settlement";
 
+	private $logging;
+
 	public function __construct(){
 		$this->setControllerNames(self::CONTROLLER_NAME);
+
+		$this->logging = new Logging(self::class);
+
 		$this->middleware('auth', ['except' => ['show']]);
+
+		parent::__construct(self::class);
 	}
 
 	/**
@@ -44,10 +51,9 @@ class SettlementController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		$request['owner_id'] = Auth::user()->id;
-		$request['approved'] = false;
-		$settlement = Settlement::create($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact('settlement')));
+		$settlement = new Settlement($request->all());
+		$settlement->setRequiredMissing();
+		return $this->validateAndRedirect($settlement);
 	}
 
 	public function upload(){
@@ -94,7 +100,7 @@ class SettlementController extends Controller
 	public function update(Request $request, Settlement $settlement)
 	{
 		$settlement -> update($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('settlement')));
+		return $this->validateAndRedirect($settlement);
 	}
 
 	/**

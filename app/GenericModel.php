@@ -35,13 +35,13 @@ abstract class GenericModel extends Model implements Upload
 
 	const DEFAULT_ADDITIONAL_REQUIRED_COLUMNS = [self::ID, self::COL_PUBLIC, self::APPROVED];
 
-	function __construct(array $attributes = array())
+	function __construct(array $attributes = array(), $callingClassName = self::class)
 	{
-		$this->logging = new Logging(self::class);
+		$this->logging = new Logging($callingClassName);
 		parent::__construct($attributes);
 	}
 
-	protected function setRequiredMissing()
+	public function setRequiredMissing()
 	{
 		$this->setApproved();
 		$this->setPublic();
@@ -156,9 +156,13 @@ abstract class GenericModel extends Model implements Upload
 		return $this->errors;
 	}
 
-	protected function getErrorMessage(){
-		return "Could not ".((isset($this->id)) ? 'update' : 'save').": ".$this->errors();
-
+	public function getErrorMessage($action = null){
+		$action = ($action == null) ? (isset($this->id)) ? 'update' : 'save' : $action;
+		if(count($this->errors()) > 0){
+			return "Could not $action: ".$this->errors();
+		}else{
+			return "No errors present";
+		}
 	}
 
 	protected function addCustomRule($field, $rule){

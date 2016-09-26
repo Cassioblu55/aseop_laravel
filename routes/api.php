@@ -44,6 +44,10 @@ Route::get('/dungeonTraits', function (){
 	return DungeonTrait::all();
 });
 
+Route::get('/dungeonTraits/types', function (){
+	return DungeonTrait::getValidTraitTypes();
+});
+
 Route::get('/dungeonTraits/{dungeonTrait}', function(DungeonTrait $dungeonTrait){
 	return $dungeonTrait;
 });
@@ -73,6 +77,10 @@ Route::get('/npcTraits', function (){
 	return NonPlayerCharacterTrait::all();
 });
 
+Route::get('/npcTraits/types', function (){
+	return NonPlayerCharacterTrait::getValidTraitTypes();
+});
+
 Route::get('/npcTraits/{npcTrait}', function(NonPlayerCharacterTrait $npcTrait){
 	return $npcTrait;
 });
@@ -87,6 +95,10 @@ Route::get('/settlements/{settlement}', function(Settlement $settlement){
 
 Route::get('/settlementTraits', function (){
 	return SettlementTrait::all();
+});
+
+Route::get('/settlementTraits/types', function (){
+	return SettlementTrait::getValidTraitTypes();
 });
 
 Route::get('/settlementTraits/{settlementTrait}', function(SettlementTrait $settlementTrait){
@@ -121,6 +133,10 @@ Route::get('/tavernTraits', function (){
 	return TavernTrait::all();
 });
 
+Route::get('/tavernTraits/types', function (){
+	return TavernTrait::getValidTraitTypes();
+});
+
 Route::get('/tavernTraits/{tavernTrait}', function (TavernTrait $tavernTrait){
 	return $tavernTrait;
 });
@@ -135,6 +151,14 @@ Route::get('/riddles/{riddle}', function(Riddle $riddle){
 
 Route::get('/spells', function (){
 return \App\Spell::all();
+});
+
+Route::get('/spells/types', function (){
+	return \App\Spell::VALID_SPELL_TYPES;
+});
+
+Route::get('/spells/classes', function (){
+	return \App\Spell::VALID_CLASS_TYPES;
 });
 
 Route::get('/spells/{spell}', function(\App\Spell $spell){
@@ -153,9 +177,7 @@ Route::get('/villainTraits', function (){
 return \App\VillainTrait::all();
 });
 
-Route::get('/villainTraits/types', function (){
-	return \App\VillainTrait::getValidTraits();
-});
+
 
 Route::get('/villainTraits/kinds', function (){
 	return \App\VillainTrait::getValidKindsByType();

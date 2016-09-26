@@ -4,6 +4,8 @@
 namespace App\Http\Controllers;
 
 use App\Dungeon;
+use App\GenericModel;
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,10 +14,17 @@ class DungeonController extends Controller
 {
 	const CONTROLLER_NAME  = "dungeon";
 
+	private $logging;
+
 	public function __construct(){
 		$this->setControllerNames(self::CONTROLLER_NAME);
 
+		$this->logging = new Logging(self::class);
+
 		$this->middleware('auth', ['except' => ['show']]);
+
+		parent::__construct(self::class);
+
 	}
 
 	/**
@@ -46,10 +55,9 @@ class DungeonController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		$request['owner_id'] = Auth::user()->id;
-		$request['approved'] = false;
-		$dungeon = Dungeon::create($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact('dungeon')));
+		$dungeon = new Dungeon($request->all());
+		$dungeon->setRequiredMissing();
+		return $this->validateAndRedirect($dungeon);
 	}
 
 	/**
@@ -71,7 +79,7 @@ class DungeonController extends Controller
 
     public function createWithIdReturn(Request $request){
 	    $dungeon = Dungeon::create($request->all());
-	    return $dungeon->id;
+	    return $dungeon[Dungeon::ID];
     }
 
 	public function upload(){
@@ -106,7 +114,7 @@ class DungeonController extends Controller
 	public function update(Request $request, Dungeon $dungeon)
 	{
 		$dungeon -> update($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('dungeon')));
+		return $this->validateAndRedirect($dungeon);
 	}
 
 	/**

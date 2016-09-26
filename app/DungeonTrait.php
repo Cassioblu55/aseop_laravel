@@ -54,7 +54,7 @@ class DungeonTrait extends AssetTrait implements Upload
 		$runOnUpdate = function($row){
 			$dungeonTrait = self::where(self::ID, $row[self::ID])->first();
 			if($dungeonTrait==null){
-				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
 			$dungeonTrait->setUploadValues($row);
@@ -64,10 +64,15 @@ class DungeonTrait extends AssetTrait implements Upload
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
+	public function validate($overrideDefaultValidationRules = false)
+	{
+		return parent::validate($overrideDefaultValidationRules) && !$this->duplicateFound();
+	}
+
 	private function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
-		if($this->validate() && !$this->duplicateFound()){
+		if($this->validate()){
 			isSet($this->id) ? $this->update() : $this->save();
 		}else{
 			$this->logging->logError($this->getErrorMessage());

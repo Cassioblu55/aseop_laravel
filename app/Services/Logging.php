@@ -58,6 +58,16 @@ class Logging{
 		}
 	}
 
+	public static function error($message, $class=null, $alwaysLog=false){
+		if(self::shouldLog() || $alwaysLog) {
+			if($class != null){
+				return Log::error($class . ": " . $message);
+			}else{
+				return Log::error($message);
+			}
+		}
+	}
+
 	public function ping(){
 		$this->logInfo('ping');
 	}

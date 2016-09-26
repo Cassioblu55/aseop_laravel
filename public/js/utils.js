@@ -288,4 +288,10 @@ app.controller("UtilsController", ['$scope', "$http","$controller", function($sc
 		return newString.trim();
 	};
 
+	$scope.getStringDisplay = function(string){
+		string = string.replace("_", " ");
+		return $scope.capitalizeEachWord(string);
+	}
+
+
 }]);

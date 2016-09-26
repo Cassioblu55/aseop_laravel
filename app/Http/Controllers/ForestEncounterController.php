@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,10 +13,16 @@ class ForestEncounterController extends Controller
 {
     const CONTROLLER_NAME = "forestEncounter";
 
+	private $logging;
+
     public function __construct(){
         $this->setControllerNames(self::CONTROLLER_NAME);
 
+	    $this->logging = new Logging(self::class);
+
         $this->middleware('auth', ['except' => ['show']]);
+
+	    parent::__construct(self::class);
     }
 
     /**
@@ -38,10 +45,9 @@ class ForestEncounterController extends Controller
      */
     public function store(Request $request)
     {
-        $request['owner_id'] = Auth::user()->id;
-        $request['approved'] = false;
-	    $forestEncounter = ForestEncounter::create($request->all());
-	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("forestEncounter")));
+	    $forestEncounter = new ForestEncounter($request->all());
+	    $forestEncounter->setRequiredMissing();
+	    return $this->validateAndRedirect($forestEncounter);
     }
 
 	public function upload(){
@@ -92,7 +98,7 @@ class ForestEncounterController extends Controller
     public function update(Request $request, ForestEncounter $forestEncounter)
     {
         $forestEncounter -> update($request->all());
-	    return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('forestEncounter')));
+	    return $this->validateAndRedirect($forestEncounter);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 
@@ -13,10 +14,16 @@ class MonsterController extends Controller
 {
 	const CONTROLLER_NAME = "monster";
 
+	private $logging;
+
 	public function __construct(){
 		$this->setControllerNames(self::CONTROLLER_NAME);
 
+		$this->logging = new Logging(self::class);
+
 		$this->middleware('auth', ['except' => ['show']]);
+
+		parent::__construct(self::class);
 	}
 
 	/**
@@ -39,10 +46,9 @@ class MonsterController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		$request['owner_id'] = Auth::user()->id;
-		$request['approved'] = false;
-		Monster::create($request->all());
-		return redirect()->action($this->getIndexControllerAction(), self::sendRecordAddedSuccessfully());
+		$monster = new Monster($request->all());
+		$monster->setRequiredMissing();
+		return $this->validateAndRedirect($monster);
 	}
 
 	public function upload(){
@@ -89,7 +95,7 @@ class MonsterController extends Controller
 	public function update(Request $request, Monster $monster)
 	{
 		$monster -> update($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('monster')));
+		return $this->validateAndRedirect($monster);
 	}
 
 	/**

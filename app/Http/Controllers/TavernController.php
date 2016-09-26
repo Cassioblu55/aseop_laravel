@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
+use App\TavernTrait;
 use Illuminate\Http\Request;
 use App\Tavern;
 use Illuminate\Support\Facades\Auth;
@@ -12,10 +14,16 @@ class TavernController extends Controller
 {
 	const CONTROLLER_NAME = "tavern";
 
+	private $logging;
+
 	public function __construct(){
 		$this->setControllerNames(self::CONTROLLER_NAME);
 
+		$this->logging = new Logging(self::class);
+
 		$this->middleware('auth', ['except' => ['show']]);
+
+		parent::__construct(self::class);
 	}
 
 	/**
@@ -38,10 +46,9 @@ class TavernController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		$request['owner_id'] = Auth::user()->id;
-		$request['approved'] = false;
-		$tavern = Tavern::create($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("tavern")));
+		$tavern = new Tavern($request->all());
+		$tavern->setRequiredMissing();
+		return $this->validateAndRedirect($tavern);
 	}
 
 	public function upload(){
@@ -80,7 +87,7 @@ class TavernController extends Controller
 	public function edit(Tavern $tavern)
 	{
 		$headers = $this->getUpdateHeaders($tavern->id);
-		return view($this->getControllerView(self::EDIT), compact('tavern', 'headers'));
+		return view($this->getControllerView(Messages::EDIT), compact('tavern', 'headers'));
 	}
 
 	/**
@@ -93,7 +100,7 @@ class TavernController extends Controller
 	public function update(Request $request, Tavern $tavern)
 	{
 		$tavern -> update($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('tavern')));
+		return $this->validateAndRedirect($tavern);
 	}
 
 	/**

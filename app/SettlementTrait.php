@@ -49,7 +49,7 @@ class SettlementTrait extends AssetTrait implements Upload
 		$runOnUpdate = function($row){
 			$settlementTrait = self::where(self::ID, $row[self::ID])->first();
 			if($settlementTrait==null){
-				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
 			$settlementTrait->setUploadValues($row);
@@ -64,7 +64,7 @@ class SettlementTrait extends AssetTrait implements Upload
 		$this->setRequiredMissing();
 		$this->logging->logInfo(json_encode($this->id));
 
-		if($this->validate() && !$this->duplicateFound()){
+		if($this->validate()){
 			isSet($this->id) ? $this->update() : $this->save();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
@@ -74,6 +74,11 @@ class SettlementTrait extends AssetTrait implements Upload
 	public static function getValidTraitTypes()
 	{
 		return Settlement::FILLABLE_FROM_TRAIT_TABLE;
+	}
+
+	public function validate($overrideDefaultValidationRules = false)
+	{
+		return parent::validate($overrideDefaultValidationRules) && !$this->duplicateFound();
 	}
 
 }

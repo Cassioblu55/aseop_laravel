@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,10 +13,16 @@ class VillainController extends Controller
 {
     const CONTROLLER_NAME = "villain";
 
+	private $logging;
+
     public function __construct(){
         $this->setControllerNames(self::CONTROLLER_NAME);
 
+	    $this->logging = new Logging(self::class);
+
         $this->middleware('auth', ['except' => ['show']]);
+
+	    parent::__construct(self::class);
     }
 
     /**
@@ -38,11 +45,9 @@ class VillainController extends Controller
      */
     public function store(Request $request)
     {
-        $request['owner_id'] = Auth::user()->id;
-        $request['approved'] = false;
-
-	    $villain = Villain::create($request->all());
-	    return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("villain")));
+	    $villain = new Villain($request->all());
+	    $villain->setRequiredMissing();
+	    return $this->validateAndRedirect($villain);
     }
 
     /**
@@ -84,8 +89,7 @@ class VillainController extends Controller
     public function update(Request $request, Villain $villain)
     {
         $villain -> update($request->all());
-	    $dataHash = ['villain' => $villain];
-        return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage($dataHash));
+	    return $this->validateAndRedirect($villain);
     }
 
 	public function upload(){

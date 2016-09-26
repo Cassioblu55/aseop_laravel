@@ -2,21 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\Riddle;
-use App\Services\GetRandom;
 
 class RiddleController extends Controller
 {
 	const CONTROLLER_NAME = "riddle";
 
+	private $logging;
+
 	public function __construct(){
 		$this->setControllerNames(self::CONTROLLER_NAME);
 
+		$this->logging = new Logging(self::class);
+
 		$this->middleware('auth', ['except' => ['show']]);
+
+		parent::__construct(self::class);
 	}
 
 	/**
@@ -39,10 +45,9 @@ class RiddleController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		$request['owner_id'] = Auth::user()->id;
-		$request['approved'] = false;
-		$riddle = Riddle::create($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addAddedSuccessMessage(compact("riddle")));
+		$riddle = new Riddle($request->all());
+		$riddle->setRequiredMissing();
+		return $this->validateAndRedirect($riddle);
 	}
 
 	public function upload(){
@@ -93,7 +98,7 @@ class RiddleController extends Controller
 	public function update(Request $request, Riddle $riddle)
 	{
 		$riddle -> update($request->all());
-		return redirect()->action($this->getShowControllerAction(), self::addUpdateSuccessMessage(compact('riddle')));
+		return $this->validateAndRedirect($riddle);
 	}
 
 	/**

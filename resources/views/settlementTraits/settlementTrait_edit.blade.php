@@ -9,7 +9,7 @@
 @section('form_body')
     @include("tiles.questions.text", ['field' =>'trait'])
 
-    @include("tiles.questions.select", ['field' =>'type', 'required'=>true, 'data' =>['name'=>'Name', 'known_for'=>'Known For', 'notable_traits'=>'Notable Traits', 'ruler_status'=>'Ruler Status', 'current_calamit'=>'Current Calamity', 'race_relations'=> 'Race Relations']])
+    @include("tiles.questions.selectFromModelArray", ['field' =>'type', 'required'=>true, 'modelData' => 'validTypes'])
 
     @include('tiles.questions.publicPrivate')
 @stop
@@ -27,6 +27,10 @@
             $scope.utils.getDataOnEdit(function(settlementTrait){
                 $scope.settlementTrait = settlementTrait;
             });
+
+            $scope.setFromGet('{{url('/api/settlementTraits/types')}}', function(data){
+              $scope.validTypes = data;
+            })
 
             $scope.utils.runOnCreate(function(){
                 $scope.settlementTrait = {};

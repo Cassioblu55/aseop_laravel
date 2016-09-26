@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\GenericModel;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+	private $logging;
 
 	private $controllerNameSpace;
 	private $controllerProperName;
@@ -19,13 +23,16 @@ class Controller extends BaseController
 
 	private $tableName;
 
+	function  __construct($callingClassName = self::class){
+		$this->logging = new Logging($callingClassName);
+	}
+
 	protected function setControllerNames($controllerName){
 		$this->setControllerNameSpace($controllerName."s");
 		$this->setControllerProperName(ucfirst($controllerName)."Controller");
 		$this->setControllerViewPrefix($controllerName);
 		$this->setControllerModelName($controllerName);
 		$this->setTableName($controllerName.'s');
-
 	}
 
 	protected function setControllerNameSpace($controllerNameSpace){
@@ -100,7 +107,6 @@ class Controller extends BaseController
 		return ucwords($this->controllerModelName.$middle."Controller");
 	}
 
-
 	protected function getPostHeaders(){
 		return (object) ["postLocation" => $this->getPostLocation(), "methodField" => "POST"];
 	}
@@ -125,6 +131,10 @@ class Controller extends BaseController
 		return $this->getControllerAction(Messages::INDEX);
 	}
 
+	protected function getCreateControllerAction(){
+		return $this->getControllerAction(Messages::CREATE);
+	}
+
 	protected function getEditControllerAction(){
 		return $this->getControllerAction(Messages::EDIT);
 	}
@@ -144,6 +154,11 @@ class Controller extends BaseController
 		return $data;
 	}
 
+	public static function addUpdatedFailedMessage($dataHash){
+		$urlParams = [Messages::ERROR_MESSAGE => Messages::DEFAULT_RECORD_COULD_NOT_BE_UPDATED];
+		return self::addMessages($dataHash, $urlParams);
+	}
+
 	protected static function addUpdateSuccessMessage($dataHash){
 		$urlParams = [Messages::SUCCESS_MESSAGE => Messages::DEFAULT_RECORD_UPDATED_MESSAGE];
 		return self::addMessages($dataHash, $urlParams);
@@ -153,6 +168,45 @@ class Controller extends BaseController
 		$urlParams = [Messages::SUCCESS_MESSAGE => Messages::DEFAULT_RECORD_ADDED_MESSAGE];
 		return self::addMessages($dataHash, $urlParams);
 	}
+
+	protected static function addAddedFailedMessage($dataHash){
+		$urlParams = [Messages::ERROR_MESSAGE => Messages::DEFAULT_RECORD_COULD_NOT_BE_ADDED];
+		return self::addMessages($dataHash, $urlParams);
+	}
+
+	protected function validateAndRedirect(GenericModel $genericModel, $redirectToIndex = false, $modelName = null)
+	{
+		$modelName = ($modelName == null) ? $genericModel->getTable() : $modelName;
+
+		$data = [$modelName => $genericModel];
+
+		if ($genericModel->validate()) {
+			$updated = isset($genericModel->id);
+			(isset($genericModel->id)) ? $genericModel->update() : $genericModel->save();
+			return $this->redirectSuccess($data, $updated, $redirectToIndex);
+		} else {
+			return $this->redirectFailed($genericModel, $data);
+		}
+	}
+
+	private function redirectFailed(GenericModel $genericModel, array $data){
+		$this->logging->logError($genericModel->getErrorMessage());
+		$action = (isset($genericModel->id)) ? $this->getEditControllerAction() : $this->getCreateControllerAction();
+		$message = (isset($genericModel->id)) ? self::addUpdatedFailedMessage($data) : self::addAddedFailedMessage($data);
+		return redirect()->action($action, $message);
+	}
+
+	private function redirectSuccess(array $data, $updated,$redirectToIndex = false){
+		$action = ($redirectToIndex) ? $this->getIndexControllerAction() : $this->getShowControllerAction();
+		if ($updated) {
+			$message = ($redirectToIndex) ? self::sendRecordUpdatedSuccessfully() : self::addUpdateSuccessMessage($data);
+		} else {
+			$message = ($redirectToIndex) ? self::sendRecordAddedSuccessfully() : self::addAddedSuccessMessage($data);
+		}
+
+		return redirect()->action($action, $message);
+	}
+
 
 	public function index()
 	{

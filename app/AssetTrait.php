@@ -11,9 +11,9 @@ namespace App;
 abstract class AssetTrait extends GenericModel implements ValidTraitTypes
 {
 
-	function __construct(array $attributes)
+	function __construct(array $attributes, $callingClassName = self::class)
 	{
-		parent::__construct($attributes);
+		parent::__construct($attributes, $callingClassName);
 	}
 
 	public function getRandomByType($type){

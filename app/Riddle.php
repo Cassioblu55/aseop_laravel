@@ -47,7 +47,7 @@ class Riddle extends Random implements Upload
 		$runOnUpdate = function($row){
 			$riddle = self::where(self::ID, $row[self::ID])->first();
 			if($riddle==null){
-				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
 			$riddle->setUploadValues($row);

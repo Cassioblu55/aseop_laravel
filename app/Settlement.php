@@ -112,7 +112,7 @@ class Settlement extends Asset implements Upload
 		$runOnUpdate = function($row){
 			$settlement = self::where(self::ID, $row[self::ID])->first();
 			if($settlement==null){
-				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
 			$settlement->setUploadValues($row);

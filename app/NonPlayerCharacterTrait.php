@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Services\AddBatchAssets;
-use app\Services\Logging;
+use App\Services\Logging;
 
 class NonPlayerCharacterTrait extends AssetTrait implements Upload
 {
@@ -47,7 +47,7 @@ class NonPlayerCharacterTrait extends AssetTrait implements Upload
 		$runOnUpdate = function($row){
 			$npcTrait = self::where(self::ID, $row[self::ID])->first();
 			if($npcTrait==null){
-				Logging::log("Id ".$row[self::ID]." not found", self::class);
+				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
 			$npcTrait->setUploadValues($row);
@@ -57,11 +57,16 @@ class NonPlayerCharacterTrait extends AssetTrait implements Upload
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
+	public function validate($overrideDefaultValidationRules = false)
+	{
+		return parent::validate($overrideDefaultValidationRules) && !$this->duplicateFound();
+	}
+
 	private function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
-		if($this->validate() && !$this->duplicateFound()){
+		if($this->validate()){
 			isSet($this->id) ? $this->update() : $this->save();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
