@@ -90,8 +90,7 @@ class Villain extends Asset
 
 		$runOnCreate = function($row){
 			$villain = new self();
-			$villain->setUploadValues($row);
-			return (isSet($villain->id));
+			return $villain->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -100,8 +99,7 @@ class Villain extends Asset
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$villain->setUploadValues($row);
-			return ($villain->presentValuesEqual($row));
+			return $villain->setUploadValues($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
@@ -111,10 +109,11 @@ class Villain extends Asset
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
-		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
-		}else{
+		if ($this->validate()) {
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
+		} else {
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 

@@ -59,8 +59,7 @@ class Spell extends GenericModel implements Upload
 
 	    $runOnCreate = function($row){
 		    $spell = new self();
-		    $spell->setUploadValues($row);
-		    return (isSet($spell->id));
+		    return $spell->setUploadValues($row);
 	    };
 
 	    $runOnUpdate = function($row){
@@ -69,8 +68,7 @@ class Spell extends GenericModel implements Upload
 			    Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 			    return false;
 		    }
-		    $spell->setUploadValues($row);
-		    return ($spell->presentValuesEqual($row));
+		    return $spell->setUploadValues($row);
 	    };
 	    return $addBatch->addBatch($runOnCreate, $runOnUpdate);
     }
@@ -79,9 +77,10 @@ class Spell extends GenericModel implements Upload
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 

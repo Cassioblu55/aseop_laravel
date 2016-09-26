@@ -83,8 +83,7 @@ class Tavern extends Asset
 
 		$runOnCreate = function($row){
 			$tavern = new self();
-			$tavern->setUploadValues($row);
-			return (isSet($tavern->id));
+			return $tavern->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -93,8 +92,7 @@ class Tavern extends Asset
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$tavern->setUploadValues($row);
-			return ($tavern->presentValuesEqual($row));
+			return $tavern->setUploadValues($row);
 		};
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
@@ -102,10 +100,12 @@ class Tavern extends Asset
 	private function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
+
 		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 

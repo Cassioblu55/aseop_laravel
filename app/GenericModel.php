@@ -8,11 +8,12 @@
 
 namespace App;
 use App\Services\Logging;
-use app\Services\Validate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\MessageBag;
+use Illuminate\Database\QueryException;
 
 abstract class GenericModel extends Model implements Upload
 {
@@ -21,6 +22,20 @@ abstract class GenericModel extends Model implements Upload
 	private $logging;
 
 	protected $errors;
+
+	public function setError($field, $error)
+	{
+		if($this->errors){
+			$this->errors->add($field, $error);
+		}else{
+			$this->errors = new MessageBag();
+			$this->errors->add($field, $error);
+		}
+	}
+
+	public function setErrors($errors){
+		$this->errors = $errors;
+	}
 
 	const ID = 'id';
 	const COL_PUBLIC = 'public';
@@ -41,6 +56,26 @@ abstract class GenericModel extends Model implements Upload
 	{
 		$this->logging = new Logging($callingClassName);
 		parent::__construct($attributes);
+	}
+
+	public function safeSave(){
+		try{
+			$this->save();
+			return true;
+		}catch(QueryException $e){
+			$this->setError("database error", $e);
+			return false;
+		}
+	}
+
+	public function safeUpdate(Request $request = null){
+		try{
+			($request == null) ? $this->update() : $this->update($request->all());
+			return true;
+		}catch(QueryException $e){
+			$this->setError("database error", $e);
+			return false;
+		}
 	}
 
 	public function setRequiredMissing()

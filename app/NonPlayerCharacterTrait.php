@@ -40,8 +40,7 @@ class NonPlayerCharacterTrait extends AssetTrait implements Upload
 
 		$runOnCreate = function($row){
 			$npcTrait = new self();
-			$npcTrait->setUploadValues($row);
-			return (isSet($npcTrait->id));
+			return $npcTrait->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -50,8 +49,7 @@ class NonPlayerCharacterTrait extends AssetTrait implements Upload
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$npcTrait->setUploadValues($row);
-			return ($npcTrait->presentValuesEqual($row));
+			return $npcTrait->setUploadValues($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
@@ -67,9 +65,10 @@ class NonPlayerCharacterTrait extends AssetTrait implements Upload
 		$this->setRequiredMissing();
 
 		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 
 	}

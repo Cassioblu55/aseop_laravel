@@ -48,8 +48,7 @@ class Monster extends GenericModel
 
 		$runOnCreate = function($row){
 			$monster = new self();
-			$monster->setUploadValues($row);
-			return (isSet($monster->id));
+			return $monster->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -58,8 +57,7 @@ class Monster extends GenericModel
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$monster->setUploadValues($row);
-			return ($monster->presentValuesEqual($row));
+			return $monster->setUploadValues($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
@@ -78,9 +76,10 @@ class Monster extends GenericModel
 		$this->setJsonFromRowIfPresent(self::STATS, $row, "[]");
 
 		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 }

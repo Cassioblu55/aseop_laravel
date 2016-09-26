@@ -7,7 +7,7 @@
 @section('form-size', '6')
 
 @section('form_body')
-    @include("tiles.questions.text", ['field' =>'trait'])
+    @include("tiles.questions.text", ['field' =>'trait', 'required'=>true])
 
     @include("tiles.questions.selectFromModelArray", ['field' =>'type','required'=>true,'modelData' =>'validTypes'] )
 
@@ -33,7 +33,7 @@
                 $scope.dungeonTrait.weight = Number($scope.dungeonTrait.weight);
             });
 
-            $scope.setFromGet("{{url('/api/dungeonTraits/types')}}", function(data){
+            $scope.setFrmGet("{{url('/api/dungeonTraits/types')}}", function(data){
                 $scope.validTypes = data;
             });
 

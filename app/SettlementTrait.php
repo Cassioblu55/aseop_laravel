@@ -42,8 +42,7 @@ class SettlementTrait extends AssetTrait implements Upload
 
 		$runOnCreate = function($row){
 			$settlementTrait = new self();
-			$settlementTrait->setUploadValues($row);
-			return (isSet($settlementTrait->id));
+			return $settlementTrait->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -52,8 +51,7 @@ class SettlementTrait extends AssetTrait implements Upload
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$settlementTrait->setUploadValues($row);
-			return ($settlementTrait->presentValuesEqual($row));
+			return $settlementTrait->setUploadValues($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
@@ -65,9 +63,10 @@ class SettlementTrait extends AssetTrait implements Upload
 		$this->logging->logInfo(json_encode($this->id));
 
 		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 

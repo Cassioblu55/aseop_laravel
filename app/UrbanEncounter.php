@@ -37,8 +37,7 @@ class UrbanEncounter extends Random
 
 		$runOnCreate = function($row){
 			$urbanEncounter = new self();
-			$urbanEncounter->setUploadValues($row);
-			return (isSet($urbanEncounter->id));
+			return $urbanEncounter->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -47,21 +46,22 @@ class UrbanEncounter extends Random
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$urbanEncounter->setUploadValues($row);
-			return ($urbanEncounter->presentValuesEqual($row));
+			return $urbanEncounter->setUploadValues($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
-	private function setUploadValues($row){
+	private function setUploadValues($row)
+	{
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
-		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
-		}else{
+		if ($this->validate()) {
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
+		} else {
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 

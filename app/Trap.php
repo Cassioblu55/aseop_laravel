@@ -39,8 +39,7 @@ class Trap extends GenericModel
 
 		$runOnCreate = function($row){
 			$trap = new self();
-			$trap->setUploadValues($row);
-			return (isSet($trap->id));
+			return $trap->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -49,8 +48,7 @@ class Trap extends GenericModel
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$trap->setUploadValues($row);
-			return ($trap->presentValuesEqual($row));
+			return $trap->setUploadValues($row);
 		};
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
@@ -60,9 +58,10 @@ class Trap extends GenericModel
 		$this->setRequiredMissing();
 
 		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 

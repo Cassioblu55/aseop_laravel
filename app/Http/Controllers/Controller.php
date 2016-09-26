@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\Logging;
 use App\Services\Messages;
 use App\Services\Validate;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -179,7 +180,8 @@ class Controller extends BaseController
 	protected function validateStore(GenericModel $genericModel, $redirectToIndex = false, $modelName = null){
 		$modelName = ($modelName == null) ? $genericModel->getTable() : $modelName;
 		$data = [$modelName => $genericModel];
-		if ($genericModel->validate()) {
+
+		if ($genericModel->validate() && $genericModel->safeSave()) {
 			$message = ($redirectToIndex) ? self::sendRecordAddedSuccessfully() : self::addAddedSuccessMessage($data);
 			$action = ($redirectToIndex) ? $this->getIndexControllerAction() : $this->getShowControllerAction();
 		}else{
@@ -195,19 +197,20 @@ class Controller extends BaseController
 		$modelName = ($modelName == null) ? $genericModel->getTable() : $modelName;
 		$data = [$modelName => $genericModel];
 
-		if(Validate::validUpdateData($request, $genericModel->getRules())){
-			$genericModel->update($request->all());
-
+		if(Validate::validUpdateDataFromGenericModel($request, $genericModel) && $genericModel->safeUpdate($request)){
 			$action= ($redirectToIndex) ? $this->getIndexControllerAction() : $this->getShowControllerAction();
 			$message= ($redirectToIndex) ? self::sendRecordUpdatedSuccessfully() : self::addUpdateSuccessMessage($data);
 		}else{
-			$this->logging->logError(Validate::getErrorMessage($request, $genericModel->getRules()));
+			$this->logging->logError($genericModel->getErrorMessage());
+
 			$action= $this->getEditControllerAction();
 			$message= self::addUpdatedFailedMessage($data);
 		}
 		return redirect()->action($action, $message);
 
 	}
+
+
 
 	public function index()
 	{

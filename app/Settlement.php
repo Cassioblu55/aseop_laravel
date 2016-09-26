@@ -105,8 +105,7 @@ class Settlement extends Asset implements Upload
 
 		$runOnCreate = function($row){
 			$settlement = new self();
-			$settlement->setUploadValues($row);
-			return (isSet($settlement->id));
+			return $settlement->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -115,8 +114,7 @@ class Settlement extends Asset implements Upload
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$settlement->setUploadValues($row);
-			return ($settlement->presentValuesEqual($row));
+			return $settlement->setUploadValues($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
@@ -127,9 +125,10 @@ class Settlement extends Asset implements Upload
 		$this->setRequiredMissing();
 
 		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
-			$this->logging->logError("Could not save, errors: ".json_encode($this->errors()));
+			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 

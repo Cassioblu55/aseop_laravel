@@ -40,8 +40,7 @@ class Riddle extends Random implements Upload
 
 		$runOnCreate = function($row){
 			$riddle = new self();
-			$riddle->setUploadValues($row);
-			return (isSet($riddle->id));
+			return $riddle->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -50,8 +49,7 @@ class Riddle extends Random implements Upload
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$riddle->setUploadValues($row);
-			return ($riddle->presentValuesEqual($row));
+			return $riddle->setUploadValues($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
@@ -60,10 +58,12 @@ class Riddle extends Random implements Upload
 	private function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
+
 		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 

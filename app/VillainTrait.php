@@ -57,8 +57,7 @@ class VillainTrait extends AssetTrait implements Upload
 
 		$runOnCreate = function($row){
 			$villainTrait = new self();
-			$villainTrait->setUploadValues($row);
-			return (isSet($villainTrait->id));
+			return $villainTrait->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -67,8 +66,7 @@ class VillainTrait extends AssetTrait implements Upload
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$villainTrait->setUploadValues($row);
-			return ($villainTrait->presentValuesEqual($row));
+			return $villainTrait->setUploadValues($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
@@ -77,10 +75,12 @@ class VillainTrait extends AssetTrait implements Upload
 	private function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
-		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
-		}else{
+
+		if ($this->validate()) {
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
+		} else {
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 
 	}

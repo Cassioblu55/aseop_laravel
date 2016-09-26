@@ -42,8 +42,7 @@ class TavernTrait extends AssetTrait implements Upload
 
 		$runOnCreate = function($row){
 			$tavernTrait = new self();
-			$tavernTrait->setUploadValues($row);
-			return (isSet($tavernTrait->id));
+			return $tavernTrait->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -52,8 +51,7 @@ class TavernTrait extends AssetTrait implements Upload
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$tavernTrait->setUploadValues($row);
-			return ($tavernTrait->presentValuesEqual($row));
+			return $tavernTrait->setUploadValues($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
@@ -63,10 +61,11 @@ class TavernTrait extends AssetTrait implements Upload
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
-		if($this->validate() && !$this->duplicateFound()){
-			isSet($this->id) ? $this->update() : $this->save();
+		if($this->validate()){
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 

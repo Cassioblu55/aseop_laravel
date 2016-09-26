@@ -37,8 +37,7 @@ class ForestEncounter extends Random implements Upload
 
 		$runOnCreate = function($row){
 			$forestEncounter = new self();
-			$forestEncounter->setUploadValues($row);
-			return (isSet($forestEncounter->id));
+			return $forestEncounter->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -47,8 +46,7 @@ class ForestEncounter extends Random implements Upload
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$forestEncounter->setUploadValues($row);
-			return ($forestEncounter->presentValuesEqual($row));
+			return $forestEncounter->setUploadValues($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
@@ -59,9 +57,10 @@ class ForestEncounter extends Random implements Upload
 		$this->setRequiredMissing();
 
 		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 

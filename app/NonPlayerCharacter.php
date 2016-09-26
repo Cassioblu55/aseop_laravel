@@ -28,7 +28,7 @@ class NonPlayerCharacter extends Asset implements Upload
 	protected $rules = [
 		self::FIRST_NAME => 'required|max:255',
 		self::LAST_NAME => 'max:255',
-		self::AGE => 'required|integer|min:0',
+		self::AGE => 'required|min:0|integer',
 		self::SEX =>'required|alpha|size:1',
 		self::HEIGHT => 'required|min:0|integer',
 		self::WEIGHT => 'required|min:0|integer',
@@ -162,8 +162,7 @@ class NonPlayerCharacter extends Asset implements Upload
 
 		$runOnCreate = function($row){
 			$npc = new self();
-			$npc->setUploadValues($row);
-			return (isSet($npc->id));
+			return $npc->setUploadValues($row);
 		};
 
 		$runOnUpdate = function($row){
@@ -172,8 +171,7 @@ class NonPlayerCharacter extends Asset implements Upload
 				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
 				return false;
 			}
-			$npc->setUploadValues($row);
-			return ($npc->presentValuesEqual($row));
+			return $npc->setUploadValues($row);
 		};
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
@@ -181,10 +179,12 @@ class NonPlayerCharacter extends Asset implements Upload
 	private function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
+
 		if($this->validate()){
-			isSet($this->id) ? $this->update() : $this->save();
+			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
 		}else{
 			$this->logging->logError($this->getErrorMessage());
+			return false;
 		}
 	}
 
