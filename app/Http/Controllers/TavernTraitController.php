@@ -47,7 +47,7 @@ class TavernTraitController extends Controller
 	{
 		$tavernTrait = new TavernTrait($request->all());
 		$tavernTrait->setRequiredMissing();
-		return $this->validateAndRedirect($tavernTrait, true);
+		return $this->validateStore($tavernTrait, true);
 	}
 
 	public function upload(){
@@ -93,8 +93,7 @@ class TavernTraitController extends Controller
 	 */
 	public function update(Request $request, TavernTrait $tavernTrait)
 	{
-		$tavernTrait -> update($request->all());
-		return $this->validateAndRedirect($tavernTrait, true);
+		return $this->validateUpdate($request, $tavernTrait, true);
 	}
 
 	/**

@@ -14,7 +14,7 @@
 
     <div class="panel-body">
         <div class="col-md-6">
-            @include("tiles.questions.text", ['field' =>'name'])
+            @include("tiles.questions.text", ['field' =>'name', 'required' => true])
 
             @include("tiles.questions.text", ['field' =>'purpose'])
 

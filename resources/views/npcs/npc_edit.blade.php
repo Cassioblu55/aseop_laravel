@@ -9,7 +9,7 @@
 @section('form_body')
     <div class="row">
         <div class="col-md-6">
-            @include("tiles.questions.text", ['field' =>'first_name', 'validation'=>'required = "required"'])
+            @include("tiles.questions.text", ['field' =>'first_name', 'required' => true])
         </div>
         <div class="col-md-6">
             @include("tiles.questions.text", ['field' =>'last_name'])

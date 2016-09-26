@@ -48,7 +48,7 @@ class TavernController extends Controller
 	{
 		$tavern = new Tavern($request->all());
 		$tavern->setRequiredMissing();
-		return $this->validateAndRedirect($tavern);
+		return $this->validateStore($tavern);
 	}
 
 	public function upload(){
@@ -99,8 +99,7 @@ class TavernController extends Controller
 	 */
 	public function update(Request $request, Tavern $tavern)
 	{
-		$tavern -> update($request->all());
-		return $this->validateAndRedirect($tavern);
+		return $this->validateUpdate($request, $tavern);
 	}
 
 	/**

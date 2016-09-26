@@ -8,6 +8,7 @@ use App\GenericModel;
 use App\Services\Logging;
 use App\Services\Messages;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 
 class DungeonController extends Controller
@@ -57,7 +58,7 @@ class DungeonController extends Controller
 	{
 		$dungeon = new Dungeon($request->all());
 		$dungeon->setRequiredMissing();
-		return $this->validateAndRedirect($dungeon);
+		return $this->validateStore($dungeon);
 	}
 
 	/**
@@ -113,8 +114,8 @@ class DungeonController extends Controller
 	 */
 	public function update(Request $request, Dungeon $dungeon)
 	{
-		$dungeon -> update($request->all());
-		return $this->validateAndRedirect($dungeon);
+		return $this->validateUpdate($request, $dungeon);
+
 	}
 
 	/**

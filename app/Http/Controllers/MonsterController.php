@@ -48,7 +48,7 @@ class MonsterController extends Controller
 	{
 		$monster = new Monster($request->all());
 		$monster->setRequiredMissing();
-		return $this->validateAndRedirect($monster);
+		return $this->validateStore($monster);
 	}
 
 	public function upload(){
@@ -94,8 +94,7 @@ class MonsterController extends Controller
 	 */
 	public function update(Request $request, Monster $monster)
 	{
-		$monster -> update($request->all());
-		return $this->validateAndRedirect($monster);
+		return $this->validateUpdate($request, $monster);
 	}
 
 	/**

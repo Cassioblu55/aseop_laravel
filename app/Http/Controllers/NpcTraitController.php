@@ -46,7 +46,7 @@ class NpcTraitController extends Controller
 	{
 		$npcTrait = new NonPlayerCharacterTrait($request->all());
 		$npcTrait->setRequiredMissing();
-		return $this->validateAndRedirect($npcTrait, true, 'npcTrait');
+		return $this->validateStore($npcTrait, true, 'npcTrait');
 	}
 
 	/**
@@ -82,8 +82,7 @@ class NpcTraitController extends Controller
 	 */
 	public function update(Request $request, NonPlayerCharacterTrait $npcTrait)
 	{
-		$npcTrait -> update($request->all());
-		return $this->validateAndRedirect($npcTrait, true, 'npcTrait');
+		return $this->validateUpdate($request, $npcTrait, true, 'npcTrait');
 	}
 
 

@@ -47,7 +47,7 @@ class ForestEncounterController extends Controller
     {
 	    $forestEncounter = new ForestEncounter($request->all());
 	    $forestEncounter->setRequiredMissing();
-	    return $this->validateAndRedirect($forestEncounter);
+	    return $this->validateStore($forestEncounter);
     }
 
 	public function upload(){
@@ -97,8 +97,7 @@ class ForestEncounterController extends Controller
      */
     public function update(Request $request, ForestEncounter $forestEncounter)
     {
-        $forestEncounter -> update($request->all());
-	    return $this->validateAndRedirect($forestEncounter);
+	    return $this->validateUpdate($request, $forestEncounter);
     }
 
     /**

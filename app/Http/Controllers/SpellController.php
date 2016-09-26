@@ -46,7 +46,7 @@ class SpellController extends Controller
     {
 	    $spell = new Spell($request->all());
 	    $spell->setRequiredMissing();
-	    return $this->validateAndRedirect($spell);
+	    return $this->validateStore($spell);
     }
 
 	public function upload(){
@@ -92,8 +92,7 @@ class SpellController extends Controller
      */
     public function update(Request $request, Spell $spell)
     {
-        $spell -> update($request->all());
-	    return $this->validateAndRedirect($spell);
+	    return $this->validateUpdate($request, $spell);
     }
 
     /**

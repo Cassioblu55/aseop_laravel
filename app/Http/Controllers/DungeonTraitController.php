@@ -48,7 +48,7 @@ class DungeonTraitController extends Controller
 	{
 		$dungeonTrait = new DungeonTrait($request->all());
 		$dungeonTrait->setRequiredMissing();
-		return $this->validateAndRedirect($dungeonTrait, true);
+		return $this->validateStore($dungeonTrait, true);
 	}
 
 	public function upload(){
@@ -94,8 +94,7 @@ class DungeonTraitController extends Controller
 	 */
 	public function update(Request $request, DungeonTrait $dungeonTrait)
 	{
-		$dungeonTrait -> update($request->all());
-		return $this->validateAndRedirect($dungeonTrait, true);
+		return $this->validateUpdate($request, $dungeonTrait, true);
 	}
 
 	/**

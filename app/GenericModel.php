@@ -8,9 +8,11 @@
 
 namespace App;
 use App\Services\Logging;
+use app\Services\Validate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 abstract class GenericModel extends Model implements Upload
 {
@@ -189,6 +191,10 @@ abstract class GenericModel extends Model implements Upload
 		}
 
 		return false;
+	}
+
+	public function getRules(){
+		return $this->rules;
 	}
 
 	protected function getUniqueWithIgnoreSelfRule($table, $column=null, $additionalRules = false){

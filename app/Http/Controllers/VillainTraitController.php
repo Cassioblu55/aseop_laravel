@@ -47,7 +47,7 @@ class VillainTraitController extends Controller
     {
 	    $villainTrait = new VillainTrait($request->all());
 	    $villainTrait->setRequiredMissing();
-	    return $this->validateAndRedirect($villainTrait, true);
+	    return $this->validateStore($villainTrait, true);
     }
 
 	public function upload(){
@@ -93,8 +93,7 @@ class VillainTraitController extends Controller
      */
     public function update(Request $request, VillainTrait $villainTrait)
     {
-        $villainTrait -> update($request->all());
-	    return $this->validateAndRedirect($villainTrait, true);
+	    return $this->validateUpdate($request, $villainTrait, true);
     }
 
     /**

@@ -47,7 +47,7 @@ class SettlementTraitController extends Controller
 	{
 		$settlementTrait = new SettlementTrait($request->all());
 		$settlementTrait->setRequiredMissing();
-		return $this->validateAndRedirect($settlementTrait, true);
+		return $this->validateStore($settlementTrait, true);
 	}
 
 	public function upload(){
@@ -93,8 +93,7 @@ class SettlementTraitController extends Controller
 	 */
 	public function update(Request $request, SettlementTrait $settlementTrait)
 	{
-		$settlementTrait -> update($request->all());
-		return $this->validateAndRedirect($settlementTrait, true);
+		return $this->validateUpdate($request, $settlementTrait, true);
 	}
 
 	/**

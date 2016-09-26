@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Services\Logging;
 use App\Services\Messages;
+use App\Services\Validate;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -174,39 +176,38 @@ class Controller extends BaseController
 		return self::addMessages($dataHash, $urlParams);
 	}
 
-	protected function validateAndRedirect(GenericModel $genericModel, $redirectToIndex = false, $modelName = null)
-	{
+	protected function validateStore(GenericModel $genericModel, $redirectToIndex = false, $modelName = null){
 		$modelName = ($modelName == null) ? $genericModel->getTable() : $modelName;
+		$data = [$modelName => $genericModel];
+		if ($genericModel->validate()) {
+			$message = ($redirectToIndex) ? self::sendRecordAddedSuccessfully() : self::addAddedSuccessMessage($data);
+			$action = ($redirectToIndex) ? $this->getIndexControllerAction() : $this->getShowControllerAction();
+		}else{
+			$this->logging->logError($genericModel->getErrorMessage());
 
+			$action = $this->getCreateControllerAction();
+			$message = self::addAddedFailedMessage($data);
+		}
+		return redirect()->action($action, $message);
+	}
+
+	protected function validateUpdate(Request $request, GenericModel $genericModel, $redirectToIndex = false, $modelName = null){
+		$modelName = ($modelName == null) ? $genericModel->getTable() : $modelName;
 		$data = [$modelName => $genericModel];
 
-		if ($genericModel->validate()) {
-			$updated = isset($genericModel->id);
-			(isset($genericModel->id)) ? $genericModel->update() : $genericModel->save();
-			return $this->redirectSuccess($data, $updated, $redirectToIndex);
-		} else {
-			return $this->redirectFailed($genericModel, $data);
+		if(Validate::validUpdateData($request, $genericModel->getRules())){
+			$genericModel->update($request->all());
+
+			$action= ($redirectToIndex) ? $this->getIndexControllerAction() : $this->getShowControllerAction();
+			$message= ($redirectToIndex) ? self::sendRecordUpdatedSuccessfully() : self::addUpdateSuccessMessage($data);
+		}else{
+			$this->logging->logError(Validate::getErrorMessage($request, $genericModel->getRules()));
+			$action= $this->getEditControllerAction();
+			$message= self::addUpdatedFailedMessage($data);
 		}
-	}
-
-	private function redirectFailed(GenericModel $genericModel, array $data){
-		$this->logging->logError($genericModel->getErrorMessage());
-		$action = (isset($genericModel->id)) ? $this->getEditControllerAction() : $this->getCreateControllerAction();
-		$message = (isset($genericModel->id)) ? self::addUpdatedFailedMessage($data) : self::addAddedFailedMessage($data);
 		return redirect()->action($action, $message);
+
 	}
-
-	private function redirectSuccess(array $data, $updated,$redirectToIndex = false){
-		$action = ($redirectToIndex) ? $this->getIndexControllerAction() : $this->getShowControllerAction();
-		if ($updated) {
-			$message = ($redirectToIndex) ? self::sendRecordUpdatedSuccessfully() : self::addUpdateSuccessMessage($data);
-		} else {
-			$message = ($redirectToIndex) ? self::sendRecordAddedSuccessfully() : self::addAddedSuccessMessage($data);
-		}
-
-		return redirect()->action($action, $message);
-	}
-
 
 	public function index()
 	{

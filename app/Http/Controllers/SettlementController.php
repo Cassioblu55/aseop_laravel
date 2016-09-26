@@ -53,7 +53,7 @@ class SettlementController extends Controller
 	{
 		$settlement = new Settlement($request->all());
 		$settlement->setRequiredMissing();
-		return $this->validateAndRedirect($settlement);
+		return $this->validateStore($settlement);
 	}
 
 	public function upload(){
@@ -99,8 +99,7 @@ class SettlementController extends Controller
 	 */
 	public function update(Request $request, Settlement $settlement)
 	{
-		$settlement -> update($request->all());
-		return $this->validateAndRedirect($settlement);
+		return $this->validateUpdate($request, $settlement);
 	}
 
 	/**

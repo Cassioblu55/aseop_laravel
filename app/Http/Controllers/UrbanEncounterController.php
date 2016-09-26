@@ -47,7 +47,7 @@ class UrbanEncounterController extends Controller
     {
 	    $urbanEncounter = new UrbanEncounter($request->all());
 	    $urbanEncounter->setRequiredMissing();
-	    return $this->validateAndRedirect($urbanEncounter);
+	    return $this->validateStore($urbanEncounter);
     }
 
 	public function upload(){
@@ -96,8 +96,7 @@ class UrbanEncounterController extends Controller
      */
     public function update(Request $request, UrbanEncounter $urbanEncounter)
     {
-        $urbanEncounter -> update($request->all());
-	    return $this->validateAndRedirect($urbanEncounter);
+	    return $this->validateUpdate($request, $urbanEncounter);
     }
 
     /**

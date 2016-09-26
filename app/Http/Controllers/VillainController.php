@@ -47,7 +47,7 @@ class VillainController extends Controller
     {
 	    $villain = new Villain($request->all());
 	    $villain->setRequiredMissing();
-	    return $this->validateAndRedirect($villain);
+	    return $this->validateStore($villain);
     }
 
     /**
@@ -88,8 +88,7 @@ class VillainController extends Controller
      */
     public function update(Request $request, Villain $villain)
     {
-        $villain -> update($request->all());
-	    return $this->validateAndRedirect($villain);
+	    return $this->validateUpdate($request, $villain);
     }
 
 	public function upload(){

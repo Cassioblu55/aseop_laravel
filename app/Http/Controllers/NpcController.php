@@ -53,7 +53,7 @@ class NpcController extends Controller
 	{
 		$npc = new NonPlayerCharacter($request->all());
 		$npc->setRequiredMissing();
-		return $this->validateAndRedirect($npc, false, 'npc');
+		return $this->validateStore($npc, false, 'npc');
 	}
 
 	public function upload(){
@@ -100,8 +100,7 @@ class NpcController extends Controller
 	 */
 	public function update(Request $request, NonPlayerCharacter $npc)
 	{
-		$npc -> update($request->all());
-		return $this->validateAndRedirect($npc, false, 'npc');
+		return $this->validateUpdate($request, $npc, false, 'npc');
 	}
 
 	/**

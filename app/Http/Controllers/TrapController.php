@@ -63,7 +63,7 @@ class TrapController extends Controller
     {
 	    $trap = new Trap($request->all());
 	    $trap->setRequiredMissing();
-	    return $this->validateAndRedirect($trap, true);
+	    return $this->validateStore($trap, true);
     }
 
     /**
@@ -99,8 +99,7 @@ class TrapController extends Controller
      */
     public function update(Request $request, Trap $trap)
     {
-	    $trap -> update($request->all());
-	    return $this->validateAndRedirect($trap, true);
+	    return $this->validateUpdate($request, $trap, true);
     }
 
     /**

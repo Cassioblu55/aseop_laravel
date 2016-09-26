@@ -47,7 +47,7 @@ class RiddleController extends Controller
 	{
 		$riddle = new Riddle($request->all());
 		$riddle->setRequiredMissing();
-		return $this->validateAndRedirect($riddle);
+		return $this->validateStore($riddle);
 	}
 
 	public function upload(){
@@ -97,8 +97,7 @@ class RiddleController extends Controller
 	 */
 	public function update(Request $request, Riddle $riddle)
 	{
-		$riddle -> update($request->all());
-		return $this->validateAndRedirect($riddle);
+		return $this->validateUpdate($request, $riddle);
 	}
 
 	/**
