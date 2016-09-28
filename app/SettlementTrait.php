@@ -62,12 +62,7 @@ class SettlementTrait extends AssetTrait implements Upload
 		$this->setRequiredMissing();
 		$this->logging->logInfo(json_encode($this->id));
 
-		if($this->validate()){
-			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
-		}else{
-			$this->logging->logError($this->getErrorMessage());
-			return false;
-		}
+		return $this->runUpdateOrSave();
 	}
 
 	public static function getValidTraitTypes()

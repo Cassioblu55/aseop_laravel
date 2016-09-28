@@ -61,12 +61,7 @@ class TavernTrait extends AssetTrait implements Upload
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
-		if($this->validate()){
-			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
-		}else{
-			$this->logging->logError($this->getErrorMessage());
-			return false;
-		}
+		return $this->runUpdateOrSave();
 	}
 
 	public static function getValidTraitTypes()

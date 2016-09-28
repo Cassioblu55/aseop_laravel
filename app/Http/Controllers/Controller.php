@@ -181,12 +181,10 @@ class Controller extends BaseController
 		$modelName = ($modelName == null) ? $genericModel->getTable() : $modelName;
 		$data = [$modelName => $genericModel];
 
-		if ($genericModel->validate() && $genericModel->safeSave()) {
+		if ($genericModel->safeSave()) {
 			$message = ($redirectToIndex) ? self::sendRecordAddedSuccessfully() : self::addAddedSuccessMessage($data);
 			$action = ($redirectToIndex) ? $this->getIndexControllerAction() : $this->getShowControllerAction();
 		}else{
-			$this->logging->logError($genericModel->getErrorMessage());
-
 			$action = $this->getCreateControllerAction();
 			$message = self::addAddedFailedMessage($data);
 		}
@@ -197,12 +195,10 @@ class Controller extends BaseController
 		$modelName = ($modelName == null) ? $genericModel->getTable() : $modelName;
 		$data = [$modelName => $genericModel];
 
-		if(Validate::validUpdateDataFromGenericModel($request, $genericModel) && $genericModel->safeUpdate($request)){
+		if($genericModel->safeUpdate($request)){
 			$action= ($redirectToIndex) ? $this->getIndexControllerAction() : $this->getShowControllerAction();
 			$message= ($redirectToIndex) ? self::sendRecordUpdatedSuccessfully() : self::addUpdateSuccessMessage($data);
 		}else{
-			$this->logging->logError($genericModel->getErrorMessage());
-
 			$action= $this->getEditControllerAction();
 			$message= self::addUpdatedFailedMessage($data);
 		}

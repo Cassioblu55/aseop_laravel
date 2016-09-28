@@ -97,12 +97,7 @@ class Dungeon extends Asset implements Upload
 		$this->setJsonFromRowIfPresent(self::TRAPS, $row);
 		$this->setTraps();
 
-		if($this->validate()){
-			return isSet($this->id) ? $this->safeUpdate() : $this->safeSave();
-		}else{
-			$this->logging->logError($this->getErrorMessage());
-			return false;
-		}
+		return $this->runUpdateOrSave();
 	}
 
 }

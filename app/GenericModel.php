@@ -8,6 +8,7 @@
 
 namespace App;
 use App\Services\Logging;
+use App\Services\Validate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -58,24 +59,49 @@ abstract class GenericModel extends Model implements Upload
 		parent::__construct($attributes);
 	}
 
-	public function safeSave(){
-		try{
-			$this->save();
-			return true;
-		}catch(QueryException $e){
-			$this->setError("database error", $e);
+	public function safeSave($overrideDefaultValidationRules = false){
+		if($this->validate($overrideDefaultValidationRules)){
+			try{
+				$this->save();
+				return true;
+			}catch(QueryException $e){
+				$this->setError("database error", $e);
+				$this->logging->logError($this->getErrorMessage());
+				return false;
+			}
+		}else{
+			$this->logging->logError($this->getErrorMessage());
 			return false;
 		}
 	}
 
-	public function safeUpdate(Request $request = null){
-		try{
-			($request == null) ? $this->update() : $this->update($request->all());
-			return true;
-		}catch(QueryException $e){
-			$this->setError("database error", $e);
+	public function safeUpdate(Request $request = null, $overrideDefaultValidationRules = false){
+		if($request != null){
+			$rules = $this->getAllRules($overrideDefaultValidationRules);
+			$errors = Validate::getValidationErrors($request, $rules);
+
+			$valid = count($errors) > 0;
+		}else{
+			$valid = $this->validate($overrideDefaultValidationRules);
+		}
+		if($valid) {
+			try {
+				($request == null) ? $this->update() : $this->update($request->all());
+				return true;
+			} catch (QueryException $e) {
+				$this->setError("database error", $e);
+				$this->logging->logError($this->getErrorMessage());
+				return false;
+			}
+		}else{
+			if(isset($errors)){$this->setErrors($errors);}
+			$this->logging->logError($this->getErrorMessage());
 			return false;
 		}
+	}
+
+	private function getAllRules($overrideDefaultValidationRules = false){
+		return ($overrideDefaultValidationRules) ? $this->rules : array_merge($this->rules, $this->defaultRules);
 	}
 
 	public function setRequiredMissing()
@@ -103,6 +129,11 @@ abstract class GenericModel extends Model implements Upload
 			return $this->getDefaultOwnerIdValue();
 		});
 	}
+
+	public function runUpdateOrSave($overrideDefaultValidationRules = false){
+		return isSet($this->id) ? $this->safeUpdate(null,$overrideDefaultValidationRules) : $this->safeSave($overrideDefaultValidationRules);
+	}
+
 
 	private function getDefaultOwnerIdValue()
 	{
@@ -170,7 +201,7 @@ abstract class GenericModel extends Model implements Upload
 
 	public function validate($overrideDefaultValidationRules = false)
 	{
-		$rules = ($overrideDefaultValidationRules) ? $this->rules : array_merge($this->rules, $this->defaultRules);
+		$rules = $this->getAllRules($overrideDefaultValidationRules);
 		return $this->runValidation($rules);
 	}
 
