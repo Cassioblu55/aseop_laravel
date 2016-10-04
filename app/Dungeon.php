@@ -5,8 +5,9 @@ namespace App;
 use App\Services\Logging;
 use App\Services\Utils;
 use App\Services\AddBatchAssets;
+use App\Services\DownloadHelper;
 
-class Dungeon extends Asset implements Upload
+class Dungeon extends Asset
 {
 	protected $guarded = [];
 
@@ -18,7 +19,7 @@ class Dungeon extends Asset implements Upload
 
 	const FILLABLE_FROM_TRAIT_TABLE = [self::NAME, self::PURPOSE, self::HISTORY, self::LOCATION, self::CREATOR];
 
-	const UPLOAD_COLUMNS = [self::NAME, self::PURPOSE, self::HISTORY, self::LOCATION, self::CREATOR, self::SIZE, self::OTHER_INFORMATION, self::MAP, self::TRAPS];
+	const UPLOAD_COLUMNS = [self::NAME, self::PURPOSE, self::HISTORY, self::LOCATION, self::CREATOR, self::SIZE, self::OTHER_INFORMATION, self::MAP, self::TRAPS, self::COL_PUBLIC];
 
 	const SMALL = "S";
 	const MEDIUM = "M";
@@ -99,5 +100,11 @@ class Dungeon extends Asset implements Upload
 
 		return $this->runUpdateOrSave();
 	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
+	}
+
 
 }

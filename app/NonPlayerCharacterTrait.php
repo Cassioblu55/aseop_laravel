@@ -4,6 +4,7 @@ namespace App;
 
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
+use App\Services\DownloadHelper;
 
 class NonPlayerCharacterTrait extends AssetTrait implements Upload
 {
@@ -13,7 +14,7 @@ class NonPlayerCharacterTrait extends AssetTrait implements Upload
 
 	const TYPE = 'type', COL_TRAIT = 'trait';
 
-	const UPLOAD_COLUMNS = [self::COL_TRAIT, self::TYPE];
+	const UPLOAD_COLUMNS = [self::COL_TRAIT, self::TYPE, self::COL_PUBLIC];
 
 	public function user()
 	{
@@ -71,6 +72,11 @@ class NonPlayerCharacterTrait extends AssetTrait implements Upload
 	public static function getValidTraitTypes()
 	{
 		return NonPlayerCharacter::getAllValidTraitTypes();
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 
 }

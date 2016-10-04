@@ -166,6 +166,8 @@ return [
         /*
          * Package Service Providers...
          */
+	    Maatwebsite\Excel\ExcelServiceProvider::class,
+	    Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         //
 
@@ -196,6 +198,7 @@ return [
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
+	    'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Blade' => Illuminate\Support\Facades\Blade::class,
         'Cache' => Illuminate\Support\Facades\Cache::class,
         'Config' => Illuminate\Support\Facades\Config::class,

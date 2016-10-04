@@ -5,6 +5,7 @@ namespace App;
 use App\Services\Logging;
 use Illuminate\Support\Facades\Auth;
 use App\Services\AddBatchAssets;
+use App\Services\DownloadHelper;
 
 class Tavern extends Asset
 {
@@ -18,7 +19,7 @@ class Tavern extends Asset
 	
 	const FIRST_NAME = 'first_name', LAST_NAME = 'last_name';
 	
-	const UPLOAD_COLUMNS = [self::NAME, self::TAVERN_OWNER_ID, self::OTHER_INFORMATION, self::TYPE];
+	const UPLOAD_COLUMNS = [self::NAME, self::TAVERN_OWNER_ID, self::OTHER_INFORMATION, self::TYPE, self::COL_PUBLIC];
 
 	const FILLABLE_FROM_TRAIT_TABLE = [self::TYPE];
 
@@ -105,5 +106,10 @@ class Tavern extends Asset
 
 	public static function getAllValidTraitTypes(){
 		return array_merge(self::ADDITIONAL_FILLABLE_FROM_TRAIT_TABLE, self::FILLABLE_FROM_TRAIT_TABLE);
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 }

@@ -4,6 +4,7 @@ namespace App;
 
 use App\Services\Logging;
 use App\Services\AddBatchAssets;
+use App\Services\DownloadHelper;
 
 class UrbanEncounter extends Random
 {
@@ -13,7 +14,7 @@ class UrbanEncounter extends Random
 
 	const TITLE = "title", DESCRIPTION = "description", ROLLS = "rolls";
 
-	const UPLOAD_COLUMNS = [self::TITLE, self::DESCRIPTION, self::ROLLS];
+	const UPLOAD_COLUMNS = [self::TITLE, self::DESCRIPTION, self::ROLLS, self::COL_PUBLIC];
 
 	protected $rules = [
 		self::TITLE => 'required|max:255',
@@ -58,6 +59,11 @@ class UrbanEncounter extends Random
 		$this->setRequiredMissing();
 
 		return $this->runUpdateOrSave();
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 
 

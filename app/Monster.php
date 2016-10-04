@@ -4,6 +4,7 @@ namespace App;
 
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
+use App\Services\DownloadHelper;
 
 class Monster extends GenericModel
 {
@@ -13,7 +14,7 @@ class Monster extends GenericModel
 	
 	const NAME = 'name', HIT_POINTS = 'hit_points', SKILLS = 'skills', LANGUAGES = 'languages', CHALLENGE = 'challenge', ABILITIES = 'abilities', ACTIONS = 'actions', FOUND = 'found', DESCRIPTION = 'description', SPEED = 'speed', ARMOR = 'armor', XP = 'xp', SENSES = 'senses', STATS = 'stats';
 
-	const UPLOAD_COLUMNS = [self::NAME, self::HIT_POINTS, self::SKILLS, self::LANGUAGES, self::CHALLENGE, self::ABILITIES, self::ACTIONS, self::FOUND, self::DESCRIPTION, self::SPEED, self::ARMOR, self::XP, self::SENSES, self::STATS];
+	const UPLOAD_COLUMNS = [self::NAME, self::HIT_POINTS, self::SKILLS, self::LANGUAGES, self::CHALLENGE, self::ABILITIES, self::ACTIONS, self::FOUND, self::DESCRIPTION, self::SPEED, self::ARMOR, self::XP, self::SENSES, self::STATS, self::COL_PUBLIC];
 
 	function __construct(array $attributes = array())
 	{
@@ -76,5 +77,10 @@ class Monster extends GenericModel
 		$this->setJsonFromRowIfPresent(self::STATS, $row, "[]");
 
 		return $this->runUpdateOrSave();
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 }

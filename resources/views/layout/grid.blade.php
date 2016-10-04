@@ -1,5 +1,11 @@
 @extends('layout.app')
 
+<?php
+        $model = (isset($model)) ? $model : (isset($headers)) ? $headers->dataDefaults->model : '';
+        $pural = $model."s";
+?>
+
+
 @section('content')
     <div ng-controller="@yield("controller", $headers->dataDefaults->indexController)">
         <div class="container-fluid">
@@ -15,6 +21,10 @@
                             </div>
                             <div class="panel-footer">
                                 @yield("panelFooter")
+                                @if(!isset($noDownload) || isset($noDownload) && $noDownload == false)
+                                    <a class="btn btn-default pull-right" href="{{url("/api/$pural/download/$pural.csv")}}">Download</a>
+                                @endif
+
                             </div>
                     </div>
                 </div>

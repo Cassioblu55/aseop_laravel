@@ -6,6 +6,7 @@ use App\Services\Logging;
 use App\Services\Utils;
 use App\Services\AddBatchAssets;
 use Illuminate\Support\Facades\DB;
+use App\Services\DownloadHelper;
 
 class NonPlayerCharacter extends Asset implements Upload 
 {
@@ -23,7 +24,7 @@ class NonPlayerCharacter extends Asset implements Upload
 	const ADDITIONAL_FILLABLE_FROM_TRAIT_TABLE = [self::MALE_NAME, self::FEMALE_NAME];
 
 
-	const UPLOAD_COLUMNS = [self::FIRST_NAME,self::LAST_NAME, self::AGE, self::HEIGHT,self::WEIGHT, self::FLAW,self::INTERACTION, self::MANNERISM,self::BOND,self::APPEARANCE,self::TALENT,self::IDEAL,self::ABILITY, self::OTHER_INFORMATION, self::SEX];
+	const UPLOAD_COLUMNS = [self::FIRST_NAME,self::LAST_NAME, self::AGE, self::HEIGHT,self::WEIGHT, self::FLAW,self::INTERACTION, self::MANNERISM,self::BOND,self::APPEARANCE,self::TALENT,self::IDEAL,self::ABILITY, self::OTHER_INFORMATION, self::SEX, self::COL_PUBLIC];
 	
 	protected $rules = [
 		self::FIRST_NAME => 'required|max:255',
@@ -185,6 +186,11 @@ class NonPlayerCharacter extends Asset implements Upload
 
 	public static function getAllValidTraitTypes(){
 		return array_merge(self::ADDITIONAL_FILLABLE_FROM_TRAIT_TABLE, self::FILLABLE_FROM_TRAIT_TABLE);
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 
 }

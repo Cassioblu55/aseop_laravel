@@ -3,8 +3,8 @@
 namespace App;
 
 use App\Services\Logging;
-use Illuminate\Database\Eloquent\Model;
 use App\Services\AddBatchAssets;
+use App\Services\DownloadHelper;
 
 class Spell extends GenericModel implements Upload
 {
@@ -24,7 +24,7 @@ class Spell extends GenericModel implements Upload
 		CONJURATION_MAGIC = 'conjuration_magic',DIVINATION = 'divination',ELEMENTAL_MAGIC = 'elemental_magic', ENCHANTMENT = 'enchantment', EVOCATION = 'evocation', HEALING_MAGIC ='healing_magic',ILLUSION = 'illusion',
 		INVOCATION = 'invocation', NATURE_MAGIC = 'nature_magic', NECROMANCY = 'necromancy', SCRYING = 'scrying', THAUMATURGY = 'thaumaturgy', TRANSFORMATION = 'transformation';
 
-	const VALID_SPELL_TYPES = [self::ABJURATION, self::ALCHEMY, self::APPORTATION, self::CHARM_MAGIC, self::CONJURATION_MAGIC, self::DIVINATION, self::ELEMENTAL_MAGIC, self::ENCHANTMENT, self::EVOCATION, self::HEALING_MAGIC, self::ILLUSION, self::INVOCATION, self::NATURE_MAGIC, self::NECROMANCY, self::SCRYING, self::THAUMATURGY, self::TRANSFORMATION];
+	const VALID_SPELL_TYPES = [self::ABJURATION, self::ALCHEMY, self::APPORTATION, self::CHARM_MAGIC, self::CONJURATION_MAGIC, self::DIVINATION, self::ELEMENTAL_MAGIC, self::ENCHANTMENT, self::EVOCATION, self::HEALING_MAGIC, self::ILLUSION, self::INVOCATION, self::NATURE_MAGIC, self::NECROMANCY, self::SCRYING, self::THAUMATURGY, self::TRANSFORMATION, self::COL_PUBLIC];
 
 	protected $rules = [
 		self::LEVEL => 'required|min:0|max:9|integer',
@@ -77,6 +77,11 @@ class Spell extends GenericModel implements Upload
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 		return $this->runUpdateOrSave();
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 
 }

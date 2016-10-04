@@ -4,6 +4,7 @@ namespace App;
 
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
+use App\Services\DownloadHelper;
 
 class ForestEncounter extends Random implements Upload
 {
@@ -13,7 +14,7 @@ class ForestEncounter extends Random implements Upload
 
 	const TITLE = "title", DESCRIPTION = "description", ROLLS = "rolls";
 
-	const UPLOAD_COLUMNS = [self::TITLE, self::DESCRIPTION, self::ROLLS];
+	const UPLOAD_COLUMNS = [self::TITLE, self::DESCRIPTION, self::ROLLS, self::COL_PUBLIC];
 
 	protected $rules = [
 		self::TITLE => 'required|max:255',
@@ -56,6 +57,11 @@ class ForestEncounter extends Random implements Upload
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 		return $this->runUpdateOrSave();
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 
 }

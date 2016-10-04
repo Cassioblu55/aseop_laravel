@@ -4,6 +4,7 @@ namespace App;
 
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
+use App\Services\DownloadHelper;
 
 class Trap extends GenericModel 
 {
@@ -58,6 +59,11 @@ class Trap extends GenericModel
 		$this->setRequiredMissing();
 
 		return $this->runUpdateOrSave();
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 
 }

@@ -4,8 +4,7 @@ namespace App;
 
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
-use Illuminate\Support\Facades\Validator;
-
+use App\Services\DownloadHelper;
 
 class VillainTrait extends AssetTrait implements Upload
 {
@@ -17,13 +16,13 @@ class VillainTrait extends AssetTrait implements Upload
 	const KIND = 'kind';
 	const DESCRIPTION = 'description';
 
-	const UPLOAD_COLUMNS = [self::KIND, self::TYPE, self::DESCRIPTION];
+	const UPLOAD_COLUMNS = [self::KIND, self::TYPE, self::DESCRIPTION, self::COL_PUBLIC];
 
 	const WEAKNESS = 'weakness';
 	const METHOD = 'method';
 	const SCHEME = 'scheme';
 
-	const VALID_TYPES = [self::WEAKNESS, self::METHOD, self::SCHEME,];
+	const VALID_TYPES = [self::WEAKNESS, self::METHOD, self::SCHEME];
 
 	const VALID_SCHEME_KINDS = ['Immortality','Influence','Magic','Mayhem','Passion','Power','Revenge','Wealth'];
 
@@ -118,6 +117,11 @@ class VillainTrait extends AssetTrait implements Upload
 
 	public static function getValidTraitTypes(){
 		return self::VALID_TYPES;
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 
 }

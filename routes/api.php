@@ -36,6 +36,10 @@ Route::get('/dungeons', function (){
 	return Dungeon::all();
 });
 
+Route::get('/dungeons/download/{fileName}.{ext}', function ($fileName, $ext){
+	Dungeon::download($fileName, $ext);
+});
+
 Route::get('/dungeons/{dungeon}', function(Dungeon $dungeon){
 	return $dungeon;
 });
@@ -48,12 +52,20 @@ Route::get('/dungeonTraits/types', function (){
 	return DungeonTrait::getValidTraitTypes();
 });
 
+Route::get('/dungeonTraits/download/{fileName}.{ext}', function ($fileName, $ext){
+	DungeonTrait::download($fileName, $ext);
+});
+
 Route::get('/dungeonTraits/{dungeonTrait}', function(DungeonTrait $dungeonTrait){
 	return $dungeonTrait;
 });
 
 Route::get('/npcs', function (){
 	return NonPlayerCharacter::all();
+});
+
+Route::get('/npcs/download/{fileName}.{ext}', function ($fileName, $ext){
+	NonPlayerCharacter::download($fileName, $ext);
 });
 
 Route::get('/npcs/names', function (){
@@ -77,6 +89,10 @@ Route::get('/npcTraits', function (){
 	return NonPlayerCharacterTrait::all();
 });
 
+Route::get('/npcTraits/download/{fileName}.{ext}', function ($fileName, $ext){
+	NonPlayerCharacterTrait::download($fileName, $ext);
+});
+
 Route::get('/npcTraits/types', function (){
 	return NonPlayerCharacterTrait::getValidTraitTypes();
 });
@@ -89,12 +105,20 @@ Route::get('/settlements', function (){
 	return Settlement::all();
 });
 
+Route::get('/settlements/download/{fileName}.{ext}', function ($fileName, $ext){
+	Settlement::download($fileName, $ext);
+});
+
 Route::get('/settlements/{settlement}', function(Settlement $settlement){
 	return $settlement;
 });
 
 Route::get('/settlementTraits', function (){
 	return SettlementTrait::all();
+});
+
+Route::get('/settlementTraits/download/{fileName}.{ext}', function ($fileName, $ext){
+	SettlementTrait::download($fileName, $ext);
 });
 
 Route::get('/settlementTraits/types', function (){
@@ -109,12 +133,20 @@ Route::get('/traps', function (){
 	return Trap::all();
 });
 
+Route::get('/traps/download/{fileName}.{ext}', function ($fileName, $ext){
+	Trap::download($fileName, $ext);
+});
+
 Route::get('/traps/{trap}', function (Trap $trap){
 	return $trap;
 });
 
 Route::get('/monsters', function (){
 	return Monster::all();
+});
+
+Route::get('/monsters/download/{fileName}.{ext}', function ($fileName, $ext){
+	Monster::download($fileName, $ext);
 });
 
 Route::get('/monsters/{monster}', function (Monster $monster){
@@ -125,12 +157,21 @@ Route::get('/taverns', function (){
 	return Tavern::all();
 });
 
+Route::get('/taverns/download/{fileName}.{ext}', function ($fileName, $ext){
+	Tavern::download($fileName, $ext);
+});
+
 Route::get('/taverns/{tavern}', function (Tavern $tavern){
 	return $tavern;
 });
 
+
 Route::get('/tavernTraits', function (){
 	return TavernTrait::all();
+});
+
+Route::get('/tavernTraits/download/{fileName}.{ext}', function ($fileName, $ext){
+	TavernTrait::download($fileName, $ext);
 });
 
 Route::get('/tavernTraits/types', function (){
@@ -145,12 +186,20 @@ Route::get('/riddles', function (){
 	return Riddle::all();
 });
 
+Route::get('/riddles/download/{fileName}.{ext}', function ($fileName, $ext){
+	Riddle::download($fileName, $ext);
+});
+
 Route::get('/riddles/{riddle}', function(Riddle $riddle){
 	return $riddle;
 });
 
 Route::get('/spells', function (){
 return \App\Spell::all();
+});
+
+Route::get('/spells/download/{fileName}.{ext}', function ($fileName, $ext){
+	\App\Spell::download($fileName, $ext);
 });
 
 Route::get('/spells/types', function (){
@@ -169,6 +218,10 @@ Route::get('/villains', function (){
 return \App\Villain::all();
 });
 
+Route::get('/villains/download/{fileName}.{ext}', function ($fileName, $ext){
+	\App\Villain::download($fileName, $ext);
+});
+
 Route::get('/villains/{villain}', function(\App\Villain $villain){
 return $villain;
 });
@@ -177,7 +230,9 @@ Route::get('/villainTraits', function (){
 return \App\VillainTrait::all();
 });
 
-
+Route::get('/villainTraits/download/{fileName}.{ext}', function ($fileName, $ext){
+	\App\VillainTrait::download($fileName, $ext);
+});
 
 Route::get('/villainTraits/kinds', function (){
 	return \App\VillainTrait::getValidKindsByType();
@@ -191,12 +246,20 @@ Route::get('/forestEncounters', function (){
 return \App\ForestEncounter::all();
 });
 
+Route::get('/forestEncounters/download/{fileName}.{ext}', function ($fileName, $ext){
+	\App\ForestEncounter::download($fileName, $ext);
+});
+
 Route::get('/forestEncounters/{forestEncounter}', function(\App\ForestEncounter $forestEncounter){
 return $forestEncounter;
 });
 
 Route::get('/urbanEncounters', function (){
 return \App\UrbanEncounter::all();
+});
+
+Route::get('/urbanEncounters/download/{fileName}.{ext}', function ($fileName, $ext){
+	\App\UrbanEncounter::download($fileName, $ext);
 });
 
 Route::get('/urbanEncounters/{urbanEncounter}', function(\App\UrbanEncounter $urbanEncounter){

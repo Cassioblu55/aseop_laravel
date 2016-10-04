@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Illuminate\Database\QueryException;
 
-abstract class GenericModel extends Model implements Upload
+abstract class GenericModel extends Model implements Upload, Download
 {
 	protected $rules = array();
 

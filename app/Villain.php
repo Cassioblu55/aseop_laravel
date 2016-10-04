@@ -4,6 +4,7 @@ namespace App;
 
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
+use App\Services\DownloadHelper;
 
 class Villain extends Asset
 {
@@ -19,7 +20,7 @@ class Villain extends Asset
 
 	const NPC_ID = 'npc_id', METHOD_TYPE = 'method_type', METHOD_DESCRIPTION = 'method_description', SCHEME_TYPE = 'scheme_type', SCHEME_DESCRIPTION = 'scheme_description', WEAKNESS_TYPE = 'weakness_type', WEAKNESS_DESCRIPTION = 'weakness_description', OTHER_INFORMATION = 'other_information';
 
-	const UPLOAD_COLUMNS = [self::NPC_ID, self::METHOD_DESCRIPTION, self::METHOD_TYPE, self::SCHEME_DESCRIPTION, self::SCHEME_TYPE, self::WEAKNESS_TYPE, self::WEAKNESS_DESCRIPTION, self::OTHER_INFORMATION];
+	const UPLOAD_COLUMNS = [self::NPC_ID, self::METHOD_DESCRIPTION, self::METHOD_TYPE, self::SCHEME_DESCRIPTION, self::SCHEME_TYPE, self::WEAKNESS_TYPE, self::WEAKNESS_DESCRIPTION, self::OTHER_INFORMATION, self::COL_PUBLIC];
 
 	const WEAKNESS = 'weakness';
 	const METHOD = 'method';
@@ -110,6 +111,11 @@ class Villain extends Asset
 		$this->setRequiredMissing();
 
 		return $this->runUpdateOrSave();
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 
 }

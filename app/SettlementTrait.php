@@ -4,7 +4,7 @@ namespace App;
 
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
-use Illuminate\Database\Eloquent\Model;
+use App\Services\DownloadHelper;
 
 class SettlementTrait extends AssetTrait implements Upload
 {
@@ -15,7 +15,7 @@ class SettlementTrait extends AssetTrait implements Upload
 	const TYPE = 'type';
 	const COL_TRAIT = 'trait';
 
-	const UPLOAD_COLUMNS = [self::COL_TRAIT, self::TYPE];
+	const UPLOAD_COLUMNS = [self::COL_TRAIT, self::TYPE, self::COL_PUBLIC];
 
 	protected $rules = [
 		self::COL_TRAIT => 'required'
@@ -73,6 +73,11 @@ class SettlementTrait extends AssetTrait implements Upload
 	public function validate($overrideDefaultValidationRules = false)
 	{
 		return parent::validate($overrideDefaultValidationRules) && !$this->duplicateFound();
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 
 }

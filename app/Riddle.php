@@ -3,6 +3,7 @@
 namespace App;
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
+use App\Services\DownloadHelper;
 
 class Riddle extends Random implements Upload
 {
@@ -12,7 +13,7 @@ class Riddle extends Random implements Upload
 
 	const NAME = 'name', RIDDLE = 'riddle',SOLUTION = 'solution', HINT = 'hint', WEIGHT = 'weight', OTHER_INFORMATION = 'other_information';
 
-	const UPLOAD_COLUMNS = [self::NAME, self::RIDDLE, self::SOLUTION, self::HINT, self::WEIGHT, self::OTHER_INFORMATION];
+	const UPLOAD_COLUMNS = [self::NAME, self::RIDDLE, self::SOLUTION, self::HINT, self::WEIGHT, self::OTHER_INFORMATION, self::COL_PUBLIC];
 
 	protected $rules =[
 		self::NAME =>'required|max:255',
@@ -67,6 +68,9 @@ class Riddle extends Random implements Upload
 		return $allRequiredPresent;
 	}
 
-
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
+	}
 
 }

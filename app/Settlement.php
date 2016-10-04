@@ -5,6 +5,7 @@ use App\Services\Logging;
 use App\Services\Utils;
 use Illuminate\Support\Facades\Auth;
 use App\Services\AddBatchAssets;
+use App\Services\DownloadHelper;
 
 class Settlement extends Asset implements Upload
 {
@@ -26,7 +27,7 @@ class Settlement extends Asset implements Upload
 
 	protected $guarded = [];
 
-	const UPLOAD_COLUMNS = [self::NAME, self::KNOWN_FOR, self::NOTABLE_TRAITS, self::RULER_ID, self::RULER_STATUS, self::CURRENT_CALAMITY, self::POPULATION, self::SIZE, self::OTHER_INFORMATION, self::RACE_RELATIONS];
+	const UPLOAD_COLUMNS = [self::NAME, self::KNOWN_FOR, self::NOTABLE_TRAITS, self::RULER_ID, self::RULER_STATUS, self::CURRENT_CALAMITY, self::POPULATION, self::SIZE, self::OTHER_INFORMATION, self::RACE_RELATIONS, self::COL_PUBLIC];
 
 	const TRAIT_TABLE = SettlementTrait::class;
 
@@ -125,6 +126,11 @@ class Settlement extends Asset implements Upload
 		$this->setRequiredMissing();
 
 		return $this->runUpdateOrSave();
+	}
+
+	public static function download($fileName, $ext = 'csv')
+	{
+		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
 	}
 
 }
