@@ -76,19 +76,19 @@ class Settlement extends Asset implements Upload
 	}
 
 	private function setSize(){
-		$this->setIfFeildNotPresent('size', function(){
+		$this->setIfFieldNotPresent('size', function(){
 			return Utils::getRandomKeyFromHash(self::VALID_SIZE_OPTIONS);
 		});
 	}
 
 	private function setRuler(){
-		$this->setIfFeildNotPresent('ruler_id', function(){
+		$this->setIfFieldNotPresent('ruler_id', function(){
 			return NonPlayerCharacter::generate()->id;
 		});
 	}
 
 	private function setPopulation(){
-		$this->setIfFeildNotPresent('population', function(){
+		$this->setIfFieldNotPresent('population', function(){
 			switch ($this->size){
 				case self::SMALL:
 					$configData = self::SMALL_POPULATION_RANGE; break;

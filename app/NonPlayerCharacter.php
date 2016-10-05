@@ -116,13 +116,13 @@ class NonPlayerCharacter extends Asset implements Upload
 	}
 
 	private function setSex(){
-		$this->setIfFeildNotPresent('sex', function(){
+		$this->setIfFieldNotPresent('sex', function(){
 			return Utils::getRandomKeyFromHash(self::VALID_SEX_OPTIONS);
 		});
 	}
 
 	private function setName() {
-		$this->setIfFeildNotPresent('first_name', function(){
+		$this->setIfFieldNotPresent('first_name', function(){
 			if($this->sex == self::MALE){
 				return $this->getTraitRandomByType('male_name');
 			}else{
@@ -132,13 +132,13 @@ class NonPlayerCharacter extends Asset implements Upload
 	}
 
 	private function setAge() {
-		$this->setIfFeildNotPresent('age', function(){
+		$this->setIfFieldNotPresent('age', function(){
 			return Utils::getBellCurveRange(self::AGE_RANGE);
 		});
 	}
 
 	private function setHeight() {
-		$this->setIfFeildNotPresent('height', function(){
+		$this->setIfFieldNotPresent('height', function(){
 			if($this->sex == self::MALE){
 				return Utils::getBellCurveRange(self::MALE_HEIGHT_RANGE);
 			}else{
@@ -148,7 +148,7 @@ class NonPlayerCharacter extends Asset implements Upload
 	}
 
 	private function setWeight() {
-		$this->setIfFeildNotPresent('weight', function(){
+		$this->setIfFieldNotPresent('weight', function(){
 			if($this->sex == self::MALE){
 				return Utils::getBellCurveRange(self::MALE_WEIGHT_RANGE);
 			}else{

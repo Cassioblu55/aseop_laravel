@@ -67,7 +67,7 @@ class Villain extends Asset
     }
 
     private function setNpc(){
-    	$this->setIfFeildNotPresent(self::NPC_ID, function(){
+    	$this->setIfFieldNotPresent(self::NPC_ID, function(){
 		    return NonPlayerCharacter::generate()->id;
 	    });
     }

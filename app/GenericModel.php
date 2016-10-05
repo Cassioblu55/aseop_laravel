@@ -24,20 +24,6 @@ abstract class GenericModel extends Model implements Upload, Download
 
 	protected $errors;
 
-	public function setError($field, $error)
-	{
-		if($this->errors){
-			$this->errors->add($field, $error);
-		}else{
-			$this->errors = new MessageBag();
-			$this->errors->add($field, $error);
-		}
-	}
-
-	public function setErrors($errors){
-		$this->errors = $errors;
-	}
-
 	const ID = 'id';
 	const COL_PUBLIC = 'public';
 	const APPROVED = 'approved';
@@ -73,6 +59,10 @@ abstract class GenericModel extends Model implements Upload, Download
 			$this->logging->logError($this->getErrorMessage());
 			return false;
 		}
+	}
+
+	public static function findById($id){
+		return self::where("id", "=", $id)->get()->first();
 	}
 
 	public function safeUpdate(Request $request = null, $overrideDefaultValidationRules = false){
@@ -113,7 +103,7 @@ abstract class GenericModel extends Model implements Upload, Download
 
 	private function setPublic()
 	{
-		$this->setIfFeildNotPresent('public', function () {
+		$this->setIfFieldNotPresent('public', function () {
 			return $this->getDefaultPublicValue();
 		});
 	}
@@ -125,7 +115,7 @@ abstract class GenericModel extends Model implements Upload, Download
 
 	private function setOwnerId()
 	{
-		$this->setIfFeildNotPresent('owner_id', function () {
+		$this->setIfFieldNotPresent('owner_id', function () {
 			return $this->getDefaultOwnerIdValue();
 		});
 	}
@@ -142,7 +132,7 @@ abstract class GenericModel extends Model implements Upload, Download
 
 	private function setApproved()
 	{
-		$this->setIfFeildNotPresent('approved', function () {
+		$this->setIfFieldNotPresent('approved', function () {
 			return $this->getDefaultApprovedValue();
 		});
 	}
@@ -152,7 +142,7 @@ abstract class GenericModel extends Model implements Upload, Download
 		return false;
 	}
 
-	public function setIfFeildNotPresent($field, $funct)
+	public function setIfFieldNotPresent($field, $funct)
 	{
 		if (!isSet($this[$field])) {
 			$this[$field] = $funct();
@@ -233,16 +223,11 @@ abstract class GenericModel extends Model implements Upload, Download
 		}
 	}
 
-	protected function addCustomRule($field, $rule){
+	public function addCustomRule($field, $rule){
 		$this->rules[$field] = $rule;
 	}
 
-	protected function getInArrayRule($array, $additionalRules=false){
-		$arrayRule = "in:".implode(",", $array);
-		return (!$additionalRules) ? $arrayRule : $arrayRule."|".$additionalRules;
-	}
-
-	protected function duplicateFound(){
+	public function duplicateFound(){
 		$attributeArray = [];
 		foreach ($this->getAttributes() as $key => $value){
 			if($this->validFieldForLookingForDuplicate($key)){
@@ -264,10 +249,7 @@ abstract class GenericModel extends Model implements Upload, Download
 	}
 
 	protected function getUniqueWithIgnoreSelfRule($table, $column=null, $additionalRules = false){
-		$column = ($column == null) ? $table : $column;
-		$id  = (isset($this->id)) ? ",".$this->id : '';
-		$uniqueRule = "unique:$table,$column".$id;
-		return (!$additionalRules) ? $uniqueRule : $uniqueRule."|".$additionalRules;
+		return Validate::getUniqueWithIgnoreSelfRule($table, $this->id, $column, $additionalRules);
 	}
 
 	private function validFieldForLookingForDuplicate($field){
@@ -276,6 +258,26 @@ abstract class GenericModel extends Model implements Upload, Download
 
 	protected function addIgnoreWhenLookingForDuplicate($field){
 		array_push($this->ignoreWhenLookingForDuplicateArray, $field);
+	}
+
+	public function setError($field, $error)
+	{
+		if($this->errors){
+			$this->errors->add($field, $error);
+		}else{
+			$this->errors = new MessageBag();
+			$this->errors->add($field, $error);
+		}
+	}
+
+	public function setErrors($errors, $overrideCurrentErrors = false){
+		$this->errors = ($overrideCurrentErrors) ? null : $this->errors;
+
+		foreach ($errors as $field => $errorArray){
+			foreach ($errorArray as $error){
+				$this->setError($field, $error);
+			}
+		}
 	}
 
 }

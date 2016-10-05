@@ -5,6 +5,7 @@ namespace App;
 use App\Services\Logging;
 use App\Services\AddBatchAssets;
 use App\Services\DownloadHelper;
+use App\Services\Validate;
 
 class Spell extends GenericModel implements Upload
 {
@@ -36,13 +37,13 @@ class Spell extends GenericModel implements Upload
 	{
 		$this->logging = new Logging(self::class);
 
-		$classValidation = $this->getInArrayRule(self::VALID_CLASS_TYPES, 'required|max:255');
+		$classValidation = Validate::getInArrayRule(self::VALID_CLASS_TYPES, 'required|max:255');
 		$this->addCustomRule(self::COL_CLASS,$classValidation);
 
 		$nameValidation = $this->getUniqueWithIgnoreSelfRule("spells", self::NAME, 'required|max:255');
 		$this->addCustomRule(self::NAME,$nameValidation);
 
-		$typeValidation = $this->getInArrayRule(self::VALID_SPELL_TYPES, 'required|max:255');
+		$typeValidation = Validate::getInArrayRule(self::VALID_SPELL_TYPES, 'required|max:255');
 		$this->addCustomRule(self::TYPE,$typeValidation);
 
 		parent::__construct($attributes);

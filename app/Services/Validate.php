@@ -46,5 +46,17 @@ class Validate
 		return "No errors present";
 	}
 
+	public static function getInArrayRule($array, $additionalRules=false){
+		$arrayRule = "in:".implode(",", $array);
+		return (!$additionalRules) ? $arrayRule : $arrayRule."|".$additionalRules;
+	}
+
+	public static function getUniqueWithIgnoreSelfRule($table, $id=null,$column=null, $additionalRules = false){
+		$column = ($column == null) ? $table : $column;
+		$id  = ($id != null) ? ",".$id : '';
+		$uniqueRule = "unique:$table,$column".$id;
+		return (!$additionalRules) ? $uniqueRule : $uniqueRule."|".$additionalRules;
+	}
+
 
 }

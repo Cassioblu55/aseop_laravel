@@ -5,6 +5,7 @@ namespace App;
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
 use App\Services\DownloadHelper;
+use App\Services\Validate;
 
 class DungeonTrait extends AssetTrait implements Upload 
 {
@@ -36,7 +37,7 @@ class DungeonTrait extends AssetTrait implements Upload
 
 		$this->addIgnoreWhenLookingForDuplicate(self::WEIGHT);
 
-		$typeValidation = $this->getInArrayRule(self::getValidTraitTypes(), 'required|max:255');
+		$typeValidation = Validate::getInArrayRule(self::getValidTraitTypes(), 'required|max:255');
 		$this->addCustomRule(self::TYPE,$typeValidation);
 
 		parent::__construct($attributes);

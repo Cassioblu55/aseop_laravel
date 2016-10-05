@@ -62,13 +62,13 @@ class Tavern extends Asset
 	}
 
 	private function setName(){
-		$this->setIfFeildNotPresent(self::NAME, function(){
+		$this->setIfFieldNotPresent(self::NAME, function(){
 			return $this->getTraitRandomByType(self::FIRST_NAME)." ".$this->getTraitRandomByType(self::LAST_NAME);
 		});
 	}
 
 	private function setTavernOwner(){
-		$this->setIfFeildNotPresent(self::TAVERN_OWNER_ID, function(){
+		$this->setIfFieldNotPresent(self::TAVERN_OWNER_ID, function(){
 			return NonPlayerCharacter::generate()->id;
 		});
 	}

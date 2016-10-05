@@ -56,7 +56,7 @@ class Dungeon extends Asset
 	}
 
 	private function setRandomMissing(){
-		$this->setIfFeildNotPresent(self::SIZE, function(){
+		$this->setIfFieldNotPresent(self::SIZE, function(){
 			return Utils::getRandomFromArray(self::VALID_SIZE_OPTIONS);
 		});
 		$this->setRequiredMissing();
@@ -65,7 +65,7 @@ class Dungeon extends Asset
 	}
 
 	private function setTraps(){
-		$this->setIfFeildNotPresent(self::TRAPS, function(){
+		$this->setIfFieldNotPresent(self::TRAPS, function(){
 			return '[]';
 		});
 	}

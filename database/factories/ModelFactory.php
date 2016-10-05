@@ -21,3 +21,28 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+
+$factory->define(App\DungeonTrait::class, function (Faker\Generator $faker) {
+	return [
+		'type' => "foo",
+		'weight' => 1,
+		'trait' => "bar",
+		'public' => false,
+		'owner_id' => 1,
+		'approved' => false
+	];
+});
+
+$factory->define(App\Dungeon::class, function (Faker\Generator $faker) {
+	return [
+		'name' => "foo",
+		'map' => '[["w","w","w","s","w","w","w","w"],["x","w","x","w","x","w","x","w"],["w","w","w","w","w","w","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","t","w","w","w","w","w"],["x","x","x","x","x","t","x","x"]]',
+		'traps' => '[["1","2","6"],["3","5","7"]]',
+		'size' => 'L',
+
+		'public' => false,
+		'owner_id' => 1,
+		'approved' => false
+	];
+});

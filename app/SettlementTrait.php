@@ -5,6 +5,7 @@ namespace App;
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
 use App\Services\DownloadHelper;
+use App\Services\Validate;
 
 class SettlementTrait extends AssetTrait implements Upload
 {
@@ -30,7 +31,7 @@ class SettlementTrait extends AssetTrait implements Upload
 	{
 		$this->logging = new Logging(self::class);
 
-		$typeValidation = $this->getInArrayRule(self::getValidTraitTypes(), 'required|max:255');
+		$typeValidation = Validate::getInArrayRule(self::getValidTraitTypes(), 'required|max:255');
 		$this->addCustomRule(self::TYPE,$typeValidation);
 
 		parent::__construct($attributes);
