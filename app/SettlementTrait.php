@@ -61,8 +61,6 @@ class SettlementTrait extends AssetTrait implements Upload
 	private function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
-		$this->logging->logInfo(json_encode($this->id));
-
 		return $this->runUpdateOrSave();
 	}
 
@@ -76,9 +74,9 @@ class SettlementTrait extends AssetTrait implements Upload
 		return parent::validate($overrideDefaultValidationRules) && !$this->duplicateFound();
 	}
 
-	public static function download($fileName, $ext = 'csv')
+	public static function download($fileName)
 	{
-		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
+		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 
 }

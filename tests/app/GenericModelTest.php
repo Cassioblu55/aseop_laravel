@@ -12,9 +12,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class GenericModelTest extends TestCase
 {
-
 	use DatabaseTransactions;
-
 
 	private $logging;
 
@@ -78,9 +76,7 @@ class GenericModelTest extends TestCase
 	public function testSetRequiredMissingShouldSetRequiredMissingDataFromNullValues(){
 		$genericModel = new Dungeon();
 
-		$user = factory(App\User::class)->make();
-
-		$user->save();
+		$user = factory(App\User::class)->create();
 
 		$this->actingAs($user);
 

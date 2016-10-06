@@ -37,7 +37,8 @@ Route::get('/dungeons', function (){
 });
 
 Route::get('/dungeons/download/{fileName}.{ext}', function ($fileName, $ext){
-	Dungeon::download($fileName, $ext);
+	$file = Dungeon::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/dungeons/{dungeon}', function(Dungeon $dungeon){
@@ -53,7 +54,8 @@ Route::get('/dungeonTraits/types', function (){
 });
 
 Route::get('/dungeonTraits/download/{fileName}.{ext}', function ($fileName, $ext){
-	DungeonTrait::download($fileName, $ext);
+	$file = DungeonTrait::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/dungeonTraits/{dungeonTrait}', function(DungeonTrait $dungeonTrait){
@@ -65,7 +67,8 @@ Route::get('/npcs', function (){
 });
 
 Route::get('/npcs/download/{fileName}.{ext}', function ($fileName, $ext){
-	NonPlayerCharacter::download($fileName, $ext);
+	$file = NonPlayerCharacter::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/npcs/names', function (){
@@ -90,7 +93,8 @@ Route::get('/npcTraits', function (){
 });
 
 Route::get('/npcTraits/download/{fileName}.{ext}', function ($fileName, $ext){
-	NonPlayerCharacterTrait::download($fileName, $ext);
+	$file = NonPlayerCharacterTrait::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/npcTraits/types', function (){
@@ -106,7 +110,8 @@ Route::get('/settlements', function (){
 });
 
 Route::get('/settlements/download/{fileName}.{ext}', function ($fileName, $ext){
-	Settlement::download($fileName, $ext);
+	$file = Settlement::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/settlements/{settlement}', function(Settlement $settlement){
@@ -118,7 +123,8 @@ Route::get('/settlementTraits', function (){
 });
 
 Route::get('/settlementTraits/download/{fileName}.{ext}', function ($fileName, $ext){
-	SettlementTrait::download($fileName, $ext);
+	$file = SettlementTrait::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/settlementTraits/types', function (){
@@ -134,7 +140,8 @@ Route::get('/traps', function (){
 });
 
 Route::get('/traps/download/{fileName}.{ext}', function ($fileName, $ext){
-	Trap::download($fileName, $ext);
+	$file = Trap::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/traps/{trap}', function (Trap $trap){
@@ -146,7 +153,8 @@ Route::get('/monsters', function (){
 });
 
 Route::get('/monsters/download/{fileName}.{ext}', function ($fileName, $ext){
-	Monster::download($fileName, $ext);
+	$file = Monster::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/monsters/{monster}', function (Monster $monster){
@@ -158,7 +166,8 @@ Route::get('/taverns', function (){
 });
 
 Route::get('/taverns/download/{fileName}.{ext}', function ($fileName, $ext){
-	Tavern::download($fileName, $ext);
+	$file = Tavern::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/taverns/{tavern}', function (Tavern $tavern){
@@ -171,7 +180,8 @@ Route::get('/tavernTraits', function (){
 });
 
 Route::get('/tavernTraits/download/{fileName}.{ext}', function ($fileName, $ext){
-	TavernTrait::download($fileName, $ext);
+	$file = TavernTrait::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/tavernTraits/types', function (){
@@ -187,7 +197,8 @@ Route::get('/riddles', function (){
 });
 
 Route::get('/riddles/download/{fileName}.{ext}', function ($fileName, $ext){
-	Riddle::download($fileName, $ext);
+	$file = Riddle::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/riddles/{riddle}', function(Riddle $riddle){
@@ -199,7 +210,8 @@ return \App\Spell::all();
 });
 
 Route::get('/spells/download/{fileName}.{ext}', function ($fileName, $ext){
-	\App\Spell::download($fileName, $ext);
+	$file = \App\Spell::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/spells/types', function (){
@@ -219,7 +231,8 @@ return \App\Villain::all();
 });
 
 Route::get('/villains/download/{fileName}.{ext}', function ($fileName, $ext){
-	\App\Villain::download($fileName, $ext);
+	$file = \App\Villain::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/villains/{villain}', function(\App\Villain $villain){
@@ -231,7 +244,8 @@ return \App\VillainTrait::all();
 });
 
 Route::get('/villainTraits/download/{fileName}.{ext}', function ($fileName, $ext){
-	\App\VillainTrait::download($fileName, $ext);
+	$file = \App\VillainTrait::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/villainTraits/kinds', function (){
@@ -247,7 +261,8 @@ return \App\ForestEncounter::all();
 });
 
 Route::get('/forestEncounters/download/{fileName}.{ext}', function ($fileName, $ext){
-	\App\ForestEncounter::download($fileName, $ext);
+	$file = \App\ForestEncounter::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/forestEncounters/{forestEncounter}', function(\App\ForestEncounter $forestEncounter){
@@ -259,7 +274,8 @@ return \App\UrbanEncounter::all();
 });
 
 Route::get('/urbanEncounters/download/{fileName}.{ext}', function ($fileName, $ext){
-	\App\UrbanEncounter::download($fileName, $ext);
+	$file = \App\UrbanEncounter::download($fileName);
+	\App\Services\DownloadHelper::export($file, $ext);
 });
 
 Route::get('/urbanEncounters/{urbanEncounter}', function(\App\UrbanEncounter $urbanEncounter){

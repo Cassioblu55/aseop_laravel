@@ -108,8 +108,8 @@ class Tavern extends Asset
 		return array_merge(self::ADDITIONAL_FILLABLE_FROM_TRAIT_TABLE, self::FILLABLE_FROM_TRAIT_TABLE);
 	}
 
-	public static function download($fileName, $ext = 'csv')
+	public static function download($fileName)
 	{
-		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
+		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 }

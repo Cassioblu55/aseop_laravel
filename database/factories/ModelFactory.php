@@ -34,6 +34,17 @@ $factory->define(App\DungeonTrait::class, function (Faker\Generator $faker) {
 	];
 });
 
+$factory->define(App\VillainTrait::class, function (Faker\Generator $faker) {
+	return [
+		'type' => "foo",
+		'kind' => "kind",
+		'description' => "description",
+		'public' => false,
+		'owner_id' => 1,
+		'approved' => false
+	];
+});
+
 $factory->define(App\Dungeon::class, function (Faker\Generator $faker) {
 	return [
 		'name' => "foo",

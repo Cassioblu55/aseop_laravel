@@ -6,6 +6,7 @@ use App\Services\Logging;
 use App\Services\Utils;
 use App\Services\AddBatchAssets;
 use App\Services\DownloadHelper;
+use App\Services\Validate;
 
 class Dungeon extends Asset
 {
@@ -28,7 +29,6 @@ class Dungeon extends Asset
 
 	protected $rules = [
 		self::NAME =>'required|max:255',
-		self::SIZE => 'required|in:'.self::SMALL.','.self::MEDIUM.','.self::LARGE,
 		self::MAP => 'required|json',
 		self::TRAPS => 'required|json'
 	];
@@ -42,6 +42,10 @@ class Dungeon extends Asset
 	{
 		$this->logging = new Logging(self::class);
 		$class = self::TRAIT_TABLE;
+
+		$sizeValidation = Validate::getInArrayRule(self::VALID_SIZE_OPTIONS, 'required|size:1');
+		$this->addCustomRule(self::SIZE,$sizeValidation);
+
 		parent::__construct($attributes,new $class() ,self::FILLABLE_FROM_TRAIT_TABLE);
 	}
 
@@ -101,9 +105,9 @@ class Dungeon extends Asset
 		return $this->runUpdateOrSave();
 	}
 
-	public static function download($fileName, $ext = 'csv')
+	public static function download($fileName)
 	{
-		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
+		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 
 

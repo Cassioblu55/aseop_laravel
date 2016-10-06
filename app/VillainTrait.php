@@ -88,18 +88,19 @@ class VillainTrait extends AssetTrait implements Upload
 	}
 
 	private function getKindValidationRule(){
+		$additionalValidationRules = "required|max:255";
 		switch ($this->type) {
 			case self::WEAKNESS:
-				$rule = $this->getInArrayRule(self::VALID_WEAKNESS_KINDS, 'required|max:255');
+				$rule = Validate::getInArrayRule(self::VALID_WEAKNESS_KINDS, $additionalValidationRules);
 				break;
 			case self::SCHEME:
-				$rule = $this->getInArrayRule(self::VALID_SCHEME_KINDS, 'required|max:255');
+				$rule = Validate::getInArrayRule(self::VALID_SCHEME_KINDS, $additionalValidationRules);
 				break;
 			case self::METHOD:
-				$rule = $this->getInArrayRule(self::VALID_METHOD_KINDS, 'required|max:255');
+				$rule = Validate::getInArrayRule(self::VALID_METHOD_KINDS, $additionalValidationRules);
 				break;
 			default:
-				$rule = 'required|max:255';
+				$rule = $additionalValidationRules;
 		}
 		return $rule;
 	}
@@ -117,9 +118,9 @@ class VillainTrait extends AssetTrait implements Upload
 		return self::VALID_TYPES;
 	}
 
-	public static function download($fileName, $ext = 'csv')
+	public static function download($fileName)
 	{
-		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
+		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 
 }

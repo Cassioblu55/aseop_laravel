@@ -28,6 +28,23 @@ class Logging{
 		}
 	}
 
+	public function logJson($object, $ignoreDefaltPrefix = false, $alwaysLog=false){
+		if(self::shouldLog() || $alwaysLog) {
+			try{
+				$message = json_encode($object);
+			}catch (\Exception $e){
+				$message = "Object could not be converted to json.";
+			}
+
+
+			if ($ignoreDefaltPrefix) {
+				Log::info($message);
+			} else {
+				Log::info($this->logWithPrefix($message));
+			}
+		}
+	}
+
 	public function logWarning($message, $ignoreDefaltPrefix = false, $alwaysLog=false){
 		if(self::shouldLog() || $alwaysLog) {
 			if ($ignoreDefaltPrefix) {

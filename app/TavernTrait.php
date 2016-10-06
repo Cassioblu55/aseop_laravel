@@ -71,8 +71,8 @@ class TavernTrait extends AssetTrait implements Upload
 		return Tavern::getAllValidTraitTypes();
 	}
 
-	public static function download($fileName, $ext = 'csv')
+	public static function download($fileName)
 	{
-		DownloadHelper::getDownloadFile(self::all(),$fileName, $ext);
+		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 }

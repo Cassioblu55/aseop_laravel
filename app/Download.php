@@ -10,5 +10,5 @@ namespace App;
 
 interface Download
 {
-	public static function download($fileName, $ext ='csv');
+	public static function download($fileName);
 }
