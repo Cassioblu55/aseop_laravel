@@ -53,7 +53,7 @@ class DungeonTest extends TestCase
 		$user = factory(App\User::class)->create();
 		$this->actingAs($user);
 
-		$path = "resources/assets/csv/Dungeon/testingUploadFile_DO_NOT_EDIT.csv";
+		$path = "resources/assets/testing/csv/Dungeon/testingUploadFile_DO_NOT_EDIT.csv";
 		TestCase::assertFileExists($path);
 
 		$count = count(Dungeon::all());
@@ -80,7 +80,7 @@ class DungeonTest extends TestCase
 
 		$this->actingAs($user);
 
-		$path = "resources/assets/csv/Dungeon/testingUploadFileFailed_DO_NOT_EDIT.csv";
+		$path = "resources/assets/testing/csv/Dungeon/testingUploadFileFailed_DO_NOT_EDIT.csv";
 		TestCase::assertFileExists($path);
 
 		$count = count(Dungeon::all());

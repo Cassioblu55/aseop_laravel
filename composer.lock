@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "eb74dad46611002b641c20ff4332ac2c",
-    "content-hash": "71b44586c1b312dda3a0270f39a34aed",
+    "hash": "be4bcdba2cdfd00a73a7c936603a5f36",
+    "content-hash": "dbb1ccfef6adce2f5f3b345d326ada96",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -1032,6 +1032,49 @@
                 "storage"
             ],
             "time": "2016-08-10 08:55:11"
+        },
+        {
+            "name": "letsdrink/ouzo-goodies",
+            "version": "1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/letsdrink/ouzo-goodies.git",
+                "reference": "64df36acec1371cd055e9360f11fb78a563f7129"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/letsdrink/ouzo-goodies/zipball/64df36acec1371cd055e9360f11fb78a563f7129",
+                "reference": "64df36acec1371cd055e9360f11fb78a563f7129",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ouzo\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ouzo developers",
+                    "email": "ouzo-framework@googlegroups.com"
+                }
+            ],
+            "description": "Utility classes, test assertions and mocking framework extracted from Ouzo framework.",
+            "homepage": "http://ouzoframework.org/",
+            "keywords": [
+                "TDD",
+                "asserts",
+                "mock",
+                "php",
+                "test",
+                "utilities",
+                "utils"
+            ],
+            "time": "2016-05-23 07:22:48"
         },
         {
             "name": "maatwebsite/excel",

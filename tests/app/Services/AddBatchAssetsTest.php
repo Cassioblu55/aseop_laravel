@@ -13,7 +13,7 @@ class AddBatchAssetsTest extends TestCase
 	use DatabaseTransactions;
 
 	public function testAddBatchShouldRunCreateFunctionsWhenIdsGiven(){
-		$path = "resources/assets/csv/AddBatchAssets/testingUploadFileCreate_DO_NOT_EDIT.csv";
+		$path = "resources/assets/testing/csv/AddBatchAssets/testingUploadFileCreate_DO_NOT_EDIT.csv";
 		self::assertFileExists($path);
 
 		$addBatchAssets = new \App\Services\AddBatchAssets($path, ['name']);
@@ -33,7 +33,7 @@ class AddBatchAssetsTest extends TestCase
 	}
 
 	public function testAddBatchShouldRunUpdateFunctionsWhenIdsGiven(){
-		$path = "resources/assets/csv/AddBatchAssets/testingUploadFileUpdate_DO_NOT_EDIT.csv";
+		$path = "resources/assets/testing/csv/AddBatchAssets/testingUploadFileUpdate_DO_NOT_EDIT.csv";
 		self::assertFileExists($path);
 
 		$addBatchAssets = new \App\Services\AddBatchAssets($path, ['name']);
@@ -53,7 +53,7 @@ class AddBatchAssetsTest extends TestCase
 	}
 
 	public function testAddBatchShouldReportMessagesIfFalseIsReturned(){
-		$path = "resources/assets/csv/AddBatchAssets/testingUploadFileUpdate_DO_NOT_EDIT.csv";
+		$path = "resources/assets/testing/csv/AddBatchAssets/testingUploadFileUpdate_DO_NOT_EDIT.csv";
 		self::assertFileExists($path);
 
 		$addBatchAssets = new \App\Services\AddBatchAssets($path, ['name']);
@@ -71,7 +71,7 @@ class AddBatchAssetsTest extends TestCase
 	}
 
 	public function testAddBatchShouldIgnoreDefaultColumnsLikeIdWhenToldTo(){
-		$path = "resources/assets/csv/AddBatchAssets/testingUploadFileUpdate_DO_NOT_EDIT.csv";
+		$path = "resources/assets/testing/csv/AddBatchAssets/testingUploadFileUpdate_DO_NOT_EDIT.csv";
 		self::assertFileExists($path);
 
 		$addBatchAssets = new \App\Services\AddBatchAssets($path, ['name'], true);

@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 class Validate
 {
 	public static function validUpdateData(Request $request, $rules){
-		return count(self::getValidationErrors($request, $rules)) > 0;
+		return count(self::getValidationErrors($request, $rules)) == 0;
 	}
 
 	public static function getValidationErrors(Request $request, $rules){
@@ -51,10 +51,9 @@ class Validate
 		return (!$additionalRules) ? $arrayRule : $arrayRule."|".$additionalRules;
 	}
 
-	public static function getUniqueWithIgnoreSelfRule($table, $id=null,$column=null, $additionalRules = false){
-		$column = ($column == null) ? $table : $column;
-		$id  = ($id != null) ? ",".$id : '';
-		$uniqueRule = "unique:$table,$column".$id;
+	public static function getUniqueWithIgnoreSelfRule($table, $id,$column=null, $additionalRules = false){
+		$column = ($column == null) ? "id" : $column;
+		$uniqueRule = "unique:$table,$column,$id";
 		return (!$additionalRules) ? $uniqueRule : $uniqueRule."|".$additionalRules;
 	}
 

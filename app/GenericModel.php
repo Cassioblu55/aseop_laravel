@@ -271,7 +271,7 @@ abstract class GenericModel extends Model implements Upload, Download
 	}
 
 	public function setErrors($errors, $overrideCurrentErrors = false){
-		$this->errors = ($overrideCurrentErrors) ? null : $this->errors;
+		$this->errors = ($overrideCurrentErrors) ? new MessageBag() : $this->errors;
 
 		foreach ($errors as $field => $errorArray){
 			foreach ($errorArray as $error){
