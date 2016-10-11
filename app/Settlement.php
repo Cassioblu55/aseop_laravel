@@ -110,27 +110,20 @@ class Settlement extends Asset implements Upload
 		};
 
 		$runOnUpdate = function($row){
-			$settlement = self::where(self::ID, $row[self::ID])->first();
-			if($settlement==null){
-				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
-				return false;
-			}
-			return $settlement->setUploadValues($row);
+			return self::attemptUpdate($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
+	public static function getNewSelf(){
+		return new self();
+	}
 
-	private function setUploadValues($row){
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
 		return $this->runUpdateOrSave();
-	}
-
-	public static function download($fileName)
-	{
-		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 
 }

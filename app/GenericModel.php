@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Illuminate\Database\QueryException;
+use App\Services\AddBatchAssets;
+use App\Services\DownloadHelper;
 
 abstract class GenericModel extends Model implements Upload, Download
 {
@@ -200,12 +202,10 @@ abstract class GenericModel extends Model implements Upload, Download
 
 		$v = Validator::make($attributes, $rules);
 		if ($v->fails()) {
-			// set errors and return false
 			$this->errors = $v->errors();
 
 			return false;
 		}
-		// validation pass
 		return true;
 	}
 
@@ -278,6 +278,40 @@ abstract class GenericModel extends Model implements Upload, Download
 				$this->setError($field, $error);
 			}
 		}
+	}
+
+	public static function runUpload($filePath, $uploadColumns){
+		$addBatch = new AddBatchAssets($filePath, $uploadColumns);
+
+		$runOnCreate = function($row){
+			$model = self::getNewSelf();
+			return $model->setUploadValues($row);
+		};
+
+		$runOnUpdate = function($row){
+			return self::attemptUpdate($row);
+		};
+
+		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+	}
+
+	public static function attemptUpdate($row){
+		if(!array_has($row, self::ID)){
+			Logging::error("Could not update, row provided has no id", self::class);
+			return false;
+		}
+
+		$dbRow = self::where(self::ID, $row[self::ID])->first();
+		if($dbRow == null){
+			Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
+			return false;
+		}
+		return $dbRow->setUploadValues($row);
+	}
+
+	public static function download($fileName)
+	{
+		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 
 }

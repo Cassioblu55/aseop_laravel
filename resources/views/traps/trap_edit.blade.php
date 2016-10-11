@@ -19,8 +19,6 @@
     @include('tiles.rolls.roll_display_panel')
     <input type="text" style="display: none;" name="rolls" ng-model="trap.rolls" />
 
-    @include("tiles.questions.number", ['field' =>'weight', 'validation' => 'min=0', 'required'=>true])
-
     @include('tiles.questions.publicPrivate')
 
     @include('tiles.rolls.roll_modal')

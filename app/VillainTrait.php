@@ -7,7 +7,7 @@ use App\Services\Logging;
 use App\Services\DownloadHelper;
 use App\Services\Validate;
 
-class VillainTrait extends AssetTrait implements Upload
+class VillainTrait extends AssetTrait
 {
     protected $guarded = [];
 
@@ -58,22 +58,21 @@ class VillainTrait extends AssetTrait implements Upload
 		};
 
 		$runOnUpdate = function($row){
-			$villainTrait = self::where(self::ID, $row[self::ID])->first();
-			if($villainTrait==null){
-				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
-				return false;
-			}
-			return $villainTrait->setUploadValues($row);
+			return self::attemptUpdate($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
-	private function setUploadValues($row){
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
 		return $this->runUpdateOrSave();
+	}
+
+	public static function getNewSelf(){
+		return new self();
 	}
 
 	public function validate($overrideDefaultValidationRules = false)
@@ -105,7 +104,6 @@ class VillainTrait extends AssetTrait implements Upload
 		return $rule;
 	}
 
-
 	public static function getValidKindsByType(){
 		return [
 			self::WEAKNESS => self::VALID_WEAKNESS_KINDS,
@@ -114,13 +112,9 @@ class VillainTrait extends AssetTrait implements Upload
 		];
 	}
 
-	public static function getValidTraitTypes(){
-		return self::VALID_TYPES;
-	}
-
-	public static function download($fileName)
+	public static function getValidTraitTypes()
 	{
-		return DownloadHelper::getDownloadFile(self::all(),$fileName);
+		return self::VALID_TYPES;
 	}
 
 }

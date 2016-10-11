@@ -18,8 +18,7 @@ class CreateDungeonTraitsTable extends Migration
 
 			$table->string('type');
 	        $table->string('trait');
-	        $table->integer('weight')->default(1);;
-	        $table->text('description');
+	        $table->text('description')->nullable();
 
 	        $table->integer('owner_id');
 	        $table->boolean('approved')->default(false);

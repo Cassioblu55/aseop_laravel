@@ -14,8 +14,6 @@
 
     @include("tiles.questions.textArea", ['field' =>'hint'])
 
-    @include("tiles.questions.number", ['field' => 'weight', 'validation'=>'min=1', 'required'=>true])
-
     @include("tiles.questions.textArea", ['field' =>'other_information'])
 
     @include('tiles.questions.publicPrivate')

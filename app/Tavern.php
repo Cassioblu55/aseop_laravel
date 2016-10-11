@@ -88,17 +88,17 @@ class Tavern extends Asset
 		};
 
 		$runOnUpdate = function($row){
-			$tavern = self::where(self::ID, $row[self::ID])->first();
-			if($tavern==null){
-				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
-				return false;
-			}
-			return $tavern->setUploadValues($row);
+			return self::attemptUpdate($row);
 		};
+
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
-	private function setUploadValues($row){
+	public static function getNewSelf(){
+		return new self();
+	}
+
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 		return $this->runUpdateOrSave();
@@ -106,10 +106,5 @@ class Tavern extends Asset
 
 	public static function getAllValidTraitTypes(){
 		return array_merge(self::ADDITIONAL_FILLABLE_FROM_TRAIT_TABLE, self::FILLABLE_FROM_TRAIT_TABLE);
-	}
-
-	public static function download($fileName)
-	{
-		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 }

@@ -13,8 +13,6 @@
 
     @include("tiles.questions.textArea", ['field' =>'description'])
 
-    @include("tiles.questions.number", ['field' =>'weight', 'validation'=>'min=1'])
-
     @include('tiles.questions.publicPrivate')
 @stop
 

@@ -32,7 +32,8 @@
                 $scope.generateMap();
                 setTraps();
 
-                $scope.dungeon.traps = getTrapSting($scope.traps);
+                $scope.dungeon.traps = ($scope.trapOptions.length > 0) ? getTrapSting($scope.traps) : "[]";
+
                 $scope.dungeon['_token'] = "{{ csrf_token() }}";
                 $scope.dungeon['_method'] = "POST";
 

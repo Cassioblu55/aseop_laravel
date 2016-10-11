@@ -25,6 +25,7 @@ class CreateMonstersTable extends Migration
 	        $table->text('abilities')->nullable();
 	        $table->text('actions')->nullable();
 	        $table->text('found')->nullable();
+	        $table->text('senses')->nullable();
 	        $table->text('description')->nullable();
 
 	        $table->integer('speed')->nullable()->default(0);
@@ -33,7 +34,7 @@ class CreateMonstersTable extends Migration
 
 	        $table->integer('owner_id');
 	        $table->boolean('approved')->default(false);
-	        $table->boolean('public');
+	        $table->boolean('public')->default(false);
 
             $table->timestamps();
         });

@@ -95,27 +95,21 @@ class Villain extends Asset
 		};
 
 		$runOnUpdate = function($row){
-			$villain = self::where(self::ID, $row[self::ID])->first();
-			if($villain==null){
-				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
-				return false;
-			}
-			return $villain->setUploadValues($row);
+			return self::attemptUpdate($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
-	private function setUploadValues($row){
+	public static function getNewSelf(){
+		return new self();
+	}
+
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
 		return $this->runUpdateOrSave();
-	}
-
-	public static function download($fileName)
-	{
-		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 
 }

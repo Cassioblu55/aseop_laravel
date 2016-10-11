@@ -6,12 +6,9 @@
  * Time: 11:13 PM
  */
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AddBatchAssetsTest extends TestCase
 {
-	use DatabaseTransactions;
-
 	public function testAddBatchShouldRunCreateFunctionsWhenIdsGiven(){
 		$path = "resources/assets/testing/csv/AddBatchAssets/testingUploadFileCreate_DO_NOT_EDIT.csv";
 		self::assertFileExists($path);

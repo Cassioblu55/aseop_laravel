@@ -25,8 +25,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 $factory->define(App\DungeonTrait::class, function (Faker\Generator $faker) {
 	return [
-		'type' => "foo",
-		'weight' => 1,
+		'type' => "name",
 		'trait' => "bar",
 		'public' => false,
 		'owner_id' => 1,

@@ -74,28 +74,16 @@ class Dungeon extends Asset
 		});
 	}
 
-	public static function upload($filePath)
-	{
-		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
-
-		$runOnCreate = function($row){
-			$dungeon = new self();
-			return $dungeon->setUploadValues($row);
-		};
-
-		$runOnUpdate = function($row){
-			$dungeon = self::where(self::ID, $row[self::ID])->first();
-			if($dungeon==null){
-				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
-				return false;
-			}
-			return $dungeon->setUploadValues($row);
-		};
-
-		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+	public static function getNewSelf(){
+		return new self();
 	}
 
-	private function setUploadValues($row){
+	public static function upload($filePath)
+	{
+		return self::runUpload($filePath, self::UPLOAD_COLUMNS);
+	}
+
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 		$this->setJsonFromRowIfPresent(self::MAP, $row);
@@ -103,11 +91,6 @@ class Dungeon extends Asset
 		$this->setTraps();
 
 		return $this->runUpdateOrSave();
-	}
-
-	public static function download($fileName)
-	{
-		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 
 

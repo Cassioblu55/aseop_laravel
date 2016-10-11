@@ -22,7 +22,6 @@ class Validate
 		if ($v->fails()) {
 			return $v->errors();
 		}
-		// validation pass
 		return [];
 	}
 
@@ -42,7 +41,6 @@ class Validate
 		if ($v->fails()) {
 			return "Could not $action: ".$v->errors();
 		}
-		// validation pass
 		return "No errors present";
 	}
 

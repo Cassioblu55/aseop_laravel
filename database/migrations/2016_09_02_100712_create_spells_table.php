@@ -17,18 +17,19 @@ class CreateSpellsTable extends Migration
             $table->increments('id');
 
 	        $table->string('name');
+	        $table->string('type');
 	        $table->string('class')->nullable();
-	        $table->string('level')->nullable();
+	        $table->integer('level')->default(0);
 	        $table->string('casting_time')->nullable();
-	        $table->string('range')->nullable();
+	        $table->integer('range')->default(0);
 	        $table->string('components')->nullable();
 	        $table->string('duration')->nullable();
 
-	        $table->text('description')->nullable();
+	        $table->text('description');
 
 	        $table->integer('owner_id');
 	        $table->boolean('approved')->default(false);
-	        $table->boolean('public');
+	        $table->boolean('public')->default(false);
 
             $table->timestamps();
         });

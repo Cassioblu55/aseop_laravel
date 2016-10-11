@@ -17,24 +17,25 @@ class CreateNonPlayerCharactersTable extends Migration
             $table->increments('id');
 
 	        $table->string('first_name');
-	        $table->string('last_name');
+	        $table->string('last_name')->nullable();
 	        $table->integer('age');
-	        $table->char('sex', 1);
+	        $table->char('sex', 1)->nullable();
 	        $table->integer('height');
 	        $table->integer('weight');
 
-	        $table->string('flaw');
-	        $table->string('interaction');
-	        $table->string('mannerism');
-	        $table->string('bond');
-	        $table->string('appearance');
-	        $table->string('talent');
-	        $table->string('ideal');
-	        $table->string('ability');
+	        $table->string('flaw')->nullable();
+	        $table->string('interaction')->nullable();
+	        $table->string('mannerism')->nullable();
+	        $table->string('bond')->nullable();
+	        $table->string('appearance')->nullable();
+	        $table->string('talent')->nullable();
+	        $table->string('ideal')->nullable();
+	        $table->string('ability')->nullable();
+	        $table->text('other_information')->nullable();
 
 	        $table->integer('owner_id');
 	        $table->boolean('approved')->default(false);
-	        $table->boolean('public');
+	        $table->boolean('public')->default(false);
 
             $table->timestamps();
         });

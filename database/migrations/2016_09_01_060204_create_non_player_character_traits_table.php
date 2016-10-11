@@ -21,7 +21,7 @@ class CreateNonPlayerCharacterTraitsTable extends Migration
 
 	        $table->integer('owner_id');
 	        $table->boolean('approved')->default(false);
-	        $table->boolean('public');
+	        $table->boolean('public')->default(false);
 
             $table->timestamps();
         });

@@ -36,6 +36,6 @@ class CreateTavernsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('tavens');
+        Schema::drop('taverns');
     }
 }

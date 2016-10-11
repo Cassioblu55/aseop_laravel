@@ -3,13 +3,11 @@
  * Created by make:aesopTest command using template: test.blade.php
  */
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Services\Validate;
 use Illuminate\Http\Request;
 
 class ValidateTest extends TestCase
 {
-    use DatabaseTransactions;
 
     private $logging;
 

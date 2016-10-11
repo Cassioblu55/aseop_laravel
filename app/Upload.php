@@ -11,7 +11,10 @@ namespace app;
 
 interface Upload
 {
-
 	public static function upload($filePath);
+
+	public function setUploadValues($row);
+
+	public static function getNewSelf();
 
 }

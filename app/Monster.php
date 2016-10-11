@@ -53,18 +53,17 @@ class Monster extends GenericModel
 		};
 
 		$runOnUpdate = function($row){
-			$monster = self::where(self::ID, $row[self::ID])->first();
-			if($monster==null){
-				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
-				return false;
-			}
-			return $monster->setUploadValues($row);
+			return self::attemptUpdate($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
-	private function setUploadValues($row){
+	public static function getNewSelf(){
+		return new self();
+	}
+
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
@@ -79,8 +78,4 @@ class Monster extends GenericModel
 		return $this->runUpdateOrSave();
 	}
 
-	public static function download($fileName)
-	{
-		return DownloadHelper::getDownloadFile(self::all(),$fileName);
-	}
 }

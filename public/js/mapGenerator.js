@@ -28,37 +28,39 @@ app.controller("TrapController", ['$scope', "$controller", function($scope, $con
 	
 	//Will loop through list of traps and and add values to any that are missing
 	$scope.setRandomTraps = function(){
-		for(var i=0; i< $scope.traps.length; i++){
-			//If no trap id is selected
-			if(!$scope.traps[i].id){
-				$scope.traps[i].id = randomFromArray($scope.trapOptions).id;
-			}
-			//If there is no row or column
-			if(!$scope.traps[i].column && !$scope.traps[i].row){
-				//Get a random row
-				var rows = $scope.map.activeRows();
-				var row  = randomKeyFromHash(rows);
-				$scope.traps[i].row = row;
-				//Get ranodm column from vaild rows
-				var columns = $scope.map.activeColumns(row);
-				var column = randomKeyFromHash(columns);
-				$scope.traps[i].column = column;
-			}
-			//If there is a row without a column
-			else if(!$scope.traps[i].column && $scope.traps[i].row){
-				//Find a vaild column with the given row
-				var row = $scope.traps[i].row;
-				var columns = $scope.map.activeColumns(row);
-				var column = randomKeyFromHash(columns);
-				$scope.traps[i].column = column;
-			}
-			//If there a column and no row
-			else if($scope.traps[i].column && !$scope.traps[i].row){
-				//Find a vaild column with the given row
-				var column = $scope.traps[i].column
-				var rows = $scope.map.activeRows(column);
-				var row  = randomKeyFromHash(rows);
-				$scope.traps[i].row = row;
+		if($scope.trapOptions.length > 0) {
+			for (var i = 0; i < $scope.traps.length; i++) {
+				//If no trap id is selected
+				if (!$scope.traps[i].id) {
+					$scope.traps[i].id = randomFromArray($scope.trapOptions).id;
+				}
+				//If there is no row or column
+				if (!$scope.traps[i].column && !$scope.traps[i].row) {
+					//Get a random row
+					var rows = $scope.map.activeRows();
+					var row = randomKeyFromHash(rows);
+					$scope.traps[i].row = row;
+					//Get ranodm column from vaild rows
+					var columns = $scope.map.activeColumns(row);
+					var column = randomKeyFromHash(columns);
+					$scope.traps[i].column = column;
+				}
+				//If there is a row without a column
+				else if (!$scope.traps[i].column && $scope.traps[i].row) {
+					//Find a vaild column with the given row
+					var row = $scope.traps[i].row;
+					var columns = $scope.map.activeColumns(row);
+					var column = randomKeyFromHash(columns);
+					$scope.traps[i].column = column;
+				}
+				//If there a column and no row
+				else if ($scope.traps[i].column && !$scope.traps[i].row) {
+					//Find a vaild column with the given row
+					var column = $scope.traps[i].column
+					var rows = $scope.map.activeRows(column);
+					var row = randomKeyFromHash(rows);
+					$scope.traps[i].row = row;
+				}
 			}
 		}
 	}

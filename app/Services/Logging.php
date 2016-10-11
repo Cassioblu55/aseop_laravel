@@ -36,7 +36,6 @@ class Logging{
 				$message = "Object could not be converted to json.";
 			}
 
-
 			if ($ignoreDefaltPrefix) {
 				Log::info($message);
 			} else {

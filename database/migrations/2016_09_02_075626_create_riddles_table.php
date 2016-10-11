@@ -20,7 +20,6 @@ class CreateRiddlesTable extends Migration
 			$table->text('riddle');
 			$table->text('solution');
 			$table->text('hint')->nullable();
-			$table->integer('weight')->default(1);
 			$table->text('other_information')->nullable();
 
 			$table->integer('owner_id');

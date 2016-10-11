@@ -45,18 +45,17 @@ class Riddle extends Random implements Upload
 		};
 
 		$runOnUpdate = function($row){
-			$riddle = self::where(self::ID, $row[self::ID])->first();
-			if($riddle==null){
-				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
-				return false;
-			}
-			return $riddle->setUploadValues($row);
+			return self::attemptUpdate($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
-	private function setUploadValues($row){
+	public static function getNewSelf(){
+		return new self();
+	}
+
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
@@ -66,11 +65,6 @@ class Riddle extends Random implements Upload
 	public function isValid(){
 		$allRequiredPresent = $this->allRequiredPresent(self::REQUIRED_COLUMNS);
 		return $allRequiredPresent;
-	}
-
-	public static function download($fileName)
-	{
-		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 
 }

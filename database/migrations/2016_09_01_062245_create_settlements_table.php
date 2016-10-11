@@ -17,20 +17,20 @@ class CreateSettlementsTable extends Migration
             $table->increments('id');
 
 	        $table->string('name');
-	        $table->text('known_for');
-	        $table->text('notable_traits');
-	        $table->text('ruler_status');
-	        $table->text('current_calamity');
+	        $table->text('known_for')->nullable();
+	        $table->text('notable_traits')->nullable();
+	        $table->text('ruler_status')->nullable();
+	        $table->text('current_calamity')->nullable();
 	        $table->integer('population');
 	        $table->char('size', 1);
-	        $table->string('race_relations');
-	        $table->text('other_information');
+	        $table->string('race_relations')->nullable();
+	        $table->text('other_information')->nullable();
 
 	        $table->integer('ruler_id');
 
 	        $table->integer('owner_id');
 	        $table->boolean('approved')->default(false);
-	        $table->boolean('public');
+	        $table->boolean('public')->default(false);
 
 	        $table->timestamps();
         });

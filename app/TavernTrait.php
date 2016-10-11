@@ -48,18 +48,17 @@ class TavernTrait extends AssetTrait implements Upload
 		};
 
 		$runOnUpdate = function($row){
-			$tavernTrait = self::where(self::ID, $row[self::ID])->first();
-			if($tavernTrait==null){
-				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
-				return false;
-			}
-			return $tavernTrait->setUploadValues($row);
+			return self::attemptUpdate($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
-	private function setUploadValues($row){
+	public static function getNewSelf(){
+		return new self();
+	}
+
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
@@ -69,10 +68,5 @@ class TavernTrait extends AssetTrait implements Upload
 	public static function getValidTraitTypes()
 	{
 		return Tavern::getAllValidTraitTypes();
-	}
-
-	public static function download($fileName)
-	{
-		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 }

@@ -6,12 +6,9 @@
  * Time: 10:11 PM
  */
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AssetTest extends TestCase
 {
-	use DatabaseTransactions;
-
 	private $logging;
 
 	public function __construct()
@@ -25,12 +22,9 @@ class AssetTest extends TestCase
 		$this->assertNotNull($dungeonTrait->id);
 
 		$dungeon = new \App\Dungeon();
-		$trait = $dungeon->getTraitRandomByType("foo");
+		$trait = $dungeon->getTraitRandomByType("name");
 
-		$this->logging->ping();
-		$this->logging->logInfo(json_encode($trait));
-
-		$this->assertEquals("bar", $trait);
+		$this->assertNotNull($trait);
 	}
 
 	public function testGetTraitRandomByTypeShouldReturnMultipleColumnsIfRequested(){
@@ -39,9 +33,6 @@ class AssetTest extends TestCase
 
 		$dungeon = new \App\Villain();
 		$trait = $dungeon->getTraitRandomByType("foo", ['description', 'kind']);
-
-		$this->logging->ping();
-		$this->logging->logInfo(json_encode($trait));
 
 		$this->assertEquals("description", $trait['description']);
 		$this->assertEquals("kind", $trait['kind']);

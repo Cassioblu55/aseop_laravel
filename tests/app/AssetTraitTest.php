@@ -6,12 +6,9 @@
  * Time: 10:11 PM
  */
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AssetTraitTest extends TestCase
 {
-	use DatabaseTransactions;
-
 	private $logging;
 
 	public function __construct()
@@ -24,11 +21,9 @@ class AssetTraitTest extends TestCase
 		factory(App\DungeonTrait::class)->create();
 
 		$dungeonTrait = new \App\DungeonTrait();
-		$dbTrait = $dungeonTrait->getRandomByType("foo");
+		$dbTrait = $dungeonTrait->getRandomByType("name");
 
-		$this->assertEquals("foo", $dbTrait->type);
-		$this->assertEquals("bar", $dbTrait->trait);
-		$this->assertEquals(1, $dbTrait->weight);
+		$this->assertNotNull($dbTrait->id);
 	}
 
 	public function testGetRandomByTypeShouldReturnBlankIfNoRandomTraitFound(){

@@ -25,15 +25,16 @@ class CSVParser{
 	public function getCSVData(){
 		$csvData = [];
 
-		$data = array_map("str_getcsv", file($this->filePath,FILE_SKIP_EMPTY_LINES));
+		if(is_file($this->filePath)){
+			$data = array_map("str_getcsv", file($this->filePath,FILE_SKIP_EMPTY_LINES));
 
-		$desiredColumnsWithIndex = $this->getDesiredColumnsWithIndex(array_shift($data));
+			$desiredColumnsWithIndex = $this->getDesiredColumnsWithIndex(array_shift($data));
 
-		foreach ($data as $row) {
-			$rowWithDesiredData = $this->getDesiredData($row, $desiredColumnsWithIndex);
-			array_push($csvData, $rowWithDesiredData);
+			foreach ($data as $row) {
+				$rowWithDesiredData = $this->getDesiredData($row, $desiredColumnsWithIndex);
+				array_push($csvData, $rowWithDesiredData);
+			}
 		}
-
 		return $csvData;
 	}
 

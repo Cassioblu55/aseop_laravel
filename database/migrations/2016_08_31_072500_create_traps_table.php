@@ -16,12 +16,11 @@ class CreateTrapsTable extends Migration
         Schema::create('traps', function (Blueprint $table) {
             $table->increments('id');
 	        $table->string('name');
-	        $table->text('description');
-	        $table->text('rolls');
-	        $table->integer('weight');
+	        $table->text('description')->nullable();
+	        $table->text('rolls')->nullable();
 
 	        $table->integer('owner_id');
-	        $table->boolean('approved');
+	        $table->boolean('approved')->default(false);
 	        $table->boolean('public');
 
 	        $table->timestamps();

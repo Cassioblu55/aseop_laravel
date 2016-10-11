@@ -3,12 +3,10 @@
  * Created by make:aesopTest command using template: test.blade.php
  */
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\TestingUtils\FileTesting;
 
 class FileTestingTest extends TestCase
 {
-    use DatabaseTransactions;
 
 	const BASE_FILE_PATH = "resources/assets/testing/txt/FileTesting";
 

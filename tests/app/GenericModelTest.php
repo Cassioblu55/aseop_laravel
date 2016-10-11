@@ -8,12 +8,12 @@
 
 use App\Dungeon;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\DungeonTrait;
+use App\GenericModel;
+use App\TestingUtils\FileTesting;
 
 class GenericModelTest extends TestCase
 {
-	use DatabaseTransactions;
-
 	private $logging;
 
 	public function __construct()
@@ -21,6 +21,13 @@ class GenericModelTest extends TestCase
 		$this->logging = new \App\Services\Logging(self::class);
 
 		parent::__construct();
+	}
+
+	public function setUp(){
+		parent::setUp();
+
+		$user = factory(\App\User::class)->create();
+		$this->actingAs($user);
 	}
 
 	public function testSetErrorsShouldAddMultipleErrors()
@@ -92,6 +99,7 @@ class GenericModelTest extends TestCase
 	}
 
 	public function testDuplicateFoundShouldReturnFalseIfDuplicateIsNotExist(){
+		DungeonTrait::truncate();
 		$genericTrait = factory(\App\DungeonTrait::class)->make();
 		$this->assertFalse($genericTrait->duplicateFound());
 	}
@@ -226,6 +234,8 @@ class GenericModelTest extends TestCase
 	}
 
 	public function testRunUpdateOrSaveShouldUpdateRecordWhenItDoesExist(){
+
+
 		$dungeon  = factory(\App\Dungeon::class)->create();
 		$this->assertNotNull($dungeon->id);
 
@@ -334,8 +344,58 @@ class GenericModelTest extends TestCase
 		$dungeon = new Dungeon();
 
 		$this->assertEquals("No errors present", $dungeon->getErrorMessage());
-
 	}
 
+	public function testAttemptUpdateShouldReturnFalseIfRowDoesNotExist(){
+		DungeonTrait::truncate();
+		$this->assertFalse(DungeonTrait::attemptUpdate(["id" => 1]));
+	}
 
+	public function testAttemptUpdateShouldReturnFalseIfRowHasNoId(){
+		DungeonTrait::truncate();
+		$this->assertFalse(DungeonTrait::attemptUpdate([]));
+	}
+
+	public function testAttemptUpdateShouldReturnUpdateRowIfGivenValidData(){
+		DungeonTrait::truncate();
+
+		$dungeonTrait = factory(DungeonTrait::class)->create();
+
+		$this->assertNotEquals("bars", $dungeonTrait->trait);
+		$dungeonTrait->trait = "bars";
+
+		$this->assertTrue(DungeonTrait::attemptUpdate($dungeonTrait->toArray()));
+
+		$dbRecord = DungeonTrait::where(GenericModel::ID, $dungeonTrait->id)->first();
+
+		$this->assertEquals($dungeonTrait->id, $dbRecord->id);
+		$this->assertEquals("bars", $dbRecord->trait);
+	}
+
+	public function testUploadShouldAddDungeonTrait(){
+		$user = factory(App\User::class)->create();
+		$this->actingAs($user);
+
+		$path = "resources/assets/testing/csv/DungeonTrait/testUpload.csv";
+		$uploadFile = new FileTesting($path);
+
+		$this->assertTrue($uploadFile->exists());
+
+		DungeonTrait::truncate();
+
+		$count = count(DungeonTrait::all());
+
+		$message = DungeonTrait::runUpload($path, DungeonTrait::UPLOAD_COLUMNS);
+
+		$this->assertEquals($count+1, count(DungeonTrait::all()));
+
+		$this->assertEquals("1 records added 0 updated 0 records could not be uploaded", $message);
+
+		$trait = DungeonTrait::where("trait", "uploadTestName")->first();
+
+		$this->assertNotNull($trait);
+
+		$this->assertEquals("name", $trait->type);
+		$this->assertEquals("uploadTestName", $trait->trait);
+	}
 }

@@ -20,7 +20,6 @@ class Trap extends GenericModel
 	protected $rules = [
 		self::NAME => 'required|max:255',
 		self::DESCRIPTION => 'required',
-		self::WEIGHT => 'required|integer|min:1',
 	];
 	
 	public function user()
@@ -44,26 +43,21 @@ class Trap extends GenericModel
 		};
 
 		$runOnUpdate = function($row){
-			$trap = self::where(self::ID, $row[self::ID])->first();
-			if($trap==null){
-				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
-				return false;
-			}
-			return $trap->setUploadValues($row);
+			return self::attemptUpdate($row);
 		};
+
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
-	private function setUploadValues($row){
+	public static function getNewSelf(){
+		return new self();
+	}
+
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
 		return $this->runUpdateOrSave();
-	}
-
-	public static function download($fileName)
-	{
-		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 
 }

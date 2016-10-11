@@ -47,18 +47,17 @@ class SettlementTrait extends AssetTrait implements Upload
 		};
 
 		$runOnUpdate = function($row){
-			$settlementTrait = self::where(self::ID, $row[self::ID])->first();
-			if($settlementTrait==null){
-				Logging::error("Could not update, Id ".$row[self::ID]." not found", self::class);
-				return false;
-			}
-			return $settlementTrait->setUploadValues($row);
+			return self::attemptUpdate($row);
 		};
 
 		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
 	}
 
-	private function setUploadValues($row){
+	public static function getNewSelf(){
+		return new self();
+	}
+
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 		return $this->runUpdateOrSave();
@@ -72,11 +71,6 @@ class SettlementTrait extends AssetTrait implements Upload
 	public function validate($overrideDefaultValidationRules = false)
 	{
 		return parent::validate($overrideDefaultValidationRules) && !$this->duplicateFound();
-	}
-
-	public static function download($fileName)
-	{
-		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
 
 }

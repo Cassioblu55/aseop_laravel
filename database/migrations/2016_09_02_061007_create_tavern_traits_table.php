@@ -21,7 +21,7 @@ class CreateTavernTraitsTable extends Migration
 
 	        $table->integer('owner_id');
 	        $table->boolean('approved')->default(false);
-	        $table->boolean('public');
+	        $table->boolean('public')->default(false);
 
             $table->timestamps();
         });
@@ -34,6 +34,6 @@ class CreateTavernTraitsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('taven_traits');
+        Schema::drop('tavern_traits');
     }
 }

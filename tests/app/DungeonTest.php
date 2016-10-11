@@ -11,8 +11,6 @@ use App\Dungeon;
 
 class DungeonTest extends TestCase
 {
-	use DatabaseTransactions;
-
 	const RULES = [
 		'name' =>'required|max:255',
 		'map' => 'required|json',
@@ -37,15 +35,15 @@ class DungeonTest extends TestCase
 		$user = factory(App\User::class)->create();
 		$this->actingAs($user);
 
-		$dungeonName = factory(App\DungeonTrait::class)->make();
-		$dungeonName->type = "name";
-		$dungeonName->runUpdateOrSave();
+		factory(App\DungeonTrait::class)->create();
 
 		$dungeon = Dungeon::generate();
 
 		$this->assertNull($dungeon->map);
 		$this->assertEquals("[]", $dungeon->traps);
 		$this->assertNotEmpty($dungeon->name);
+		$this->assertEquals("bar", $dungeon->name);
+
 		$this->assertContains($dungeon->size, ['S', 'M', 'L']);
 	}
 
