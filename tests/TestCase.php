@@ -11,11 +11,16 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 	{
 		putenv('DB_DEFAULT=sqlite_testing');
 
-		$app = require __DIR__ . '/../bootstrap/app.php';
+		global $app;
 
-		$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+		if (is_null($app)) {
+			$app = require __DIR__.'/../bootstrap/app.php';
+
+			$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+		}
 
 		return $app;
+
 	}
 
 	public function setUp()
@@ -27,6 +32,8 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 	public function tearDown()
 	{
 		Artisan::call('migrate:reset');
-		parent::tearDown();
+
+		\Mockery::close();
+		//parent::tearDown();
 	}
 }

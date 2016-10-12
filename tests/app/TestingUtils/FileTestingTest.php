@@ -159,4 +159,19 @@ class FileTestingTest extends TestCase
 		self::assertFileNotExists($path);
 	}
 
+	public function testClearShouldClearFilesContents(){
+		$path = self::BASE_FILE_PATH."/text_DO_NOT_EDIT.txt";
+		$file = new FileTesting($path);
+
+		$this->assertNotEquals("", $file->getFileContents());
+
+		$file->clear();
+
+		$this->assertEquals("", $file->getFileContents());
+
+		$file->revert();
+	}
+
+
+
 }

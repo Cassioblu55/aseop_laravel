@@ -33,7 +33,6 @@
             $scope.gridModel.setColumnDefs([
                 {field: 'name'},
                 {field: 'description'},
-                {field: 'weight'},
                 {field: 'public'},
                 {field: 'created_at', cellFilter: "date:'MM-dd-yy'", displayName: "Created"}
             ]);

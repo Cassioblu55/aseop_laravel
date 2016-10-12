@@ -48,6 +48,10 @@ class FileTesting extends TestCase
 		}
 	}
 
+	public function clear(){
+		file_put_contents($this->filePath, "");
+	}
+
 	public function getFileContents(){
 		if($this->exists() && $this->isFile()){
 			return file_get_contents($this->filePath);

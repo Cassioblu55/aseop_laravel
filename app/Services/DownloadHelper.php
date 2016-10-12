@@ -15,7 +15,7 @@ use Excel;
 class DownloadHelper
 {
 
-	const VALID_EXPORT_EXTENTIONS = ['csv', 'xls', 'xlsx'];
+	const VALID_EXPORT_EXTENSIONS = ['csv', 'xls', 'xlsx'];
 
 	public static function getDownloadFile($data, $fileName, $useTimestamps = true){
 		$fileName = ($useTimestamps) ? $fileName."_".date("Y-m-d") : $fileName;
@@ -28,7 +28,7 @@ class DownloadHelper
 	}
 
 	public static function export($file, $ext="csv"){
-		if(in_array($ext, self::VALID_EXPORT_EXTENTIONS)){
+		if(in_array($ext, self::VALID_EXPORT_EXTENSIONS)){
 			$file->export($ext);
 		}
 	}
