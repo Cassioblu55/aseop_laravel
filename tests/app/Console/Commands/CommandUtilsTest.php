@@ -142,8 +142,13 @@ class CommandUtilsTest extends TestCase
 		$this->assertEquals("blade template with FooTest, fooTest", $newFile->getFileContents());
 
 		$newFile->revert();
-
 	}
+
+	public function testGetComposerCommandShouldReturnComposerCommand(){
+		$shouldBeComposerCommand = env("COMPOSER", 'composer')." dump-autoload -q";
+		$this->assertEquals($shouldBeComposerCommand, CommandUtils::getComposerCommand("dump-autoload -q"));
+	}
+
 
 
 

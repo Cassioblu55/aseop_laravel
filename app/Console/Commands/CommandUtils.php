@@ -62,4 +62,13 @@ class CommandUtils
 		return implode("/",$pathArray);
 	}
 
+	public static function composer($params){
+		shell_exec(self::getComposerCommand($params));
+	}
+
+	public static function getComposerCommand($params){
+		$composerLink = env('COMPOSER', 'composer');
+		return "$composerLink $params";
+	}
+
 }
