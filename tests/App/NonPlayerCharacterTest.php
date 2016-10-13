@@ -99,9 +99,6 @@ class NonPlayerCharacterTest extends TestCase
     }
 
 	public function testUploadShouldAddNonPlayerCharacter(){
-		$user = factory(App\User::class)->create();
-		$this->actingAs($user);
-
 		$path = "resources/assets/testing/csv/NonPlayerCharacter/testUpload_DO_NOT_EDIT.csv";
 		new FileTesting($path);
 
