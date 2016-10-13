@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Services\Logging;
+use App\Services\StringUtils;
 use App\Services\Validate;
 
 class Monster extends GenericModel
@@ -29,12 +30,6 @@ class Monster extends GenericModel
 		self::SPEED=>'required|min:0|integer',
 		self::CHALLENGE =>'required|min:0.0|numeric',
 		self::STATS => 'required|json',
-		self::ABILITIES=>'json',
-		self::ACTIONS =>'json',
-		self::SENSES => 'json',
-		self::FOUND => 'json',
-		self::LANGUAGES => 'json',
-		self::SKILLS => 'json'
 	];
 
 	public function user()
@@ -55,37 +50,95 @@ class Monster extends GenericModel
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
 
-		$this->setJsonFromRowIfPresent(self::ABILITIES, $row, "[]");
-		$this->setJsonFromRowIfPresent(self::ACTIONS, $row, "[]");
-		$this->setJsonFromRowIfPresent(self::FOUND, $row, "[]");
-		$this->setJsonFromRowIfPresent(self::SENSES, $row, "[]");
-		$this->setJsonFromRowIfPresent(self::SKILLS, $row, "[]");
-		$this->setJsonFromRowIfPresent(self::LANGUAGES, $row, "[]");
-		$this->setJsonFromRowIfPresent(self::STATS, $row, "[]");
+		$this->setJsonFromRowIfPresent(self::ABILITIES, $row);
+		$this->setJsonFromRowIfPresent(self::ACTIONS, $row);
+		$this->setJsonFromRowIfPresent(self::FOUND, $row);
+		$this->setJsonFromRowIfPresent(self::SENSES, $row);
+		$this->setJsonFromRowIfPresent(self::SKILLS, $row);
+		$this->setJsonFromRowIfPresent(self::LANGUAGES, $row);
+		$this->setJsonFromRowIfPresent(self::STATS, $row);
 
 		return $this->runUpdateOrSave();
 	}
 
 	public function validate($overrideDefaultValidationRules = false)
 	{
-		$validStats = $this->statsValid();
-		$validHitPoints = $this->hitPointsValid();
-		return parent::validate($overrideDefaultValidationRules) && $validStats && $validHitPoints;
+		$validAbilitiesArray = [
+			$this->statsValid(),
+			$this->hitPointsValid(),
+			$this->validAbilities(),
+			$this->validActions(),
+			$this->validFound(),
+			$this->validSenses(),
+			$this->validSkills(),
+			$this->validLanguages()
+		];
+
+		return parent::validate($overrideDefaultValidationRules) && Validate::allInArrayTrue($validAbilitiesArray);
 	}
 
 	private function statsValid(){
-		$validStats = Stats::validStatsArray($this->stats);
-		if(!$validStats){
-			$this->setError(self::STATS, "Stats invalid.");
-		}
-		return $validStats;
+		return $this->setErrorOnFailed(self::STATS, function(){
+			return Stats::validStatsArray($this->stats);
+		});
 	}
 
 	private function hitPointsValid(){
-		$validHitPoints = Validate::validRoll($this->hit_points);
-		if(!$validHitPoints){
-			$this->setError(self::HIT_POINTS, "Hit points invalid.");
-		}
-		return $validHitPoints;
+		return $this->setErrorOnFailed(self::HIT_POINTS, function(){
+			return Validate::validRoll($this->{self::HIT_POINTS});
+		});
+	}
+
+	private function validAbilities(){
+		return $this->setErrorOnFailed(self::ABILITIES, function(){
+			$requiredKeys = ['name', 'description'];
+			return Validate::stringOfJsonArrayContainsKeys($this->{self::ABILITIES}, $requiredKeys, true);
+		});
+	}
+
+	private function validActions(){
+		return $this->setErrorOnFailed(self::ACTIONS, function() {
+			$requiredKeys = ['name', 'description'];
+			return Validate::stringOfJsonArrayContainsKeys($this->{self::ACTIONS}, $requiredKeys, true);
+		});
+	}
+
+	private function validFound(){
+		return $this->setErrorOnFailed(self::FOUND, function() {
+			$requiredKeys = ['found'];
+			return Validate::stringOfJsonArrayContainsKeys($this->{self::FOUND}, $requiredKeys, true);
+		});
+	}
+
+	private function validSenses(){
+		return $this->setErrorOnFailed(self::SENSES, function() {
+			$requiredKeys = ['sense'];
+			return Validate::stringOfJsonArrayContainsKeys($this->{self::SENSES}, $requiredKeys, true);
+		});
+	}
+
+	private function validSkills(){
+		return $this->setErrorOnFailed(self::SKILLS, function() {
+			$requiredKeys = ['skill', 'modifier'];
+			$allRequiredKeysPresent =  Validate::stringOfJsonArrayContainsKeys($this->{self::SKILLS}, $requiredKeys, true);
+			if($allRequiredKeysPresent && !Validate::blackOrNull($this->{self::SKILLS})){
+				foreach (json_decode($this->{self::SKILLS}) as $skill){
+					$modifier = $skill->modifier;
+					if(!is_integer($modifier) || is_integer($modifier) && $modifier < 0){
+						return false;
+					}
+				}
+				return true;
+			}else{
+				return $allRequiredKeysPresent;
+			}
+		});
+	}
+
+	private function validLanguages(){
+		return $this->setErrorOnFailed(self::LANGUAGES, function() {
+			$requiredKeys = ['language'];
+			return Validate::stringOfJsonArrayContainsKeys($this->{self::LANGUAGES}, $requiredKeys, true);
+		});
 	}
 }

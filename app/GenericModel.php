@@ -17,6 +17,7 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Database\QueryException;
 use App\Services\AddBatchAssets;
 use App\Services\DownloadHelper;
+use App\Services\StringUtils;
 
 abstract class GenericModel extends Model implements Upload, Download
 {
@@ -214,8 +215,9 @@ abstract class GenericModel extends Model implements Upload, Download
 		return $this->errors;
 	}
 
-	public function getErrors(){
-		return $this->errors()->toArray();
+	public function getErrors()
+	{
+		return ($this->errors() != null) ? $this->errors()->toArray() : new \stdClass();
 	}
 
 	public function getErrorsJson(){
@@ -321,5 +323,16 @@ abstract class GenericModel extends Model implements Upload, Download
 	{
 		return DownloadHelper::getDownloadFile(self::all(),$fileName);
 	}
+
+
+	public function setErrorOnFailed($field, $func,$errorMessage = null){
+		$errorMessage = ($errorMessage == null) ? StringUtils::display($field)." invalid." : $errorMessage;
+		$valid = $func();
+		if(!$valid){
+			$this->setError($field, $errorMessage);
+		}
+		return $valid;
+	}
+
 
 }

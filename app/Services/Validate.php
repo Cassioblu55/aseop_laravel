@@ -72,4 +72,35 @@ class Validate
 		return preg_match($rollPattern, $roll) == 1;
 	}
 
+	public static function blackOrNull($string){
+		return $string == '' || $string == null;
+	}
+
+	public static function allInArrayTrue($array){
+		foreach ($array as $row){
+			if($row != true || $row != 1){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static function stringOfJsonArrayContainsKeys($jsonArrayAsString, $requiredKeys, $canBeNullOrBlank = false){
+
+		$blackOrNull =  Validate::blackOrNull($jsonArrayAsString);
+		if($canBeNullOrBlank && $jsonArrayAsString == "[]"){return true;}
+		if($canBeNullOrBlank && $blackOrNull){return true;}
+		if(!$canBeNullOrBlank && $blackOrNull){return false;}
+
+		$json = json_decode($jsonArrayAsString);
+		if($json == null || !is_array($json)){return false;}
+
+		foreach ($json as $row){
+			if(!array_has($row, $requiredKeys)){
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

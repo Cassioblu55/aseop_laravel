@@ -379,9 +379,6 @@ class GenericModelTest extends TestCase
 	}
 
 	public function testUploadShouldAddDungeonTrait(){
-		$user = factory(App\User::class)->create();
-		$this->actingAs($user);
-
 		$path = "resources/assets/testing/csv/DungeonTrait/testUpload.csv";
 		$uploadFile = new FileTesting($path);
 
@@ -416,4 +413,27 @@ class GenericModelTest extends TestCase
 
 		$this->assertEquals($expectedMessage, $dungeon->getErrorsJson());
 	}
+
+	public function testSetErrorOnFailedWillSetErrorWhenFunctionReturnsFalse(){
+		$dungeon = factory(Dungeon::class)->make();
+		$this->assertEquals("{}", $dungeon->getErrorsJson());
+
+		$dungeon->setErrorOnFailed('foo', function(){
+			return true;
+		});
+		$this->assertEquals("{}", $dungeon->getErrorsJson());
+
+		$dungeon->setErrorOnFailed('foo', function(){
+			return false;
+		});
+		$this->assertEquals('{"foo":["Foo invalid."]}', $dungeon->getErrorsJson());
+
+		$dungeon = factory(Dungeon::class)->make();
+		$dungeon->setErrorOnFailed('foo', function(){
+			return false;
+		}, "Foo no work.");
+		$this->assertEquals('{"foo":["Foo no work."]}', $dungeon->getErrorsJson());
+
+	}
+
 }

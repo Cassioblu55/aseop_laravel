@@ -120,4 +120,48 @@ class ValidateTest extends TestCase
 		$this->assertFalse(Validate::validRollString(""));
 	}
 
+	public function testBlankOrNullShouldReturnTrueIfStringIsBlackrNull(){
+		$this->assertTrue(Validate::blackOrNull(""));
+		$this->assertTrue((Validate::blackOrNull(null)));
+		$this->assertFalse(Validate::blackOrNull("foo bar"));
+	}
+
+	public function testAllInArrayTrueWillReturnTrueIfAllInArrayTrueOrOne(){
+		$validArray = [true, 1, true, 1];
+		$this->assertTrue(Validate::allInArrayTrue($validArray));
+
+
+		$invalidArray = [false];
+		$this->assertFalse(Validate::allInArrayTrue($invalidArray));
+
+		$invalidArray = [0];
+		$this->assertFalse(Validate::allInArrayTrue($invalidArray));
+	}
+
+	public function testStringOfJsonArrayContainsKeysShouldFailIfJsonArrayAsStringDoesNotContainKeys()
+	{
+		$requiredKeys = ['name', 'description'];
+
+		$validJsonArrays = ['', null, '[{"name":"foo","description":"bar"}]', "[]"];
+		foreach ($validJsonArrays as $row) {
+			$this->assertTrue(Validate::stringOfJsonArrayContainsKeys($row, $requiredKeys, true));
+		}
+
+		$invalidJsonArrayNotJsonArrayString = "foo bar";
+		$this->assertFalse(Validate::stringOfJsonArrayContainsKeys($invalidJsonArrayNotJsonArrayString, $requiredKeys, true));
+
+		$invalidJsonArrayNotArray = '{"name":"foo","description":"bar"}';
+		$this->assertFalse(
+			Validate::stringOfJsonArrayContainsKeys($invalidJsonArrayNotArray, $requiredKeys));
+
+		$invalidJsonArrayMissingKey = '[{"name":"foo"}]';
+		$this->assertFalse(Validate::stringOfJsonArrayContainsKeys($invalidJsonArrayMissingKey, $requiredKeys));
+
+		$invalidJsonBlack = '';
+		$this->assertFalse(Validate::stringOfJsonArrayContainsKeys($invalidJsonBlack, $requiredKeys));
+
+		$invalidJsonNull = null;
+		$this->assertFalse(Validate::stringOfJsonArrayContainsKeys($invalidJsonNull, $requiredKeys));
+	}
+
 }
