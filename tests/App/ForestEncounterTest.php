@@ -4,10 +4,17 @@
  */
 
 use App\ForestEncounter;
+use App\TestingUtils\FileTesting;
 
 class ForestEncounterTest extends TestCase
 {
     private $logging;
+
+	const TEST_UPLOAD_ROW = [
+		"title" => "testUpload",
+		"description" => "foobar",
+		"rolls" => "2d4+4,5d4+3"
+	];
 
 	private $user;
 
@@ -37,19 +44,43 @@ class ForestEncounterTest extends TestCase
 	    $forestEncounter = new ForestEncounter();
 	    $this->assertNull($forestEncounter->id);
 
-	    $row = ["title" => 'foo', "description" => "bar", "rolls" => "1d6+1"];
+	    $row = self::TEST_UPLOAD_ROW;
 
 	    $forestEncounter->setUploadValues($row);
 
 	    $this->assertNotNull($forestEncounter->id);
-	    $this->assertEquals("foo", $forestEncounter->title);
-	    $this->assertEquals("bar", $forestEncounter->description);
-	    $this->assertEquals("1d6+1", $forestEncounter->rolls);
+	    $this->assertEquals("testUpload", $forestEncounter->title);
+	    $this->assertEquals("foobar", $forestEncounter->description);
+	    $this->assertEquals("2d4+4,5d4+3", $forestEncounter->rolls);
 	    $this->assertEquals($this->user->id, $forestEncounter->owner_id);
 	    $this->assertFalse($forestEncounter->approved);
 
 	    $this->assertEquals($count+1, count(ForestEncounter::all()));
     }
+
+	public function testUploadShouldAddMonster(){
+		$user = factory(App\User::class)->create();
+		$this->actingAs($user);
+
+		$path = "resources/assets/testing/csv/ForestEncounter/testUpload_DO_NOT_EDIT.csv";
+		new FileTesting($path);
+
+		ForestEncounter::truncate();
+
+		$count = count(ForestEncounter::all());
+
+		$message = ForestEncounter::upload($path);
+
+		$this->assertEquals($count+1, count(ForestEncounter::all()));
+
+		$this->assertEquals("1 records added 0 updated 0 records could not be uploaded", $message);
+
+		$forestEncounter = ForestEncounter::where("title", "testUpload")->first();
+
+		$this->assertNotNull($forestEncounter);
+
+		$this->assertHashesHaveEqualValues(self::TEST_UPLOAD_ROW, $forestEncounter->toArray());
+	}
 
 	public function testValidateShouldReturnFalseIfRollsIsInvalidAndTrueIfBlank(){
 		$forestEncounter = factory(ForestEncounter::class)->make();

@@ -4,11 +4,29 @@
  */
 
 use App\Monster;
+use App\TestingUtils\FileTesting;
 
 class MonsterTest extends TestCase
 {
     private $logging;
 	private $user;
+
+	const TEST_UPLOAD_ROW = [
+		"name" => "Worg",
+		"hit_points" => "4d10+8",
+		"stats" => '{"strength":16,"dexterity":13,"constitution":13,"intelligence":7,"wisdom":11,"charisma":8}',
+		"languages" => '[{"language":"Worg"},{"language":"Goblin"}]',
+		"skills" => '[{"skill":"Perception","modifier":4}]',
+		"challenge" => 0.50,
+		"abilities" => '[{"description":"The worg has advantage on Wisdom (Perception) checks that rely on hearing or smell.","name":"Keen Hearing and Smell"}]',
+		"actions" => '[{"description":"Melee Weapon Attack: +5 to hit, reach 5 ft ., one target. Hit: 10 (2d6 + 3) piercing damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone.","name":"Bite"}]',
+		"found" => '[{"found":"Hills"},{"found":"Forest"},{"found":"Plains"},{"found":"Underground"}]',
+		"senses" => '[{"sense":"darkvision 60 ft"},{"sense":"passive Perception 14"}]',
+		"description" => "A worg is an evil predator that delights in hunting and devouring creatures weaker than itself. Cunning and malevolent, worgs roam across the remote wilderness or a re raised by goblins and hobgoblins. Those creatures use worgs as mounts, but a worg will turn on its rider if it feels mistreated or malnourished. Worgs speak in their own language and Goblin, and a few learn to speak Common as well.",
+		"speed" => 50,
+		"armor" => 13,
+		"xp" => 100
+	];
 
     public function __construct()
     {
@@ -31,28 +49,35 @@ class MonsterTest extends TestCase
 
 	public function testSetUploadValuesShouldSetUploadValues()
 	{
-		$row = [
-			"name" => "Worg",
-			"hit_points" => "4d10+4",
-			"stats" => '{"strength":16,"dexterity":13,"constitution":13,"intelligence":7,"wisdom":11,"charisma":8}',
-			"languages" => '[{"language":"Worg"},{"language":"Goblin"}]',
-			"skills" => '[{"skill":"Perception","modifier":4}]',
-			"challenge" => 0.50,
-			"abilities" => '[{"description":"The worg has advantage on Wisdom (Perception) checks that rely on hearing or smell.","name":"Keen Hearing and Smell"}]',
-			"actions" => '[{"description":"Melee Weapon Attack: +5 to hit, reach 5 ft ., one target. Hit: 10 (2d6 + 3) piercing damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone.","name":"Bite"}]',
-			"found" => '[{"found":"Hills"},{"found":"Forest"},{"found":"Plains"},{"found":"Underground"}]',
-			"senses" => '[{"sense":"darkvision 60 ft"},{"sense":"passive Perception 14"}]',
-			"description" => "A worg is an evil predator that delights in hunting and devouring creatures weaker than itself. Cunning and malevolent, worgs roam across the remote wilderness or a re raised by goblins and hobgoblins. Those creatures use worgs as mounts, but a worg will turn on its rider if it feels mistreated or malnourished. Worgs speak in their own language and Goblin, and a few learn to speak Common as well.",
-			"speed" => 50,
-			"armor" => 13,
-			"xp" => 100
-		];
-
 		$monster = new Monster();
 
-		$monster->setUploadValues($row);
+		$monster->setUploadValues(self::TEST_UPLOAD_ROW);
 
-		$this->assertHashesHaveEqualValues($row, $monster->toArray());
+		$this->assertHashesHaveEqualValues(self::TEST_UPLOAD_ROW, $monster->toArray());
+	}
+
+	public function testUploadShouldAddMonster(){
+		$user = factory(App\User::class)->create();
+		$this->actingAs($user);
+
+		$path = "resources/assets/testing/csv/Monster/testUpload_DO_NOT_EDIT.csv";
+		new FileTesting($path);
+
+		Monster::truncate();
+
+		$count = count(Monster::all());
+
+		$message = Monster::upload($path);
+
+		$this->assertEquals($count+1, count(Monster::all()));
+
+		$this->assertEquals("1 records added 0 updated 0 records could not be uploaded", $message);
+
+		$monster = Monster::where("name", "Worg")->first();
+
+		$this->assertNotNull($monster);
+
+		$this->assertHashesHaveEqualValues(self::TEST_UPLOAD_ROW, $monster->toArray());
 	}
 
     public function testValidateShouldFailIfStatsIsInvalid(){
@@ -228,7 +253,7 @@ class MonsterTest extends TestCase
 		$this->assertFalse($monster->validate());
 	}
 
-	public function testValidateShouldFaillIfSkillsInvalid(){
+	public function testValidateShouldFailIfSkillsInvalid(){
 		$monster = factory(Monster::class)->create();
 		$this->assertTrue($monster->validate());
 

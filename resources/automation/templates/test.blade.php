@@ -8,6 +8,7 @@
 class Base_name extends TestCase
 {
     private $logging;
+    //private $user;
 
     public function __construct()
     {
@@ -17,12 +18,15 @@ class Base_name extends TestCase
 
     public function setUp(){
         parent::setUp();
-        //My custom setup code
+
+        //$this->user = factory(\App\User::class)->create();
+        //$this->actingAs($this->user);
+
     }
 
     public function tearDown()
     {
-        //My custom tear down code
+        //$this->actingAs(new \App\User());
         parent::tearDown();
     }
 

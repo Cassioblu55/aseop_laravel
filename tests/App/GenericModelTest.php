@@ -379,7 +379,7 @@ class GenericModelTest extends TestCase
 	}
 
 	public function testUploadShouldAddDungeonTrait(){
-		$path = "resources/assets/testing/csv/DungeonTrait/testUpload.csv";
+		$path = "resources/assets/testing/csv/DungeonTrait/testUpload_DO_NOT_EDIT.csv";
 		$uploadFile = new FileTesting($path);
 
 		$this->assertTrue($uploadFile->exists());

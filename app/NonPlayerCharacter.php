@@ -6,7 +6,6 @@ use App\Services\Logging;
 use App\Services\Utils;
 use App\Services\AddBatchAssets;
 use Illuminate\Support\Facades\DB;
-use App\Services\DownloadHelper;
 
 class NonPlayerCharacter extends Asset implements Upload 
 {
@@ -40,6 +39,8 @@ class NonPlayerCharacter extends Asset implements Upload
 	const NONE = 'N';
 	const VALID_SEX_OPTIONS = [self::MALE => 'Male', self::FEMALE => 'Female', self::NONE => 'None'];
 
+	const GENERATOR_VALID_SEX_OPTIONS = [self::MALE, self::FEMALE];
+
 	const AGE_RANGE = ['min'=>16, 'max'=>50, 'std'=>5];
 
 	const MALE_HEIGHT_RANGE = ['min'=>54, 'max'=>78, 'std'=>2.9];
@@ -57,7 +58,7 @@ class NonPlayerCharacter extends Asset implements Upload
 	public static function generate(){
 		$npc = new NonPlayerCharacter();
 		$npc->setMissing();
-		$npc->save();
+		$npc->runUpdateOrSave();
 		return $npc;
 	}
 
@@ -117,7 +118,7 @@ class NonPlayerCharacter extends Asset implements Upload
 
 	private function setSex(){
 		$this->setIfFieldNotPresent('sex', function(){
-			return Utils::getRandomKeyFromHash(self::VALID_SEX_OPTIONS);
+			return Utils::getRandomFromArray(self::GENERATOR_VALID_SEX_OPTIONS);
 		});
 	}
 
@@ -159,17 +160,7 @@ class NonPlayerCharacter extends Asset implements Upload
 
 	public static function upload($filePath)
 	{
-		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
-
-		$runOnCreate = function($row){
-			$npc = new self();
-			return $npc->setUploadValues($row);
-		};
-
-		$runOnUpdate = function($row){
-			return self::attemptUpdate($row);
-		};
-		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+		return self::runUpload($filePath, self::UPLOAD_COLUMNS);
 	}
 
 	public static function getNewSelf(){

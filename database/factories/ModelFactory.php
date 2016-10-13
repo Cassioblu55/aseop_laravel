@@ -85,3 +85,15 @@ $factory->define(App\Dungeon::class, function (Faker\Generator $faker) {
 		'approved' => false
 	];
 });
+
+$factory->define(App\NonPlayerCharacterTrait::class, function (Faker\Generator $faker){
+	return [
+		'type' => 'mannerism',
+		'trait' => 'blinks very slowly',
+
+		'public' => false,
+		'owner_id' => Auth::user()->id,
+		'approved' => false
+		];
+
+});
