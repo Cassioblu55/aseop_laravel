@@ -25,7 +25,7 @@ class Settlement extends Asset implements Upload
 		self::POPULATION => 'required|integer|min:0'
 	];
 
-	protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	const UPLOAD_COLUMNS = [self::NAME, self::KNOWN_FOR, self::NOTABLE_TRAITS, self::RULER_ID, self::RULER_STATUS, self::CURRENT_CALAMITY, self::POPULATION, self::SIZE, self::OTHER_INFORMATION, self::RACE_RELATIONS, self::COL_PUBLIC];
 

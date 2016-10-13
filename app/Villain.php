@@ -8,7 +8,7 @@ use App\Services\DownloadHelper;
 
 class Villain extends Asset
 {
-    protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	private $logging;
 

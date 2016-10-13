@@ -11,7 +11,7 @@ class Tavern extends Asset
 {
 	private $logging;
 
-	protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	const TRAIT_TABLE = TavernTrait::class;
 

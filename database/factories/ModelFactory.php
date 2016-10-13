@@ -28,7 +28,7 @@ $factory->define(App\DungeonTrait::class, function (Faker\Generator $faker) {
 		'type' => "name",
 		'trait' => "bar",
 		'public' => false,
-		'owner_id' => 1,
+		'owner_id' => Auth::user()->id,
 		'approved' => false
 	];
 });
@@ -39,7 +39,36 @@ $factory->define(App\VillainTrait::class, function (Faker\Generator $faker) {
 		'kind' => "kind",
 		'description' => "description",
 		'public' => false,
-		'owner_id' => 1,
+		'owner_id' => Auth::user()->id,
+		'approved' => false
+	];
+});
+
+$factory->define(App\Monster::class, function (Faker\Generator $faker) {
+	return [
+		"armor" => 10,
+		"hit_points" => "1d5+6",
+		"speed" => 30,
+		"xp" => 20,
+		"challenge" => 1.5,
+		"name" => "foo monster",
+		"stats" => '{"strength":16,"dexterity":13,"constitution":13,"intelligence":7,"wisdom":11,"charisma":8}',
+
+		'public' => false,
+		'owner_id' => Auth::user()->id,
+		'approved' => false
+	];
+
+});
+
+
+$factory->define(App\ForestEncounter::class, function (Faker\Generator $faker) {
+	return [
+		'description' => "description",
+		'title' => "title",
+		'rolls' => "1d6+2,2d5+10",
+		'public' => false,
+		'owner_id' =>  Auth::user()->id,
 		'approved' => false
 	];
 });
@@ -52,7 +81,7 @@ $factory->define(App\Dungeon::class, function (Faker\Generator $faker) {
 		'size' => 'L',
 
 		'public' => false,
-		'owner_id' => 1,
+		'owner_id' => Auth::user()->id,
 		'approved' => false
 	];
 });

@@ -214,6 +214,14 @@ abstract class GenericModel extends Model implements Upload, Download
 		return $this->errors;
 	}
 
+	public function getErrors(){
+		return $this->errors()->toArray();
+	}
+
+	public function getErrorsJson(){
+		return json_encode($this->getErrors());
+	}
+
 	public function getErrorMessage($action = null){
 		$action = ($action == null) ? (isset($this->id)) ? 'update' : 'save' : $action;
 		if(count($this->errors()) > 0){

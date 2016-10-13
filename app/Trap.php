@@ -9,7 +9,7 @@ use App\Services\DownloadHelper;
 class Trap extends GenericModel 
 {
 
-	protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 	
 	private $logging;
 

@@ -10,7 +10,7 @@ use App\Services\Validate;
 class DungeonTrait extends AssetTrait implements Upload
 {
 
-	protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	private $logging;
 

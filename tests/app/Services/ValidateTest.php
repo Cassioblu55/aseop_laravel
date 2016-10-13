@@ -76,4 +76,48 @@ class ValidateTest extends TestCase
 		$this->assertFalse(Validate::validUpdateDataFromGenericModel(new Request(), new \App\Dungeon()));
 	}
 
+	public function testValidRollReturnsTrueIfValidRollAndFalseIfInvaildRoll(){
+		$validRoll = "1d6+4";
+		$this->assertTrue(Validate::validRoll($validRoll));
+
+		$validRoll = "1D6+4";
+		$this->assertTrue(Validate::validRoll($validRoll));
+
+		$validRoll = "10d6+0";
+		$this->assertTrue(Validate::validRoll($validRoll));
+
+		$validRoll = "100d760+4";
+		$this->assertTrue(Validate::validRoll($validRoll));
+
+		$validRoll = "100d200-704";
+		$this->assertTrue(Validate::validRoll($validRoll));
+
+		$invalidRoll = "this is an invalid roll";
+		$this->assertFalse(Validate::validRoll($invalidRoll));
+
+		$invalidRoll = "3d*5";
+		$this->assertFalse(Validate::validRoll($invalidRoll));
+
+		$invalidRoll = "5e+5";
+		$this->assertFalse(Validate::validRoll($invalidRoll));
+
+		$invalidRoll = "3d-y";
+		$this->assertFalse(Validate::validRoll($invalidRoll));
+	}
+
+	public function testValidRollStingWillReturnTrueOnValidRollString(){
+		$validRollString = "1d4+5";
+		$this->assertTrue(Validate::validRollString($validRollString));
+
+		$validRollString = "100d760+4,1D6+4,10d6+4,100d200-704";
+		$this->assertTrue(Validate::validRollString($validRollString));
+
+		$invalidRollString = "100d760+4,1D6+4,10d6+4,100d200*704";
+		$this->assertFalse(Validate::validRollString($invalidRollString));
+	}
+
+	public function testValidRollStringReturnsFalseOnEmptyString(){
+		$this->assertFalse(Validate::validRollString(""));
+	}
+
 }

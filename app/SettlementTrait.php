@@ -9,7 +9,7 @@ use App\Services\Validate;
 
 class SettlementTrait extends AssetTrait implements Upload
 {
-	protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	private $logging;
 

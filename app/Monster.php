@@ -2,16 +2,15 @@
 
 namespace App;
 
-use App\Services\AddBatchAssets;
 use App\Services\Logging;
-use App\Services\DownloadHelper;
+use App\Services\Validate;
 
 class Monster extends GenericModel
 {
-	protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	private $logging;
-	
+
 	const NAME = 'name', HIT_POINTS = 'hit_points', SKILLS = 'skills', LANGUAGES = 'languages', CHALLENGE = 'challenge', ABILITIES = 'abilities', ACTIONS = 'actions', FOUND = 'found', DESCRIPTION = 'description', SPEED = 'speed', ARMOR = 'armor', XP = 'xp', SENSES = 'senses', STATS = 'stats';
 
 	const UPLOAD_COLUMNS = [self::NAME, self::HIT_POINTS, self::SKILLS, self::LANGUAGES, self::CHALLENGE, self::ABILITIES, self::ACTIONS, self::FOUND, self::DESCRIPTION, self::SPEED, self::ARMOR, self::XP, self::SENSES, self::STATS, self::COL_PUBLIC];
@@ -45,18 +44,7 @@ class Monster extends GenericModel
 
 	public static function upload($filePath)
 	{
-		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
-
-		$runOnCreate = function($row){
-			$monster = new self();
-			return $monster->setUploadValues($row);
-		};
-
-		$runOnUpdate = function($row){
-			return self::attemptUpdate($row);
-		};
-
-		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+		return self::runUpload($filePath, self::UPLOAD_COLUMNS);
 	}
 
 	public static function getNewSelf(){
@@ -78,4 +66,26 @@ class Monster extends GenericModel
 		return $this->runUpdateOrSave();
 	}
 
+	public function validate($overrideDefaultValidationRules = false)
+	{
+		$validStats = $this->statsValid();
+		$validHitPoints = $this->hitPointsValid();
+		return parent::validate($overrideDefaultValidationRules) && $validStats && $validHitPoints;
+	}
+
+	private function statsValid(){
+		$validStats = Stats::validStatsArray($this->stats);
+		if(!$validStats){
+			$this->setError(self::STATS, "Stats invalid.");
+		}
+		return $validStats;
+	}
+
+	private function hitPointsValid(){
+		$validHitPoints = Validate::validRoll($this->hit_points);
+		if(!$validHitPoints){
+			$this->setError(self::HIT_POINTS, "Hit points invalid.");
+		}
+		return $validHitPoints;
+	}
 }

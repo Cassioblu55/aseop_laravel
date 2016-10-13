@@ -10,6 +10,7 @@
 class AssetTraitTest extends TestCase
 {
 	private $logging;
+	private $user;
 
 	public function __construct()
 	{
@@ -17,7 +18,22 @@ class AssetTraitTest extends TestCase
 		parent::__construct();
 	}
 
+	public function setUp(){
+		parent::setUp();
+
+		$this->user = factory(\App\User::class)->create();
+		$this->actingAs($this->user);
+	}
+
+	public function tearDown()
+	{
+		$this->actingAs(new \App\User());
+		parent::tearDown();
+	}
+
 	public function testGetRandomByTypeShouldReturnRandomTrait(){
+
+
 		factory(App\DungeonTrait::class)->create();
 
 		$dungeonTrait = new \App\DungeonTrait();
@@ -27,6 +43,8 @@ class AssetTraitTest extends TestCase
 	}
 
 	public function testGetRandomByTypeShouldReturnBlankIfNoRandomTraitFound(){
+
+
 		factory(App\DungeonTrait::class)->create();
 
 		$dungeonTrait = new \App\DungeonTrait();

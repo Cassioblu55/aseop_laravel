@@ -9,7 +9,7 @@ use App\Services\Validate;
 
 class Spell extends GenericModel implements Upload
 {
-    protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	private $logging;
 

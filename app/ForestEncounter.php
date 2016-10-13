@@ -5,10 +5,11 @@ namespace App;
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
 use App\Services\DownloadHelper;
+use App\Services\Validate;
 
 class ForestEncounter extends Random implements Upload
 {
-    protected $guarded = [];
+    protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	private $logging;
 
@@ -34,18 +35,7 @@ class ForestEncounter extends Random implements Upload
 
 	public static function upload($filePath)
 	{
-		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
-
-		$runOnCreate = function($row){
-			$forestEncounter = new self();
-			return $forestEncounter->setUploadValues($row);
-		};
-
-		$runOnUpdate = function($row){
-			return self::attemptUpdate($row);
-		};
-
-		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+		return self::runUpload($filePath, self::UPLOAD_COLUMNS);
 	}
 
 	public static function getNewSelf(){
@@ -58,4 +48,20 @@ class ForestEncounter extends Random implements Upload
 		return $this->runUpdateOrSave();
 	}
 
+	public function validate($overrideDefaultValidationRules = false)
+	{
+		return parent::validate($overrideDefaultValidationRules) && $this->rollsValid();
+	}
+
+	private function rollsValid(){
+		if($this->rolls == ""){
+			return true;
+		}else{
+			$validRollString = Validate::validRollString($this->rolls);
+			if(!$validRollString){
+				$this->setError(self::ROLLS, "Roll string invalid");
+			}
+			return $validRollString;
+		}
+	}
 }

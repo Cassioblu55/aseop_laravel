@@ -36,4 +36,12 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 		\Mockery::close();
 		//parent::tearDown();
 	}
+
+	protected function assertHashesHaveEqualValues($expectedValues, $actualValues){
+		foreach ($expectedValues as $key => $value){
+			$this->assertArrayHasKey($key,$actualValues);
+			$this->assertEquals($value, $actualValues[$key]);
+		}
+	}
+
 }

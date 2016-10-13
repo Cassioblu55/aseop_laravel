@@ -10,7 +10,7 @@ use App\Services\Validate;
 
 class Dungeon extends Asset
 {
-	protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	private $logging;
 
@@ -92,6 +92,5 @@ class Dungeon extends Asset
 
 		return $this->runUpdateOrSave();
 	}
-
 
 }

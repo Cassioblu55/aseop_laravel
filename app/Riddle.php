@@ -7,7 +7,7 @@ use App\Services\DownloadHelper;
 
 class Riddle extends Random implements Upload
 {
-	protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	private $logging;
 

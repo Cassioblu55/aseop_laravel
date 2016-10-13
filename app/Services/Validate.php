@@ -55,5 +55,21 @@ class Validate
 		return (!$additionalRules) ? $uniqueRule : $uniqueRule."|".$additionalRules;
 	}
 
+	public static function validRollString($rollString){
+		$rolls = explode(",", $rollString);
+		if(count($rolls) == 0){return false;}
+
+		foreach ($rolls as $roll){
+			if(!self::validRoll($roll)){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static function validRoll($roll){
+		$rollPattern = "/([0-9]+)([dD])([0-9]+)[+-]([0-9]+)/";
+		return preg_match($rollPattern, $roll) == 1;
+	}
 
 }

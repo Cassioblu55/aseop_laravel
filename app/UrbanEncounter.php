@@ -8,7 +8,7 @@ use App\Services\DownloadHelper;
 
 class UrbanEncounter extends Random
 {
-    protected $guarded = [];
+	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	private $logging;
 
