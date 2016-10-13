@@ -10,6 +10,7 @@ class CreateTest extends GenericCommand
 {
 	private $logging;
 	private $fullFilePath;
+	private $path;
 
 	const TEST_NAME_WITH_PATH = "testNameWithPath";
 
@@ -47,6 +48,7 @@ class CreateTest extends GenericCommand
      */
     public function handle()
     {
+    	$this->path = $this->argument("testNameWithPath");
     	$this->setFilePathAndTestClassName();
 
 		$pathWithFileNameRemoved = CommandUtils::getFileDirPath($this->fullFilePath);
@@ -54,14 +56,18 @@ class CreateTest extends GenericCommand
 	    File::makeDirectory($pathWithFileNameRemoved, 0775, true, true);
 
 	    $this->createFileFromTemplate($this->fullFilePath, "test");
+
+	    $usePath = "use ".str_replace("/", '\\',$this->path).";";
+
+
+	    CommandUtils::replaceNames($this->fullFilePath, $usePath, '//use $usePath');
+
 	    $this->comment($this->fullFilePath." created");
     }
 
     private function setFilePathAndTestClassName()
     {
-	    $path = $this->argument("testNameWithPath");
-
-	    $this->fullFilePath = self::TEST_PATH."/".$path."Test.php";
+	    $this->fullFilePath = self::TEST_PATH."/".$this->path."Test.php";
 
 	    $pathSplit =  explode("/",$this->fullFilePath);
 

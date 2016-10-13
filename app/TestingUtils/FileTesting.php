@@ -41,7 +41,7 @@ class FileTesting extends TestCase
 	public function revert(){
 		if($this->newFile && $this->isFile) {
 			$this->deleteFile();
-		}else if($this->newFile && !$this->isFile){
+		}else if($this->newFile && $this->exists() && !$this->isFile){
 			rmdir($this->filePath);
 		}else if(!$this->newFile && $this->isFile()){
 			file_put_contents($this->filePath, $this->startingText);

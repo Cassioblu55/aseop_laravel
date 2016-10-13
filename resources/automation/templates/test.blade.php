@@ -3,6 +3,7 @@
  * Created by make:aesopTest command using template: test.blade.php
  */
 
+//use $usePath
 
 class Base_name extends TestCase
 {
