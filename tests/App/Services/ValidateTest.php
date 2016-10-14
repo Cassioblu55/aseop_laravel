@@ -164,4 +164,21 @@ class ValidateTest extends TestCase
 		$this->assertFalse(Validate::stringOfJsonArrayContainsKeys($invalidJsonNull, $requiredKeys));
 	}
 
+	public function testGetArrayValidationErrorsShouldReturnListOfErrorsForGivenRules(){
+		$array = [];
+		$rules = ['name'=> 'required'];
+
+		$errors = Validate::getArrayValidationErrors($array, $rules);
+
+		$this->assertArrayHasKey("name", $errors->toArray());
+
+		$nameErrors = $errors->toArray()['name'];
+		$this->assertEquals(1, count($nameErrors));
+
+		$this->assertEquals('The name field is required.', $nameErrors[0]);
+
+		$this->assertFalse(Validate::validArrayData($array, $rules));
+
+	}
+
 }

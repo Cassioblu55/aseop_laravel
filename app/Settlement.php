@@ -3,9 +3,9 @@
 namespace App;
 use App\Services\Logging;
 use App\Services\Utils;
-use Illuminate\Support\Facades\Auth;
+use app\Services\Validate;
 use App\Services\AddBatchAssets;
-use App\Services\DownloadHelper;
+use Illuminate\Http\Request;
 
 class Settlement extends Asset implements Upload
 {
@@ -61,34 +61,40 @@ class Settlement extends Asset implements Upload
 	public static function generate(){
 		$settlement = new Settlement();
 		$settlement->setMissing();
-		$settlement['owner_id'] = Auth::user()->id;
-		$settlement['approved'] = false;
-		$settlement->save();
+		$settlement->runUpdateOrSave();
 		return $settlement;
 	}
 
 	public function setMissing(){
-		$this->setRuler();
 		$this->setSize();
 		$this->setPopulation();
 		$this->setFillable();
 		$this->setRequiredMissing();
+		$this->setRuler();
 	}
 
 	private function setSize(){
-		$this->setIfFieldNotPresent('size', function(){
+		$this->setIfFieldNotPresent(self::SIZE, function(){
 			return Utils::getRandomKeyFromHash(self::VALID_SIZE_OPTIONS);
 		});
 	}
 
 	private function setRuler(){
-		$this->setIfFieldNotPresent('ruler_id', function(){
-			return NonPlayerCharacter::generate()->id;
+		$this->setIfFieldNotPresent(self::RULER_ID, function(){
+			return $this->createNewRulerOnlyIfSettlementValidOtherwise();
 		});
 	}
 
+	private function createNewRulerOnlyIfSettlementValidOtherwise(){
+		$rules = $this->rules;
+		unset( $rules[self::RULER_ID]);
+
+		$valid = Validate::validArrayData($this->attributesToArray(), $rules);
+		return ($valid) ? NonPlayerCharacter::generate()->id : null;
+	}
+
 	private function setPopulation(){
-		$this->setIfFieldNotPresent('population', function(){
+		$this->setIfFieldNotPresent(self::POPULATION, function(){
 			switch ($this->size){
 				case self::SMALL:
 					$configData = self::SMALL_POPULATION_RANGE; break;

@@ -18,12 +18,21 @@ class Validate
 	}
 
 	public static function getValidationErrors(Request $request, $rules){
-		$v = Validator::make($request->all(), $rules);
+		return self::getArrayValidationErrors($request->all(), $rules);
+	}
+
+	public static function validArrayData($array, $rules){
+		return (count(self::getArrayValidationErrors($array, $rules)) == 0);
+	}
+
+	public static function getArrayValidationErrors($array, $rules){
+		$v = Validator::make($array, $rules);
 		if ($v->fails()) {
 			return $v->errors();
 		}
 		return [];
 	}
+
 
 	public static function validUpdateDataFromGenericModel(Request $request, GenericModel $genericModel){
 		$errors = self::getValidationErrors($request, $genericModel->getRules());

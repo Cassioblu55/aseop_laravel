@@ -97,3 +97,30 @@ $factory->define(App\NonPlayerCharacterTrait::class, function (Faker\Generator $
 		];
 
 });
+
+$factory->define(App\NonPlayerCharacter::class, function (Faker\Generator $faker){
+	return [
+		'first_name' => 'Bill',
+		'sex' => 'M',
+		'height' => 65,
+		'weight' => 185,
+		'age' => 35,
+
+		'public' => false,
+		'owner_id' => Auth::user()->id,
+		'approved' => false
+	];
+
+});
+
+$factory->define(App\SettlementTrait::class, function (Faker\Generator $faker){
+	return [
+		'type' => 'name',
+		'trait' => 'Coolsville',
+
+		'public' => false,
+		'owner_id' => Auth::user()->id,
+		'approved' => false
+	];
+
+});
