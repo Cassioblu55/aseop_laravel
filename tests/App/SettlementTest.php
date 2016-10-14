@@ -35,9 +35,10 @@ class SettlementTest extends TestCase
     public function setUp(){
         parent::setUp();
 
-
         $this->user = factory(\App\User::class)->create();
         $this->actingAs($this->user);
+
+	    self::ensureNpcOfIdOneExists();
 
 	    factory(NonPlayerCharacterTrait::class)->create(
 		    ["type" => "male_name", "trait" => "Bill"]
@@ -101,14 +102,8 @@ class SettlementTest extends TestCase
 		$this->assertEquals($npcCount, count(NonPlayerCharacter::all()));
 	}
 
-	public function testUploadShouldAddSettlement(){
-		NonPlayerCharacter::truncate();
-		$npc = factory(NonPlayerCharacter::class)->create();
-		if($npc->id != 1){
-			$npc->id = 1;
-			$npc->runUpdateOrSave();
-		}
-
+	public function testUploadShouldAddSettlement()
+	{
 		$path = "resources/assets/testing/csv/Settlement/testUpload_DO_NOT_EDIT.csv";
 		new FileTesting($path);
 
@@ -118,7 +113,7 @@ class SettlementTest extends TestCase
 
 		$message = Settlement::upload($path);
 
-		$this->assertEquals($count+1, count(Settlement::all()));
+		$this->assertEquals($count + 1, count(Settlement::all()));
 
 		$this->assertEquals("1 records added 0 updated 0 records could not be uploaded", $message);
 
@@ -128,6 +123,8 @@ class SettlementTest extends TestCase
 
 		$this->assertHashesHaveEqualValues(self::TEST_UPLOAD_ROW, $settlement->toArray());
 	}
+
+
 
 	public function testSetUploadValuesShouldAddValueToObjectFromRow(){
 		$settlement = new Settlement();

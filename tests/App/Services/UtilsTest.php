@@ -4,6 +4,7 @@
  */
 
 use App\Services\Utils;
+use App\NonPlayerCharacter;
 
 class UtilsTest extends TestCase
 {
@@ -48,5 +49,36 @@ class UtilsTest extends TestCase
 		$this->assertGreaterThanOrEqual(1, $bellNumber);
 		$this->assertLessThanOrEqual(10, $bellNumber);
 	}
+
+	public function testEnsureNpcOfIdOneExistsShouldEnsureNpcOfIdOneExists(){
+		$user = factory(\App\User::class)->create();
+		$this->actingAs($user);
+
+		NonPlayerCharacter::truncate();
+
+		$count  = count(NonPlayerCharacter::all());
+
+		$npc = NonPlayerCharacter::where("id", 1)->first();
+
+		$this->assertNull($npc);
+
+		self::ensureNpcOfIdOneExists();
+
+		$npc = NonPlayerCharacter::where("id", 1);
+
+		$this->assertNotNull($npc);
+
+		$this->assertEquals($count+1, count(NonPlayerCharacter::all()));
+
+		$this->actingAs(new \App\User());
+	}
+
+	public function testAssertHashesHaveEqualValuesShouldNotFailWhenTwoArraysAreEqual(){
+		$arrayOne = ['a' => "b","c"=>"b","u"=>"p"];
+		$arrayTwo = ['a' => "b","c"=>"b","u"=>"p"];
+
+		$this->assertHashesHaveEqualValues($arrayOne, $arrayTwo);
+	}
+
 
 }

@@ -1,5 +1,6 @@
 <?php
 
+
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
 	/**
@@ -41,6 +42,17 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 		foreach ($expectedValues as $key => $value){
 			$this->assertArrayHasKey($key,$actualValues);
 			$this->assertEquals($value, $actualValues[$key]);
+		}
+	}
+
+	public static function ensureNpcOfIdOneExists(){
+		$npc = \App\NonPlayerCharacter::where("id", 1)->first();
+		if($npc == null){
+			$npc = factory(\App\NonPlayerCharacter::class)->create();
+			if($npc->id != 1){
+				$npc->id = 1;
+				$npc->runUpdateOrSave();
+			}
 		}
 	}
 
