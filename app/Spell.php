@@ -54,21 +54,10 @@ class Spell extends GenericModel implements Upload
         return $this->belongsTo('App\User', self::OWNER_ID);
     }
 
-    public static function upload($filePath)
-    {
-	    $addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
-
-	    $runOnCreate = function($row){
-		    $spell = new self();
-		    return $spell->setUploadValues($row);
-	    };
-
-	    $runOnUpdate = function($row){
-		    return self::attemptUpdate($row);
-	    };
-
-	    return $addBatch->addBatch($runOnCreate, $runOnUpdate);
-    }
+	public static function upload($filePath)
+	{
+		return self::runUpload($filePath, self::UPLOAD_COLUMNS);
+	}
 
 	public static function getNewSelf(){
 		return new self();

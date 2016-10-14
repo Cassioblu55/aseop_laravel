@@ -39,18 +39,7 @@ class SettlementTrait extends AssetTrait implements Upload
 
 	public static function upload($filePath)
 	{
-		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
-
-		$runOnCreate = function($row){
-			$settlementTrait = new self();
-			return $settlementTrait->setUploadValues($row);
-		};
-
-		$runOnUpdate = function($row){
-			return self::attemptUpdate($row);
-		};
-
-		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+		return self::runUpload($filePath, self::UPLOAD_COLUMNS);
 	}
 
 	public static function getNewSelf(){

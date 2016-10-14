@@ -107,20 +107,11 @@ class Settlement extends Asset implements Upload
 		});
 	}
 
-	public static function upload($filePath){
-		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
-
-		$runOnCreate = function($row){
-			$settlement = new self();
-			return $settlement->setUploadValues($row);
-		};
-
-		$runOnUpdate = function($row){
-			return self::attemptUpdate($row);
-		};
-
-		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+	public static function upload($filePath)
+	{
+		return self::runUpload($filePath, self::UPLOAD_COLUMNS);
 	}
+
 	public static function getNewSelf(){
 		return new self();
 	}
