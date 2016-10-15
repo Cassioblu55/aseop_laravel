@@ -73,11 +73,44 @@ class UtilsTest extends TestCase
 		$this->actingAs(new \App\User());
 	}
 
+	public function testEnsureTrapOfIdOneExistsShouldEnsureNpcOfIdOneExists(){
+		$user = factory(\App\User::class)->create();
+		$this->actingAs($user);
+
+		\App\Trap::truncate();
+
+		$count  = count(\App\Trap::all());
+
+		$trap = \App\Trap::where("id", 1)->first();
+
+		$this->assertNull($trap);
+
+		self::ensureTrapOfIdOneExists();
+
+		$trap = \App\Trap::where("id", 1);
+
+		$this->assertNotNull($trap);
+
+		$this->assertEquals($count+1, count(\App\Trap::all()));
+
+		$this->actingAs(new \App\User());
+	}
+
 	public function testAssertHashesHaveEqualValuesShouldNotFailWhenTwoArraysAreEqual(){
 		$arrayOne = ['a' => "b","c"=>"b","u"=>"p"];
 		$arrayTwo = ['a' => "b","c"=>"b","u"=>"p"];
 
 		$this->assertHashesHaveEqualValues($arrayOne, $arrayTwo);
+	}
+
+	public function testGetLetterByNumberShouldReturnLetterGivenNumber(){
+		$this->assertEquals("A", Utils::getLetterByNumber(0));
+
+		$this->assertEquals("H", Utils::getLetterByNumber(7));
+
+		$this->assertEquals("Z", Utils::getLetterByNumber(25));
+
+		$this->assertNull(Utils::getLetterByNumber(26));
 	}
 
 

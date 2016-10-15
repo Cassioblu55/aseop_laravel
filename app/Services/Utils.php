@@ -12,6 +12,8 @@ namespace App\Services;
 class Utils
 {
 
+	const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+
 	public static function getRandomFromArray($array){
 		return $array[rand(0, count($array)-1)];
 	}
@@ -40,6 +42,13 @@ class Utils
 			$random_number = self::purebell( $min, $max, $std_deviation );
 		}
 		return $random_number;
+	}
+
+	public static function getLetterByNumber($number){
+		if($number < count(self::LETTERS)){
+			return self::LETTERS[$number];
+		}
+		return null;
 	}
 
 }

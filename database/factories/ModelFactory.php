@@ -76,9 +76,9 @@ $factory->define(App\ForestEncounter::class, function (Faker\Generator $faker) {
 $factory->define(App\Dungeon::class, function (Faker\Generator $faker) {
 	return [
 		'name' => "foo",
-		'map' => '[["w","w","w","s","w","w","w","w"],["x","w","x","w","x","w","x","w"],["w","w","w","w","w","w","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","t","w","w","w","w","w"],["x","x","x","x","x","t","x","x"]]',
-		'traps' => '[["1","2","6"],["3","5","7"]]',
-		'size' => 'L',
+		'map' => '[["w","w","w","s","w","w","t","w"],["x","w","x","w","x","w","x","w"],["t","w","w","w","w","w","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","t","w","w","w","w","w"],["x","x","x","x","x","t","x","x"]]',
+		'traps' => '[["1","0","6"],["1","2","0"]]',
+		'size' => 'M',
 
 		'public' => false,
 		'owner_id' => Auth::user()->id,
@@ -123,4 +123,15 @@ $factory->define(App\SettlementTrait::class, function (Faker\Generator $faker){
 		'approved' => false
 	];
 
+});
+
+$factory->define(App\Trap::class, function (Faker\Generator $faker){
+	return [
+		"name" => "Fire Trap",
+		"description" => "If a weight of 50lbs is placed on this title it will activate. Doing 2d6+5 fire damage.",
+
+		'public' => false,
+		'owner_id' => Auth::user()->id,
+		'approved' => false
+	];
 });

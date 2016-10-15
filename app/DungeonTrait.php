@@ -14,10 +14,7 @@ class DungeonTrait extends AssetTrait implements Upload
 
 	private $logging;
 
-	const TYPE = 'type';
-	const COL_TRAIT = 'trait';
-	const DESCRIPTION = 'description';
-
+	const TYPE = 'type', COL_TRAIT = 'trait', DESCRIPTION = 'description';
 	const UPLOAD_COLUMNS = [self::COL_TRAIT, self::TYPE, self::DESCRIPTION, self::COL_PUBLIC];
 
 	public function user()

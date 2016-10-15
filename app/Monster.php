@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Services\Logging;
-use App\Services\StringUtils;
 use App\Services\Validate;
 
 class Monster extends GenericModel

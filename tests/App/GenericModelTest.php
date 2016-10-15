@@ -28,6 +28,8 @@ class GenericModelTest extends TestCase
 
 		$user = factory(\App\User::class)->create();
 		$this->actingAs($user);
+
+		self::ensureTrapOfIdOneExists();
 	}
 
 	public function tearDown()
@@ -240,15 +242,13 @@ class GenericModelTest extends TestCase
 	}
 
 	public function testRunUpdateOrSaveShouldUpdateRecordWhenItDoesExist(){
-
-
 		$dungeon  = factory(\App\Dungeon::class)->create();
+		$this->assertTrue($dungeon->validate());
 		$this->assertNotNull($dungeon->id);
 
 		$this->assertEquals("foo", $dungeon->name);
 
 		$dungeon->name = "bar";
-
 		$dungeon->runUpdateOrSave();
 
 		$databaseModel = Dungeon::findById($dungeon->id);

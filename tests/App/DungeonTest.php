@@ -6,19 +6,13 @@
  * Time: 10:34 PM
  */
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Dungeon;
 
 class DungeonTest extends TestCase
 {
-	const RULES = [
-		'name' =>'required|max:255',
-		'map' => 'required|json',
-		'traps' => 'required|json',
-		'size' => 'in:S,M,L|required|size:1'
-	];
-
 	private $logging;
+	private $user;
+	private $dungeon;
 
 	public function __construct()
 	{
@@ -26,14 +20,109 @@ class DungeonTest extends TestCase
 		parent::__construct();
 	}
 
-	public function testAllRequiredRulesPresent(){
-		$dungeon = new Dungeon();
-		$this->assertEquals(self::RULES, $dungeon->getRules());
+	public function setUp(){
+		parent::setUp();
+
+		$this->user = factory(\App\User::class)->create();
+		$this->actingAs($this->user);
+
+		self::ensureTrapOfIdOneExists();
+
+		$this->dungeon = factory(Dungeon::class)->make();
+		$this->assertTrue($this->dungeon->validate());
+
+	}
+
+	public function tearDown()
+	{
+		$this->actingAs(new \App\User());
+		parent::tearDown();
+	}
+
+	public function testValidateShouldFailIfDungeonHasNoName(){
+		$this->dungeon->name = null;
+		$this->assertFalse($this->dungeon->validate());
+
+		$this->dungeon = factory(Dungeon::class)->make();
+		$this->assertTrue($this->dungeon->validate());
+
+		$this->dungeon->name = "";
+		$this->assertFalse($this->dungeon->validate());
+
+		$expectedError = 'Could not save: {"name":["The name field is required."]}';
+		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfDungeonSizeIsInvalid(){
+		$this->dungeon->size="f";
+
+		$this->assertFalse($this->dungeon->validate());
+
+		$expectedError = 'Could not save: {"size":["The selected size is invalid."]}';
+		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
+	}
+
+	public function testGetMapSizeIntegerShouldReturnNullIfSizeIsInvalid(){
+		$this->dungeon->size = "f";
+
+		$this->assertNull($this->dungeon->getMapSizeInteger());
+	}
+
+
+	public function testValidateShouldFailIfMapIsInvalidSize(){
+		$this->dungeon->map = '{"map":"This is not a valid map."}';
+		$this->assertFalse($this->dungeon->validate());
+
+		$expectedError = 'Could not save: {"map":["Map in incorrect size, map size: 1, should be: 8."]}';
+		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
+
+		$this->dungeon = factory(Dungeon::class)->make();
+		$this->assertTrue($this->dungeon->validate());
+
+		$this->dungeon->map = '[["w", "w"], ["w", "w"]]';
+		$this->assertFalse($this->dungeon->validate());
+
+		$expectedError = 'Could not save: {"map":["Map in incorrect size, map size: 2, should be: 8."]}';
+		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfRowIsNotArray(){
+		$this->dungeon->size = "S";
+		$this->dungeon->map = '[["w","w","w","s","w","w"],["x","w","x","w","x","w"],["w","w","w","w","w","w"],"foo bar",["w","x","w","w","w","x"],["x","x","x","w","x","w"]]';
+		$this->assertFalse($this->dungeon->validate());
+
+		$expectedError = 'Could not save: {"map":["Map row 3 invalid."]}';
+		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfMapIsNotSquare(){
+		$this->dungeon->size = "S";
+		$this->dungeon->map = '[["w","s","w","w","w","w"],["x","w","x","w","x","w"],["w","w","w","w","w","w"],["x","w","x","x","x"],["w","x","w","w","w","x"],["x","x","x","w","x","w"]]';
+		$this->assertFalse($this->dungeon->validate());
+
+		$expectedError = 'Could not save: {"map":["Map is not square. Row 3 has size 5 instead of 6."]}';
+		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfCotainsInvalidCharacter(){
+		$this->dungeon->size = "S";
+		$this->dungeon->map = '[["w","s","w","w","w","w"],["x","f","x","w","x","w"],["w","w","w","w","w","w"],["x","w","x","x","x","x"],["w","x","w","w","w","x"],["x","x","x","w","x","w"]]';
+		$this->assertFalse($this->dungeon->validate());
+
+		$expectedError = 'Could not save: {"map":["Map contains invalid square. \'f\' invalid, row 1 column B."]}';
+		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfNoStartExists(){
+		$this->dungeon->size = "S";
+		$this->dungeon->map = '[["w","w","w","w","w","w"],["x","w","x","w","x","w"],["w","w","w","w","w","w"],["x","w","x","x","x","x"],["w","x","w","w","w","x"],["x","x","x","w","x","w"]]';
+		$this->assertFalse($this->dungeon->validate());
+
+		$expectedError = 'Could not save: {"map":["Map contains no start."]}';
+		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
 	}
 
 	public function testGenerateShouldReturnIncompleteDungeonWithNoMapOrTraps(){
-		$user = factory(App\User::class)->create();
-		$this->actingAs($user);
 
 		factory(App\DungeonTrait::class)->create();
 
@@ -48,8 +137,6 @@ class DungeonTest extends TestCase
 	}
 
 	public function testUploadShouldUploadFileFromPath(){
-		$user = factory(App\User::class)->create();
-		$this->actingAs($user);
 
 		$path = "resources/assets/testing/csv/Dungeon/testingUploadFile_DO_NOT_EDIT.csv";
 		TestCase::assertFileExists($path);
@@ -64,20 +151,32 @@ class DungeonTest extends TestCase
 		$dungeon = Dungeon::where("name", "uploadTestName")->first();
 		$this->assertNotNull($dungeon);
 
-		$uploadMap = "[[\"w\",\"w\",\"w\",\"s\",\"w\",\"w\",\"w\",\"w\"],[\"x\",\"w\",\"x\",\"w\",\"x\",\"w\",\"x\",\"w\"],[\"w\",\"w\",\"w\",\"w\",\"w\",\"w\",\"w\",\"w\"],[\"w\",\"x\",\"x\",\"w\",\"x\",\"w\",\"x\",\"x\"],[\"w\",\"w\",\"w\",\"x\",\"w\",\"w\",\"w\",\"x\"],[\"w\",\"x\",\"x\",\"x\",\"x\",\"w\",\"x\",\"w\"],[\"w\",\"x\",\"t\",\"w\",\"w\",\"w\",\"w\",\"w\"],[\"x\",\"x\",\"x\",\"x\",\"x\",\"t\",\"x\",\"x\"]]";
+		$uploadMap = '[["w","w","w","s","w","w","w","w"],["x","w","x","w","x","w","x","w"],["w","w","w","w","w","w","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","t","w","w","w","w","w"],["x","x","x","x","x","t","x","x"]]';
 		$this->assertEquals($uploadMap, $dungeon->map);
 
-		$uploadTraps = "[[\"3\",\"1\",\"4\"],[\"3\",\"7\",\"0\"]]";
+		$uploadTraps = '[["1","6","2"],["1","7","5"]]';
 		$this->assertEquals($uploadTraps, $dungeon->traps);
 
-		$this->assertEquals("L", $dungeon->size);
+		$this->assertEquals("M", $dungeon->size);
+	}
+
+	public function testGetMapSquareShouldReturnNullIfMapInvalid(){
+		$dungeon = factory(Dungeon::class)->make();
+
+		$dungeon->map = "invalid";
+
+		$this->assertNull($dungeon->getMapSquare(0,0));
+	}
+
+	public function testGetMapSquareShouldReturnRowValue(){
+		$this->assertEquals("w", $this->dungeon->getMapSquare(0,0));
+
+		$this->assertEquals("s", $this->dungeon->getMapSquare(0,3));
+
+		$this->assertEquals("t", $this->dungeon->getMapSquare(6,2));
 	}
 
 	public function testUploadShouldNotUploadIfDataMalformed(){
-		$user = factory(App\User::class)->create();
-
-		$this->actingAs($user);
-
 		$path = "resources/assets/testing/csv/Dungeon/testingUploadFileFailed_DO_NOT_EDIT.csv";
 		TestCase::assertFileExists($path);
 
@@ -89,6 +188,75 @@ class DungeonTest extends TestCase
 		$this->assertEquals("0 records added 0 updated 1 records could not be uploaded", $message);
 	}
 
+	public function testValidateShouldPassIfTrapsEmptyNullOrBlank(){
+		$dungeon = factory(Dungeon::class)->make();
+		$this->assertTrue($dungeon->validate());
+
+		$dungeon->traps = "";
+		$this->assertTrue($dungeon->validate());
+
+		$dungeon->traps = null;
+		$this->assertTrue($dungeon->validate());
+
+		$dungeon->traps = "[]";
+		$this->assertTrue($dungeon->validate());
+	}
+
+	public function testValidateShouldFailIfDungeonTrapInvalid(){
+		$dungeon = factory(Dungeon::class)->make();
+		$this->assertTrue($dungeon->validate());
+
+		$dungeon->traps = "this in an invalid trap";
+		$this->assertFalse($dungeon->validate());
+
+		$expectedError = 'Could not save: {"traps":["Traps invalid."]}';
+		$this->assertEquals($expectedError, $dungeon->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfTrapDoesNotExistInDatabase(){
+		$dungeon = factory(Dungeon::class)->make();
+		$this->assertTrue($dungeon->validate());
+
+		$dungeon->traps = '[["1","0","6"],["2","2","0"]]';
+		$this->assertFalse($dungeon->validate());
+
+		$expectedError = 'Could not save: {"traps":["Trap number 2 not found in database."]}';
+		$this->assertEquals($expectedError, $dungeon->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfTrapNotArray(){
+		$dungeon = factory(Dungeon::class)->make();
+		$this->assertTrue($dungeon->validate());
+
+		$dungeon->traps = '[["1","0","6"],"foobar"]';
+		$this->assertFalse($dungeon->validate());
+
+		$expectedError = 'Could not save: {"traps":["Trap number 2 invalid, not array."]}';
+		$this->assertEquals($expectedError, $dungeon->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfTrapTooSmall(){
+		$dungeon = factory(Dungeon::class)->make();
+		$this->assertTrue($dungeon->validate());
+
+		$dungeon->traps = '[["1","0","6"],["1","2"]]';
+		$this->assertFalse($dungeon->validate());
+
+		$expectedError = 'Could not save: {"traps":["Trap number 2 invalid, too small."]}';
+		$this->assertEquals($expectedError, $dungeon->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfTrapDoesntContainAllNumbers(){
+		$dungeon = factory(Dungeon::class)->make();
+		$this->assertTrue($dungeon->validate());
+
+		$dungeon->traps = '[["1","2","e"]]';
+		$this->assertFalse($dungeon->validate());
+
+		$expectedError = 'Could not save: {"traps":["Trap number 1 invalid, \'e\' not an integer."]}';
+		$this->assertEquals($expectedError, $dungeon->getErrorMessage());
+	}
+
 	public function testDownloadShouldReturnArrayOfDungeons(){
 		$filename = "file_".date("Y-m-d");
 
@@ -98,5 +266,4 @@ class DungeonTest extends TestCase
 
 		$this->assertEquals(json_encode($data), json_encode($dungeonsFile));
 	}
-
 }

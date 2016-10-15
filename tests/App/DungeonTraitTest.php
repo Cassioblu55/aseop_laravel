@@ -91,12 +91,30 @@ class DungeonTraitTest extends TestCase
 		$this->assertEquals('App\DungeonTrait', get_class($dungeonTrait));
 	}
 
-	public function testDownloadShouldReturnAllDungeonTraits(){
-		DungeonTrait::truncate();
-		factory(DungeonTrait::class)->create();
+	public function testValidateShouldFailIfTraitNull(){
+		$dungeonTrait = factory(App\DungeonTrait::class)->make();
+		$this->assertTrue($dungeonTrait->validate());
 
-		$dungeonTraits = DungeonTrait::download("foo");
+		$dungeonTrait->trait = null;
+		$this->assertFalse($dungeonTrait->validate());
 
+		$dungeonTrait->trait = "";
+		$this->assertFalse($dungeonTrait->validate());
+
+		$expectedError = 'Could not save: {"trait":["The trait field is required."]}';
+		$this->assertEquals($expectedError, $dungeonTrait->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfTypeInvalid()
+	{
+		$dungeonTrait = factory(App\DungeonTrait::class)->make();
+		$this->assertTrue($dungeonTrait->validate());
+
+		$dungeonTrait->type = "foo";
+		$this->assertFalse($dungeonTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The selected type is invalid."]}';
+		$this->assertEquals($expectedError, $dungeonTrait->getErrorMessage());
 	}
 
 }

@@ -56,4 +56,15 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 		}
 	}
 
+	public static function ensureTrapOfIdOneExists(){
+		$trap = \App\Trap::where("id", 1)->first();
+		if($trap == null){
+			$trap = factory(\App\Trap::class)->create();
+			if($trap->id != 1){
+				$trap->id = 1;
+				$trap->runUpdateOrSave();
+			}
+		}
+	}
+
 }
