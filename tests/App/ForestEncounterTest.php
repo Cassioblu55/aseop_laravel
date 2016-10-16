@@ -81,7 +81,7 @@ class ForestEncounterTest extends TestCase
 
 		$this->assertFalse($forestEncounter->validate());
 
-		$expectedErrors = '{"rolls":["Roll string invalid."]}';
+		$expectedErrors = '{"rolls":["Rolls invalid."]}';
 		$this->assertEquals($expectedErrors, $forestEncounter->getErrorsJson());
 	}
 
