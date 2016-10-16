@@ -36,6 +36,47 @@ class NonPlayerCharacterTraitTest extends TestCase
         parent::tearDown();
     }
 
+	public function testValidateShouldFailIfTraitNullOrBlank(){
+		$npcTrait = factory(NonPlayerCharacterTrait::class)->make();
+		$this->assertTrue($npcTrait->validate());
+
+		$npcTrait->trait = '';
+		$this->assertFalse($npcTrait->validate());
+
+		$expectedError = 'Could not save: {"trait":["The trait field is required."]}';
+		$this->assertEquals($expectedError, $npcTrait->getErrorMessage());
+
+		$npcTrait->trait = null;
+		$this->assertFalse($npcTrait->validate());
+
+		$expectedError = 'Could not save: {"trait":["The trait field is required."]}';
+		$this->assertEquals($expectedError, $npcTrait->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfTypeNullOrBlank(){
+		$npcTrait = factory(NonPlayerCharacterTrait::class)->make();
+		$this->assertTrue($npcTrait->validate());
+
+		$npcTrait->type = '';
+		$this->assertFalse($npcTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The type field is required."]}';
+		$this->assertEquals($expectedError, $npcTrait->getErrorMessage());
+
+		$npcTrait->description = null;
+		$this->assertFalse($npcTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The type field is required."]}';
+		$this->assertEquals($expectedError, $npcTrait->getErrorMessage());
+
+		$npcTrait->type = 'foo';
+		$this->assertFalse($npcTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The selected type is invalid."]}';
+		$this->assertEquals($expectedError, $npcTrait->getErrorMessage());
+	}
+
+
 	public function testUploadShouldAddNonPlayerCharacterTrait(){
 
 		$path = "resources/assets/testing/csv/NonPlayerCharacterTrait/testUpload_DO_NOT_EDIT.csv";

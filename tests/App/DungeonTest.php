@@ -68,6 +68,14 @@ class DungeonTest extends TestCase
 		$this->assertNull($this->dungeon->getMapSizeInteger());
 	}
 
+	public function testGetNumberOfTrapsInMapShouldReturnTheNumberOfTraps(){
+		$this->assertEquals(2, $this->dungeon->getNumberOfTrapsInMap());
+
+		$this->dungeon->map = null;
+
+		$this->assertNull($this->dungeon->getNumberOfTrapsInMap());
+	}
+
 
 	public function testValidateShouldFailIfMapIsInvalidSize(){
 		$this->dungeon->map = '{"map":"This is not a valid map."}';
@@ -122,6 +130,16 @@ class DungeonTest extends TestCase
 		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
 	}
 
+	public function testValidateShouldFailIfExtraTrapsExist(){
+		$this->dungeon->map = '[["w","w","w","s","w","w","t","w"],["x","w","x","w","x","w","x","w"],["t","w","w","w","w","t","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","t","w","w","w","w","w"],["x","x","x","x","x","t","x","x"]]';
+		$this->dungeon->validate();
+		$this->assertFalse($this->dungeon->validate());
+		$this->logging->logInfo($this->dungeon->getErrorMessage());
+
+		$expectedError = 'Could not save: {"map":["Map has traps marked not saved in traps."]}';
+		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
+	}
+
 	public function testGenerateShouldReturnIncompleteDungeonWithNoMapOrTraps(){
 
 		factory(App\DungeonTrait::class)->create();
@@ -173,7 +191,7 @@ class DungeonTest extends TestCase
 
 		$this->assertEquals("s", $this->dungeon->getMapSquare(0,3));
 
-		$this->assertEquals("t", $this->dungeon->getMapSquare(6,2));
+		$this->assertEquals("t", $this->dungeon->getMapSquare(0,6));
 	}
 
 	public function testUploadShouldNotUploadIfDataMalformed(){
@@ -250,7 +268,7 @@ class DungeonTest extends TestCase
 		$dungeon = factory(Dungeon::class)->make();
 		$this->assertTrue($dungeon->validate());
 
-		$dungeon->traps = '[["1","2","e"]]';
+		$dungeon->traps = '[["1","2","e"], ["1","2","2"]]';
 		$this->assertFalse($dungeon->validate());
 
 		$expectedError = 'Could not save: {"traps":["Trap number 1 invalid, \'e\' not an integer."]}';

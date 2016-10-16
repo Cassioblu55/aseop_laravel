@@ -57,7 +57,83 @@ class SettlementTest extends TestCase
         parent::tearDown();
     }
 
-    public function testGenerateShouldCreateValidSettlement(){
+	public function testValidateShouldFailIfNameNullOrBlank(){
+		$settlement = factory(Settlement::class)->make();
+		$this->assertTrue($settlement->validate());
+
+		$settlement->name = '';
+		$this->assertFalse($settlement->validate());
+
+		$expectedError = 'Could not save: {"name":["The name field is required."]}';
+		$this->assertEquals($expectedError, $settlement->getErrorMessage());
+
+		$settlement->name = null;
+		$this->assertFalse($settlement->validate());
+
+		$expectedError = 'Could not save: {"name":["The name field is required."]}';
+		$this->assertEquals($expectedError, $settlement->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfPopulationIsNullOrBelowZero(){
+		$settlement = factory(Settlement::class)->make();
+		$this->assertTrue($settlement->validate());
+
+		$settlement->population = '';
+		$this->assertFalse($settlement->validate());
+
+		$expectedError = 'Could not save: {"population":["The population field is required."]}';
+		$this->assertEquals($expectedError, $settlement->getErrorMessage());
+
+		$settlement->population = null;
+		$this->assertFalse($settlement->validate());
+
+		$expectedError = 'Could not save: {"population":["The population field is required."]}';
+		$this->assertEquals($expectedError, $settlement->getErrorMessage());
+
+		$settlement->population = -1;
+		$this->assertFalse($settlement->validate());
+
+		$expectedError = 'Could not save: {"population":["The population must be at least 0."]}';
+		$this->assertEquals($expectedError, $settlement->getErrorMessage());
+	}
+
+	public function testValidateShouldFailRulerDoesNotExist(){
+		$settlement = factory(Settlement::class)->make();
+		$this->assertTrue($settlement->validate());
+
+		NonPlayerCharacter::truncate();
+
+		$this->assertFalse($settlement->validate());
+
+		$expectedError = 'Could not save: {"ruler_id":["The selected ruler id is invalid."]}';
+		$this->assertEquals($expectedError, $settlement->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfSizeIsNullOrInvalid(){
+		$settlement = factory(Settlement::class)->make();
+		$this->assertTrue($settlement->validate());
+
+		$settlement->size = '';
+		$this->assertFalse($settlement->validate());
+
+		$expectedError = 'Could not save: {"size":["The size field is required."]}';
+		$this->assertEquals($expectedError, $settlement->getErrorMessage());
+
+		$settlement->size = null;
+		$this->assertFalse($settlement->validate());
+
+		$expectedError = 'Could not save: {"size":["The size field is required."]}';
+		$this->assertEquals($expectedError, $settlement->getErrorMessage());
+
+		$settlement->size = "f";
+		$this->assertFalse($settlement->validate());
+
+		$expectedError = 'Could not save: {"size":["The selected size is invalid."]}';
+		$this->assertEquals($expectedError, $settlement->getErrorMessage());
+	}
+
+
+	public function testGenerateShouldCreateValidSettlement(){
 	    SettlementTrait::truncate();
 
 	    $traitsToCreate = [

@@ -54,14 +54,12 @@ class ForestEncounter extends Random implements Upload
 	}
 
 	private function rollsValid(){
-		if($this->rolls == ""){
+		if(Validate::blackOrNull($this->{self::ROLLS})){
 			return true;
-		}else{
-			$validRollString = Validate::validRollString($this->rolls);
-			if(!$validRollString){
-				$this->setError(self::ROLLS, "Roll string invalid");
-			}
-			return $validRollString;
 		}
+
+		return $this->setErrorOnFailed(self::ROLLS, function(){
+			return Validate::validRollString($this->{self::ROLLS});
+		});
 	}
 }

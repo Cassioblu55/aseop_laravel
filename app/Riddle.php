@@ -21,7 +21,6 @@ class Riddle extends Random implements Upload
 		self::SOLUTION => 'required'
 	];
 
-
 	const REQUIRED_COLUMNS = [self::NAME,self::RIDDLE,self::SOLUTION];
 
 	public function user()

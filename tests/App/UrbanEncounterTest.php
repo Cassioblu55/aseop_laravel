@@ -29,13 +29,63 @@ class UrbanEncounterTest extends TestCase
 		$this->user = factory(\App\User::class)->create();
 		$this->actingAs($this->user);
 
-		self::ensureNpcOfIdOneExists();
 	}
 
 	public function tearDown()
 	{
 		$this->actingAs(new \App\User());
 		parent::tearDown();
+	}
+
+	public function testValidateShouldFailIfTitleNullOrBlank(){
+		$urbanEncounter = factory(UrbanEncounter::class)->make();
+		$this->assertTrue($urbanEncounter->validate());
+
+		$urbanEncounter->title = '';
+		$this->assertFalse($urbanEncounter->validate());
+
+		$expectedError = 'Could not save: {"title":["The title field is required."]}';
+		$this->assertEquals($expectedError, $urbanEncounter->getErrorMessage());
+
+		$urbanEncounter->trait = null;
+		$this->assertFalse($urbanEncounter->validate());
+
+		$expectedError = 'Could not save: {"title":["The title field is required."]}';
+		$this->assertEquals($expectedError, $urbanEncounter->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfDescriptionNullOrBlank(){
+		$urbanEncounter = factory(UrbanEncounter::class)->make();
+		$this->assertTrue($urbanEncounter->validate());
+
+		$urbanEncounter->description = '';
+		$this->assertFalse($urbanEncounter->validate());
+
+		$expectedError = 'Could not save: {"description":["The description field is required."]}';
+		$this->assertEquals($expectedError, $urbanEncounter->getErrorMessage());
+
+		$urbanEncounter->description = null;
+		$this->assertFalse($urbanEncounter->validate());
+
+		$expectedError = 'Could not save: {"description":["The description field is required."]}';
+		$this->assertEquals($expectedError, $urbanEncounter->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfRollsInvalid(){
+		$urbanEncounter = factory(UrbanEncounter::class)->make();
+		$this->assertTrue($urbanEncounter->validate());
+
+		$urbanEncounter->rolls = "";
+		$this->assertTrue($urbanEncounter->validate());
+
+		$urbanEncounter->rolls = null;
+		$this->assertTrue($urbanEncounter->validate());
+
+		$urbanEncounter->rolls = "invalid rolls";
+		$this->assertFalse($urbanEncounter->validate());
+
+		$expectedError = 'Could not save: {"rolls":["Rolls invalid."]}';
+		$this->assertEquals($expectedError, $urbanEncounter->getErrorMessage());
 	}
 
 	public function testUploadShouldAddUrbanEncounter(){

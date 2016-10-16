@@ -35,24 +35,30 @@ class Spell extends GenericModel implements Upload
 
 	function __construct(array $attributes = array())
 	{
+		parent::__construct($attributes);
+
 		$this->logging = new Logging(self::class);
 
 		$classValidation = Validate::getInArrayRule(self::VALID_CLASS_TYPES, 'required|max:255');
 		$this->addCustomRule(self::COL_CLASS,$classValidation);
 
-		$nameValidation = $this->getUniqueWithIgnoreSelfRule("spells", self::NAME, 'required|max:255');
-		$this->addCustomRule(self::NAME,$nameValidation);
-
 		$typeValidation = Validate::getInArrayRule(self::VALID_SPELL_TYPES, 'required|max:255');
 		$this->addCustomRule(self::TYPE,$typeValidation);
-
-		parent::__construct($attributes);
 	}
 
 	public function user()
     {
         return $this->belongsTo('App\User', self::OWNER_ID);
     }
+
+    public function validate($overrideDefaultValidationRules = false)
+    {
+	    $nameValidation = $this->getUniqueWithIgnoreSelfRule("spells", self::ID, 'required|max:255');
+	    $this->addCustomRule(self::NAME,$nameValidation);
+
+	    return parent::validate($overrideDefaultValidationRules);
+    }
+
 
 	public static function upload($filePath)
 	{

@@ -33,6 +33,12 @@ class Validate
 		return [];
 	}
 
+	public static function validWithIgnoredRule($data, $rules, $ignore){
+		unset( $rules[$ignore]);
+		return Validate::validArrayData($data, $rules);
+
+	}
+
 
 	public static function validUpdateDataFromGenericModel(Request $request, GenericModel $genericModel){
 		$errors = self::getValidationErrors($request, $genericModel->getRules());

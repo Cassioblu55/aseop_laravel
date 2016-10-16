@@ -36,6 +36,46 @@ class TavernTraitTest extends TestCase
 		parent::tearDown();
 	}
 
+	public function testValidateShouldFailIfTraitNullOrBlank(){
+		$tavernTrait = factory(TavernTrait::class)->make();
+		$this->assertTrue($tavernTrait->validate());
+
+		$tavernTrait->trait = '';
+		$this->assertFalse($tavernTrait->validate());
+
+		$expectedError = 'Could not save: {"trait":["The trait field is required."]}';
+		$this->assertEquals($expectedError, $tavernTrait->getErrorMessage());
+
+		$tavernTrait->trait = null;
+		$this->assertFalse($tavernTrait->validate());
+
+		$expectedError = 'Could not save: {"trait":["The trait field is required."]}';
+		$this->assertEquals($expectedError, $tavernTrait->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfTypeNullOrBlank(){
+		$tavernTrait = factory(TavernTrait::class)->make();
+		$this->assertTrue($tavernTrait->validate());
+
+		$tavernTrait->type = '';
+		$this->assertFalse($tavernTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The type field is required."]}';
+		$this->assertEquals($expectedError, $tavernTrait->getErrorMessage());
+
+		$tavernTrait->type = null;
+		$this->assertFalse($tavernTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The selected type is invalid.","The type field is required."]}';
+		$this->assertEquals($expectedError, $tavernTrait->getErrorMessage());
+
+		$tavernTrait->type = 'foo';
+		$this->assertFalse($tavernTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The selected type is invalid."]}';
+		$this->assertEquals($expectedError, $tavernTrait->getErrorMessage());
+	}
+
 	public function testUploadShouldAddTavernTrait(){
 
 		$path = "resources/assets/testing/csv/TavernTrait/testUpload_DO_NOT_EDIT.csv";

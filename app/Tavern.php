@@ -3,9 +3,8 @@
 namespace App;
 
 use App\Services\Logging;
-use Illuminate\Support\Facades\Auth;
 use App\Services\AddBatchAssets;
-use App\Services\DownloadHelper;
+use App\Services\Validate;
 
 class Tavern extends Asset
 {
@@ -47,18 +46,16 @@ class Tavern extends Asset
 	public static function generate(){
 		$tavern = new Tavern();
 		$tavern->addMissing();
-		$tavern['owner_id'] = Auth::user()->id;
-		$tavern['approved'] = false;
-		$tavern->save();
+		$tavern->runUpdateOrSave();
 		return $tavern;
 
 	}
 
 	public function addMissing(){
 		$this->setName();
-		$this->setTavernOwner();
 		$this->setFillable();
 		$this->setRequiredMissing();
+		$this->setTavernOwner();
 	}
 
 	private function setName(){
@@ -69,8 +66,13 @@ class Tavern extends Asset
 
 	private function setTavernOwner(){
 		$this->setIfFieldNotPresent(self::TAVERN_OWNER_ID, function(){
-			return NonPlayerCharacter::generate()->id;
+			return $this->createNewTavernOwnerOnlyIfTavernValidOtherwise();
 		});
+	}
+
+	private function createNewTavernOwnerOnlyIfTavernValidOtherwise(){
+		$valid = Validate::validWithIgnoredRule($this->attributesToArray(), $this->rules, self::TAVERN_OWNER_ID);
+		return ($valid) ? NonPlayerCharacter::generate()->id : null;
 	}
 
 	public function owner()

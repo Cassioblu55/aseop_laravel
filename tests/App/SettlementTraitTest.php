@@ -36,6 +36,46 @@ class SettlementTraitTest extends TestCase
         parent::tearDown();
     }
 
+	public function testValidateShouldFailIfTraitNullOrBlank(){
+		$settlementTrait = factory(SettlementTrait::class)->make();
+		$this->assertTrue($settlementTrait->validate());
+
+		$settlementTrait->trait = '';
+		$this->assertFalse($settlementTrait->validate());
+
+		$expectedError = 'Could not save: {"trait":["The trait field is required."]}';
+		$this->assertEquals($expectedError, $settlementTrait->getErrorMessage());
+
+		$settlementTrait->trait = null;
+		$this->assertFalse($settlementTrait->validate());
+
+		$expectedError = 'Could not save: {"trait":["The trait field is required."]}';
+		$this->assertEquals($expectedError, $settlementTrait->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfTypeNullOrBlank(){
+		$settlementTrait = factory(SettlementTrait::class)->make();
+		$this->assertTrue($settlementTrait->validate());
+
+		$settlementTrait->type = '';
+		$this->assertFalse($settlementTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The type field is required."]}';
+		$this->assertEquals($expectedError, $settlementTrait->getErrorMessage());
+
+		$settlementTrait->type = null;
+		$this->assertFalse($settlementTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The selected type is invalid.","The type field is required."]}';
+		$this->assertEquals($expectedError, $settlementTrait->getErrorMessage());
+
+		$settlementTrait->type = 'foo';
+		$this->assertFalse($settlementTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The selected type is invalid."]}';
+		$this->assertEquals($expectedError, $settlementTrait->getErrorMessage());
+	}
+
 	public function testUploadShouldAddSettlementTrait(){
 
 		$path = "resources/assets/testing/csv/SettlementTrait/testUpload_DO_NOT_EDIT.csv";

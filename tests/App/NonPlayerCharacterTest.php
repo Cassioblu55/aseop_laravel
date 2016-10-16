@@ -47,6 +47,118 @@ class NonPlayerCharacterTest extends TestCase
         parent::tearDown();
     }
 
+    public function testValidateShouldFailIfFirstNameIsNull(){
+	    $npc = factory(NonPlayerCharacter::class)->make();
+	    $this->assertTrue($npc->validate());
+
+	    $npc->first_name = '';
+	    $this->assertFalse($npc->validate());
+
+	    $expectedError = 'Could not save: {"first_name":["The first name field is required."]}';
+	    $this->assertEquals($expectedError, $npc->getErrorMessage());
+
+	    $npc->first_name = null;
+	    $this->assertFalse($npc->validate());
+
+	    $expectedError = 'Could not save: {"first_name":["The first name field is required."]}';
+	    $this->assertEquals($expectedError, $npc->getErrorMessage());
+    }
+
+	public function testValidateShouldFailIfHeightIsNull(){
+		$npc = factory(NonPlayerCharacter::class)->make();
+		$this->assertTrue($npc->validate());
+
+		$npc->height = '';
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"height":["The height field is required."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+
+		$npc->height = null;
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"height":["The height field is required."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+
+		$npc->height = -1;
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"height":["The height must be at least 0."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfAgeIsNull(){
+		$npc = factory(NonPlayerCharacter::class)->make();
+		$this->assertTrue($npc->validate());
+
+		$npc->age = '';
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"age":["The age field is required."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+
+		$npc->age = null;
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"age":["The age field is required."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+
+		$npc->age = -1;
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"age":["The age must be at least 0."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfSexIsNullOrNonAplha(){
+		$npc = factory(NonPlayerCharacter::class)->make();
+		$this->assertTrue($npc->validate());
+
+		$npc->sex = '';
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"sex":["The sex field is required."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+
+		$npc->sex = null;
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"sex":["The sex field is required."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+
+		$npc->sex = 7;
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"sex":["The sex may only contain letters."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+
+	}
+
+	public function testValidateShouldFailIfWeightIsNull(){
+		$npc = factory(NonPlayerCharacter::class)->make();
+		$this->assertTrue($npc->validate());
+
+		$npc->weight = '';
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"weight":["The weight field is required."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+
+		$npc->weight = null;
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"weight":["The weight field is required."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+
+		$npc->weight = -1;
+		$this->assertFalse($npc->validate());
+
+		$expectedError = 'Could not save: {"weight":["The weight must be at least 0."]}';
+		$this->assertEquals($expectedError, $npc->getErrorMessage());
+	}
+
+
+
 	public function testGenerateShouldNotCreateAndSaveValidNPCIfNoNamesAreAviable(){
 		$npc = NonPlayerCharacter::generate();
 		$this->assertNull($npc->id);

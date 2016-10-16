@@ -37,6 +37,53 @@ class ForestEncounterTest extends TestCase
         parent::tearDown();
     }
 
+    public function testValidateShouldFailIfTitleNullOrBlank(){
+    	$forestEncounter = factory(ForestEncounter::class)->make();
+	    $this->assertTrue($forestEncounter->validate());
+
+	    $forestEncounter->title = '';
+	    $this->assertFalse($forestEncounter->validate());
+
+	    $expectedError = 'Could not save: {"title":["The title field is required."]}';
+	    $this->assertEquals($expectedError, $forestEncounter->getErrorMessage());
+
+	    $forestEncounter->title = null;
+	    $this->assertFalse($forestEncounter->validate());
+
+	    $expectedError = 'Could not save: {"title":["The title field is required."]}';
+	    $this->assertEquals($expectedError, $forestEncounter->getErrorMessage());
+    }
+
+	public function testValidateShouldFailIfDescriptionNullOrBlank(){
+		$forestEncounter = factory(ForestEncounter::class)->make();
+		$this->assertTrue($forestEncounter->validate());
+
+		$forestEncounter->description = '';
+		$this->assertFalse($forestEncounter->validate());
+
+		$forestEncounter->description = null;
+		$this->assertFalse($forestEncounter->validate());
+
+		$expectedError = 'Could not save: {"description":["The description field is required."]}';
+		$this->assertEquals($expectedError, $forestEncounter->getErrorMessage());
+	}
+
+	public function testValidateShouldReturnFalseIfRollsIsInvalidAndTrueIfBlank(){
+		$forestEncounter = factory(ForestEncounter::class)->make();
+
+		$this->assertTrue($forestEncounter->validate());
+
+		$forestEncounter->rolls = "";
+
+		$this->assertTrue($forestEncounter->validate());
+
+		$forestEncounter->rolls = "this is not a valid roll";
+
+		$this->assertFalse($forestEncounter->validate());
+
+		$expectedErrors = '{"rolls":["Roll string invalid."]}';
+		$this->assertEquals($expectedErrors, $forestEncounter->getErrorsJson());
+	}
 
     public function testSetUploadValuesShouldAddNeededValuesBasedOnRowData(){
     	$count = count(ForestEncounter::all());
@@ -80,23 +127,6 @@ class ForestEncounterTest extends TestCase
 		$this->assertNotNull($forestEncounter);
 
 		$this->assertHashesHaveEqualValues(self::TEST_UPLOAD_ROW, $forestEncounter->toArray());
-	}
-
-	public function testValidateShouldReturnFalseIfRollsIsInvalidAndTrueIfBlank(){
-		$forestEncounter = factory(ForestEncounter::class)->make();
-
-		$this->assertTrue($forestEncounter->validate());
-
-		$forestEncounter->rolls = "";
-
-		$this->assertTrue($forestEncounter->validate());
-
-		$forestEncounter->rolls = "this is not a valid roll";
-
-		$this->assertFalse($forestEncounter->validate());
-
-		$expectedErrors = '{"rolls":["Roll string invalid"]}';
-		$this->assertEquals($expectedErrors, $forestEncounter->getErrorsJson());
 	}
 
 }

@@ -259,7 +259,12 @@ abstract class GenericModel extends Model implements Upload, Download
 	}
 
 	protected function getUniqueWithIgnoreSelfRule($table, $column=null, $additionalRules = false){
-		return Validate::getUniqueWithIgnoreSelfRule($table, $this->id, $column, $additionalRules);
+		if($this->{self::ID} != null){
+			$validateRule = Validate::getUniqueWithIgnoreSelfRule($table, $this->{self::ID}, $column, $additionalRules);
+		}else{
+			$validateRule = "unique:$table|$additionalRules";
+		}
+		return $validateRule;
 	}
 
 	private function validFieldForLookingForDuplicate($field){

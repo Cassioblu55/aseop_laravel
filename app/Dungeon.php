@@ -190,6 +190,12 @@ class Dungeon extends Asset
 				$this->setError(self::TRAPS, "Traps invalid.");
 				return false;
 			}
+
+			if(count($trapsArray) < $this->getNumberOfTrapsInMap()){
+				$this->setError(self::MAP, "Map has traps marked not saved in traps.");
+				return false;
+			}
+
 			$trapNumber = 1;
 			foreach ($trapsArray as $trap) {
 				if (!is_array($trap)) {
@@ -220,6 +226,7 @@ class Dungeon extends Asset
 
 				$trapNumber++;
 			}
+
 			return true;
 		}
 		return false;
@@ -241,6 +248,22 @@ class Dungeon extends Asset
 			}
 		}else{
 			return null;
+		}
+		return null;
+	}
+
+	public function getNumberOfTrapsInMap(){
+		if($this->validMap()){
+			$trapCount = 0;
+			$mapArray = json_decode($this->{self::MAP});
+			foreach ($mapArray as $mapRow){
+				foreach ($mapRow as $squareValue) {
+					if ($squareValue == self::TRAP) {
+						$trapCount++;
+					}
+				}
+			}
+			return $trapCount;
 		}
 		return null;
 	}

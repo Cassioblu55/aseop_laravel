@@ -37,6 +37,57 @@ class RiddleTest extends TestCase
         parent::tearDown();
     }
 
+	public function testValidateShouldFailIfNameNullOrBlank(){
+		$riddle = factory(Riddle::class)->make();
+		$this->assertTrue($riddle->validate());
+
+		$riddle->name = '';
+		$this->assertFalse($riddle->validate());
+
+		$expectedError = 'Could not save: {"name":["The name field is required."]}';
+		$this->assertEquals($expectedError, $riddle->getErrorMessage());
+
+		$riddle->name = null;
+		$this->assertFalse($riddle->validate());
+
+		$expectedError = 'Could not save: {"name":["The name field is required."]}';
+		$this->assertEquals($expectedError, $riddle->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfRiddleNullOrBlank(){
+		$riddle = factory(Riddle::class)->make();
+		$this->assertTrue($riddle->validate());
+
+		$riddle->riddle = '';
+		$this->assertFalse($riddle->validate());
+
+		$expectedError = 'Could not save: {"riddle":["The riddle field is required."]}';
+		$this->assertEquals($expectedError, $riddle->getErrorMessage());
+
+		$riddle->riddle = null;
+		$this->assertFalse($riddle->validate());
+
+		$expectedError = 'Could not save: {"riddle":["The riddle field is required."]}';
+		$this->assertEquals($expectedError, $riddle->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfSolutionNullOrBlank(){
+		$riddle = factory(Riddle::class)->make();
+		$this->assertTrue($riddle->validate());
+
+		$riddle->solution = '';
+		$this->assertFalse($riddle->validate());
+
+		$expectedError = 'Could not save: {"solution":["The solution field is required."]}';
+		$this->assertEquals($expectedError, $riddle->getErrorMessage());
+
+		$riddle->solution = null;
+		$this->assertFalse($riddle->validate());
+
+		$expectedError = 'Could not save: {"solution":["The solution field is required."]}';
+		$this->assertEquals($expectedError, $riddle->getErrorMessage());
+	}
+
     public function testUploadShouldAddRiddleFromFilePath(){
 	    $path = "resources/assets/testing/csv/Riddle/testUpload_DO_NOT_EDIT.csv";
 	    new FileTesting($path);

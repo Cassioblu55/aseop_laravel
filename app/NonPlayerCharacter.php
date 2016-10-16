@@ -34,9 +34,7 @@ class NonPlayerCharacter extends Asset implements Upload
 		self::WEIGHT => 'required|min:0|integer',
 	];
 
-	const FEMALE = 'F';
-	const MALE = 'M';
-	const NONE = 'N';
+	const FEMALE = 'F', MALE = 'M', NONE = 'N';
 	const VALID_SEX_OPTIONS = [self::MALE => 'Male', self::FEMALE => 'Female', self::NONE => 'None'];
 
 	const GENERATOR_VALID_SEX_OPTIONS = [self::MALE, self::FEMALE];

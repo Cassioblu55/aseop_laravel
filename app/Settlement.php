@@ -18,13 +18,6 @@ class Settlement extends Asset implements Upload
 
 	const SIZE = 'size', NAME = 'name', KNOWN_FOR = 'known_for', NOTABLE_TRAITS = 'notable_traits', RULER_STATUS = 'ruler_status', CURRENT_CALAMITY = 'current_calamity', RULER_ID = 'ruler_id', POPULATION = 'population', OTHER_INFORMATION = 'other_information', RACE_RELATIONS = 'race_relations';
 
-	protected $rules = [
-		self::SIZE => 'required|in:'.self::SMALL.','.self::MEDIUM.','.self::LARGE,
-		self::NAME =>'required|max:255',
-		self::RULER_ID => 'required|integer|exists:non_player_characters,id',
-		self::POPULATION => 'required|integer|min:0'
-	];
-
 	protected $guarded = [self::OWNER_ID, self::APPROVED];
 
 	const UPLOAD_COLUMNS = [self::NAME, self::KNOWN_FOR, self::NOTABLE_TRAITS, self::RULER_ID, self::RULER_STATUS, self::CURRENT_CALAMITY, self::POPULATION, self::SIZE, self::OTHER_INFORMATION, self::RACE_RELATIONS, self::COL_PUBLIC];
@@ -36,6 +29,13 @@ class Settlement extends Asset implements Upload
 	const SMALL_POPULATION_RANGE = ['min'=>20, 'max'=>75, 'std'=>5];
 	const MEDIUM_POPULATION_RANGE = ['min'=>76, 'max'=>300, 'std'=>10];
 	const LARGE_POPULATION_RANGE = ['min'=>300, 'max'=>1500, 'std'=>100];
+
+	protected $rules = [
+		self::SIZE => 'required|in:'.self::SMALL.','.self::MEDIUM.','.self::LARGE,
+		self::NAME =>'required|max:255',
+		self::RULER_ID => 'required|integer|exists:non_player_characters,id',
+		self::POPULATION => 'required|integer|min:0'
+	];
 
 	public function user()
 	{
@@ -86,10 +86,7 @@ class Settlement extends Asset implements Upload
 	}
 
 	private function createNewRulerOnlyIfSettlementValidOtherwise(){
-		$rules = $this->rules;
-		unset( $rules[self::RULER_ID]);
-
-		$valid = Validate::validArrayData($this->attributesToArray(), $rules);
+		$valid = Validate::validWithIgnoredRule($this->attributesToArray(), $this->rules, self::RULER_ID);
 		return ($valid) ? NonPlayerCharacter::generate()->id : null;
 	}
 

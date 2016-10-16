@@ -43,8 +43,127 @@ class SpellTest extends TestCase
         parent::tearDown();
     }
 
-	public function testUploadShouldAddSpell(){
+	public function testValidateShouldFailIfTypeNullOrBlank(){
+		$spell = factory(Spell::class)->make();
+		$this->assertTrue($spell->validate());
 
+		$spell->type = '';
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"type":["The type field is required."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+
+		$spell->type = null;
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"type":["The selected type is invalid.","The type field is required."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+
+		$spell->type = 'foo';
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"type":["The selected type is invalid."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfRangeIsNullOrTooLow(){
+		$spell = factory(Spell::class)->make();
+		$this->assertTrue($spell->validate());
+
+		$spell->range = '';
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"range":["The range field is required."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+
+		$spell->range = null;
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"range":["The range field is required."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+
+		$spell->range = -1;
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"range":["The range must be at least 0."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfLevelIsNullTooHighOrTooLow(){
+		$spell = factory(Spell::class)->make();
+		$this->assertTrue($spell->validate());
+
+		$spell->level = '';
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"level":["The level field is required."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+
+		$spell->level = null;
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"level":["The level field is required."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+
+		$spell->level = -1;
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"level":["The level must be at least 0."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+
+		$spell->level = 10;
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"level":["The level may not be greater than 9."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfNameNullOrBlank(){
+		$spell = factory(Spell::class)->make();
+		$this->assertTrue($spell->validate());
+
+		$spell->name = '';
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"name":["The name field is required."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+
+		$spell->name = null;
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"name":["The name field is required."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfNameTaken(){
+		$spell = factory(Spell::class)->create();
+		$this->assertTrue($spell->validate());
+
+		$spellTwo = factory(Spell::class)->make();
+		$this->assertFalse($spellTwo->validate());
+
+		$expectedError = 'Could not save: {"name":["The name has already been taken."]}';
+		$this->assertEquals($expectedError, $spellTwo->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfDescriptionNullOrBlank(){
+		$spell = factory(Spell::class)->make();
+		$this->assertTrue($spell->validate());
+
+		$spell->description = '';
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"description":["The description field is required."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+
+		$spell->description = null;
+		$this->assertFalse($spell->validate());
+
+		$expectedError = 'Could not save: {"description":["The description field is required."]}';
+		$this->assertEquals($expectedError, $spell->getErrorMessage());
+	}
+
+	public function testUploadShouldAddSpell(){
 		$path = "resources/assets/testing/csv/Spell/testUpload_DO_NOT_EDIT.csv";
 		new FileTesting($path);
 
@@ -58,11 +177,11 @@ class SpellTest extends TestCase
 
 		$this->assertEquals("1 records added 0 updated 0 records could not be uploaded", $message);
 
-		$nonPlayerCharacterTrait = Spell::where("name", "Bless")->first();
+		$spell = Spell::where("name", "Bless")->first();
 
-		$this->assertNotNull($nonPlayerCharacterTrait);
+		$this->assertNotNull($spell);
 
-		$this->assertHashesHaveEqualValues(self::TEST_UPLOAD_ROW, $nonPlayerCharacterTrait->toArray());
+		$this->assertHashesHaveEqualValues(self::TEST_UPLOAD_ROW, $spell->toArray());
 	}
 
 	public function testSetUploadValuesShouldAddValueToObjectFromRow(){

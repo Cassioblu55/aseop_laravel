@@ -5,6 +5,7 @@ namespace App;
 use App\Services\Logging;
 use App\Services\AddBatchAssets;
 use App\Services\DownloadHelper;
+use App\Services\Validate;
 
 class UrbanEncounter extends Random
 {
@@ -34,30 +35,32 @@ class UrbanEncounter extends Random
 
 	public static function upload($filePath)
 	{
-		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
-
-		$runOnCreate = function($row){
-			$urbanEncounter = new self();
-			return $urbanEncounter->setUploadValues($row);
-		};
-
-		$runOnUpdate = function($row){
-			return self::attemptUpdate($row);
-		};
-
-		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+		return self::runUpload($filePath, self::UPLOAD_COLUMNS);
 	}
 
 	public static function getNewSelf(){
 		return new self();
 	}
 
-	public function setUploadValues($row)
-	{
+	public function setUploadValues($row){
 		$this->addUploadColumns($row, self::UPLOAD_COLUMNS);
 		$this->setRequiredMissing();
-
 		return $this->runUpdateOrSave();
+	}
+
+	public function validate($overrideDefaultValidationRules = false)
+	{
+		return parent::validate($overrideDefaultValidationRules) && $this->rollsValid();
+	}
+
+	private function rollsValid(){
+		if(Validate::blackOrNull($this->{self::ROLLS})){
+			return true;
+		}
+
+		return $this->setErrorOnFailed(self::ROLLS, function(){
+			return Validate::validRollString($this->{self::ROLLS});
+		});
 	}
 
 }

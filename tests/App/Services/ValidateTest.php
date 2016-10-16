@@ -178,7 +178,36 @@ class ValidateTest extends TestCase
 		$this->assertEquals('The name field is required.', $nameErrors[0]);
 
 		$this->assertFalse(Validate::validArrayData($array, $rules));
+	}
 
+	public function testValidWithIgnoredRuleShouldValidateWhileIgnoringARule(){
+		$rules = [
+			"name" => 'required',
+			"type" => 'required'
+		];
+
+		$data = [
+			"name" => 'foo bar'
+		];
+
+		$this->assertFalse(Validate::validArrayData($data, $rules));
+
+		$this->assertTrue(Validate::validWithIgnoredRule($data, $rules, 'type'));
+	}
+
+	public function testValidWithIgnoredRuleShouldDoNothingWhenIgnoreNotPresentInRules(){
+		$rules = [
+			"name" => 'required',
+			"type" => 'required'
+		];
+
+		$data = [
+			"name" => 'foo bar'
+		];
+
+		$this->assertFalse(Validate::validArrayData($data, $rules));
+
+		$this->assertFalse(Validate::validWithIgnoredRule($data, $rules, 'foo bar'));
 	}
 
 }
