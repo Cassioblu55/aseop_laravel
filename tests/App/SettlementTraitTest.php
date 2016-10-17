@@ -76,6 +76,17 @@ class SettlementTraitTest extends TestCase
 		$this->assertEquals($expectedError, $settlementTrait->getErrorMessage());
 	}
 
+	public function testDuplicateVillianTraitShouldNotBeValid(){
+		$settlementTrait = factory(SettlementTrait::class)->create();
+		$this->assertTrue($settlementTrait->validate());
+
+		$settlementTraitTwo = factory(SettlementTrait::class)->make();
+		$this->assertFalse($settlementTraitTwo->validate());
+
+		$expectedError = 'Could not save: {"duplication_error":["Duplicate object found."]}';
+		$this->assertEquals($expectedError, $settlementTraitTwo->getErrorMessage());
+	}
+
 	public function testUploadShouldAddSettlementTrait(){
 
 		$path = "resources/assets/testing/csv/SettlementTrait/testUpload_DO_NOT_EDIT.csv";

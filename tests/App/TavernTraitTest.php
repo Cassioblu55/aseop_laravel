@@ -76,6 +76,17 @@ class TavernTraitTest extends TestCase
 		$this->assertEquals($expectedError, $tavernTrait->getErrorMessage());
 	}
 
+	public function testDuplicateVillianTraitShouldNotBeValid(){
+		$tavernTrait = factory(TavernTrait::class)->create();
+		$this->assertTrue($tavernTrait->validate());
+
+		$tavernTraitTwo = factory(TavernTrait::class)->make();
+		$this->assertFalse($tavernTraitTwo->validate());
+
+		$expectedError = 'Could not save: {"duplication_error":["Duplicate object found."]}';
+		$this->assertEquals($expectedError, $tavernTraitTwo->getErrorMessage());
+	}
+
 	public function testUploadShouldAddTavernTrait(){
 
 		$path = "resources/assets/testing/csv/TavernTrait/testUpload_DO_NOT_EDIT.csv";

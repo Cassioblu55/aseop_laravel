@@ -247,8 +247,8 @@ abstract class GenericModel extends Model implements Upload, Download
 		$value = self::where($attributeArray)->get();
 
 		if(count($value) > 1 || ((count($value) == 1 ) && (!isset($this[self::ID]) || $value[0][self::ID] != $this[self::ID]))){
-			$this->errors = json_encode(['duplicationError' => 'Duplicate record found']);
-			return true;
+			$this->setError("duplication_error", "Duplicate object found.")
+;			return true;
 		}
 
 		return false;

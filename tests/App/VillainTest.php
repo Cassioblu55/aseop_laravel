@@ -33,6 +33,13 @@ class VillainTest extends TestCase
 		$this->user = factory(\App\User::class)->create();
 		$this->actingAs($this->user);
 
+		$npcTraitsToCreate = [['type'=> 'female_name', 'trait' => 'Jan'],
+			['type'=> 'male_name', 'trait' => 'Bob']];
+
+		foreach ($npcTraitsToCreate as $row){
+			factory(App\NonPlayerCharacterTrait::class)->create($row);
+		}
+
 		self::ensureNpcOfIdOneExists();
 	}
 
@@ -41,6 +48,97 @@ class VillainTest extends TestCase
 		$this->actingAs(new \App\User());
 		parent::tearDown();
 	}
+
+	public function testValidateShouldFailIfWeaknessTypeOrDescriptionIsMissingAndTheOtherIsPresent(){
+		$villain = factory(Villain::class)->make();
+		$this->assertTrue($villain->validate());
+
+		$villain->weakness_type = "foo";
+		$this->assertFalse($villain->validate());
+
+		$expectedError = 'Could not save: {"weakness_description":["The weakness description field is required when weakness type is present."]}';
+		$this->assertEquals($expectedError, $villain->getErrorMessage());
+
+		$villain->weakness_type = null;
+		$this->assertTrue($villain->validate());
+
+		$villain->weakness_description = "foo";
+		$this->assertFalse($villain->validate());
+
+		$expectedError = 'Could not save: {"weakness_type":["The weakness type field is required when weakness description is present."]}';
+		$this->assertEquals($expectedError, $villain->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfSchemeTypeOrDescriptionIsMissingAndTheOtherIsPresent(){
+		$villain = factory(Villain::class)->make();
+		$this->assertTrue($villain->validate());
+
+		$villain->scheme_type = "foo";
+		$this->assertFalse($villain->validate());
+
+		$expectedError = 'Could not save: {"scheme_description":["The scheme description field is required when scheme type is present."]}';
+		$this->assertEquals($expectedError, $villain->getErrorMessage());
+
+		$villain->scheme_type = null;
+		$this->assertTrue($villain->validate());
+
+		$villain->scheme_description = "foo";
+		$this->assertFalse($villain->validate());
+
+		$expectedError = 'Could not save: {"scheme_type":["The scheme type field is required when scheme description is present."]}';
+		$this->assertEquals($expectedError, $villain->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfMethodTypeOrDescriptionIsMissingAndTheOtherIsPresent(){
+		$villain = factory(Villain::class)->make();
+		$this->assertTrue($villain->validate());
+
+		$villain->method_type = "foo";
+		$this->assertFalse($villain->validate());
+
+		$expectedError = 'Could not save: {"method_description":["The method description field is required when method type is present."]}';
+		$this->assertEquals($expectedError, $villain->getErrorMessage());
+
+		$villain->method_type = null;
+		$this->assertTrue($villain->validate());
+
+		$villain->method_description = "foo";
+		$this->assertFalse($villain->validate());
+
+		$expectedError = 'Could not save: {"method_type":["The method type field is required when method description is present."]}';
+		$this->assertEquals($expectedError, $villain->getErrorMessage());
+	}
+
+	public function testGenerateShouldGenerateValidVilain(){
+
+		$villain = Villain::generate();
+		$this->assertTrue($villain->validate());
+
+		$this->assertNotNull($villain->npc());
+
+		$this->assertNotNull(\App\NonPlayerCharacter::findById($villain->npc_id));
+	}
+
+	public function testGenerateShouldNotSetATypeIfDecriptionDoesNotExistOrViseVersa(){
+		factory(\App\VillainTrait::class)->make([
+			'type' => "weakness_type",
+		]);
+
+		$villain = Villain::generate();
+		$this->assertNotNull($villain->id);
+		$this->assertNull(($villain->weakness_type));
+
+		\App\VillainTrait::truncate();
+
+		factory(\App\VillainTrait::class)->make([
+			'type' => "weakness_description",
+		]);
+
+		$villain = Villain::generate();
+		$this->assertNotNull($villain->id);
+		$this->assertNull(($villain->weakness_description));
+	}
+
 
 	public function testUploadShouldAddVillain(){
 

@@ -37,21 +37,14 @@ class TavernTrait extends AssetTrait implements Upload
 		parent::__construct($attributes);
 	}
 
+	public function validate($overrideDefaultValidationRules = false)
+	{
+		return parent::validate($overrideDefaultValidationRules) && !$this->duplicateFound();
+	}
 
 	public static function upload($filePath)
 	{
-		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
-
-		$runOnCreate = function($row){
-			$tavernTrait = new self();
-			return $tavernTrait->setUploadValues($row);
-		};
-
-		$runOnUpdate = function($row){
-			return self::attemptUpdate($row);
-		};
-
-		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+		return self::runUpload($filePath, self::UPLOAD_COLUMNS);
 	}
 
 	public static function getNewSelf(){

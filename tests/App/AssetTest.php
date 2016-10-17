@@ -46,10 +46,10 @@ class AssetTest extends TestCase
 		$this->assertNotNull($dungeonTrait->id);
 
 		$dungeon = new \App\Villain();
-		$trait = $dungeon->getTraitRandomByType("foo", ['description', 'kind']);
+		$trait = $dungeon->getTraitRandomByType("scheme", ['description', 'kind']);
 
 		$this->assertEquals("description", $trait['description']);
-		$this->assertEquals("kind", $trait['kind']);
+		$this->assertEquals("Immortality", $trait['kind']);
 	}
 
 }

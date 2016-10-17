@@ -82,18 +82,7 @@ class Tavern extends Asset
 
 	public static function upload($filePath)
 	{
-		$addBatch = new AddBatchAssets($filePath, self::UPLOAD_COLUMNS);
-
-		$runOnCreate = function($row){
-			$tavern = new self();
-			return $tavern->setUploadValues($row);
-		};
-
-		$runOnUpdate = function($row){
-			return self::attemptUpdate($row);
-		};
-
-		return $addBatch->addBatch($runOnCreate, $runOnUpdate);
+		return self::runUpload($filePath, self::UPLOAD_COLUMNS);
 	}
 
 	public static function getNewSelf(){

@@ -76,6 +76,16 @@ class NonPlayerCharacterTraitTest extends TestCase
 		$this->assertEquals($expectedError, $npcTrait->getErrorMessage());
 	}
 
+	public function testDuplicateVillianTraitShouldNotBeValid(){
+		$npcTrait = factory(NonPlayerCharacterTrait::class)->create();
+		$this->assertTrue($npcTrait->validate());
+
+		$npcTraitTwo = factory(NonPlayerCharacterTrait::class)->make();
+		$this->assertFalse($npcTraitTwo->validate());
+		$expectedError = 'Could not save: {"duplication_error":["Duplicate object found."]}';
+		$this->assertEquals($expectedError, $npcTraitTwo->getErrorMessage());
+	}
+
 
 	public function testUploadShouldAddNonPlayerCharacterTrait(){
 

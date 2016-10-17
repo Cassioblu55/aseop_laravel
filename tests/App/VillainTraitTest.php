@@ -38,6 +38,63 @@ class VillainTraitTest extends TestCase
 		parent::tearDown();
 	}
 
+	public function testValidateShouldFailIfTypeIsIncorrect(){
+		$villainTrait = factory(VillainTrait::class)->make();
+		$this->assertTrue($villainTrait->validate());
+
+		$villainTrait->type = '';
+		$this->assertFalse($villainTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The type field is required."]}';
+		$this->assertEquals($expectedError, $villainTrait->getErrorMessage());
+
+		$villainTrait->type = null;
+		$this->assertFalse($villainTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The selected type is invalid.","The type field is required."]}';
+		$this->assertEquals($expectedError, $villainTrait->getErrorMessage());
+
+		$villainTrait->type = 'foo';
+		$this->assertFalse($villainTrait->validate());
+
+		$expectedError = 'Could not save: {"type":["The selected type is invalid."]}';
+		$this->assertEquals($expectedError, $villainTrait->getErrorMessage());
+	}
+
+	public function testValidateShouldFailIfKindIsIncorrect(){
+		$villainTrait = factory(VillainTrait::class)->make();
+		$this->assertTrue($villainTrait->validate());
+
+		$villainTrait->kind = '';
+		$this->assertFalse($villainTrait->validate());
+
+		$expectedError = 'Could not save: {"kind":["The kind field is required."]}';
+		$this->assertEquals($expectedError, $villainTrait->getErrorMessage());
+
+		$villainTrait->kind = null;
+		$this->assertFalse($villainTrait->validate());
+
+		$expectedError = 'Could not save: {"kind":["The selected kind is invalid.","The kind field is required."]}';
+		$this->assertEquals($expectedError, $villainTrait->getErrorMessage());
+
+		$villainTrait->kind = 'foo';
+		$this->assertFalse($villainTrait->validate());
+
+		$expectedError = 'Could not save: {"kind":["The selected kind is invalid."]}';
+		$this->assertEquals($expectedError, $villainTrait->getErrorMessage());
+	}
+
+	public function testDuplicateVillianTraitShouldNotBeValid(){
+		$villainTrait = factory(VillainTrait::class)->create();
+		$this->assertTrue($villainTrait->validate());
+
+		$villainTraitTwo = factory(VillainTrait::class)->make();
+		$this->assertFalse($villainTraitTwo->validate());
+
+		$expectedError = 'Could not save: {"duplication_error":["Duplicate object found."]}';
+		$this->assertEquals($expectedError, $villainTraitTwo->getErrorMessage());
+	}
+
 	public function testUploadShouldAddVillainTrait()
 	{
 
