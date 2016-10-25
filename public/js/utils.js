@@ -16,6 +16,19 @@ function cutString(string, n){
 	return string.substring(0, (string.length-n));
 }
 
+function clone(h){
+	var hash = {};
+	if(h){
+		var keys= Object.keys(h);
+		for(var i=0; i<keys.length; i++){
+			var key = keys[i];
+			hash[key] = h[key];
+		}
+	}
+	return hash;
+
+}
+
 function getTrapString(traps){
 	var trapStrings = [];
 	for(var i=0; i< traps.length; i++){

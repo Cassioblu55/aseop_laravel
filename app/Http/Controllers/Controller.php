@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\Logging;
 use App\Services\Messages;
-use App\Services\Validate;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -205,8 +203,6 @@ class Controller extends BaseController
 		return redirect()->action($action, $message);
 
 	}
-
-
 
 	public function index()
 	{
