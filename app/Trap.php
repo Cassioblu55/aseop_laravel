@@ -5,6 +5,7 @@ namespace App;
 use App\Services\AddBatchAssets;
 use App\Services\Logging;
 use App\Services\DownloadHelper;
+use App\Services\Validate;
 
 class Trap extends GenericModel 
 {
@@ -13,9 +14,9 @@ class Trap extends GenericModel
 	
 	private $logging;
 
-	const NAME = 'name', DESCRIPTION = 'description', ROLLS = 'rolls', WEIGHT = 'weight';
+	const NAME = 'name', DESCRIPTION = 'description', ROLLS = 'rolls';
 
-	const UPLOAD_COLUMNS = [self::NAME, self::DESCRIPTION, self::ROLLS, self::WEIGHT];
+	const UPLOAD_COLUMNS = [self::NAME, self::DESCRIPTION, self::ROLLS];
 	
 	protected $rules = [
 		self::NAME => 'required|max:255',
@@ -58,6 +59,21 @@ class Trap extends GenericModel
 		$this->setRequiredMissing();
 
 		return $this->runUpdateOrSave();
+	}
+
+	public function validate($overrideDefaultValidationRules = false)
+	{
+		return parent::validate($overrideDefaultValidationRules) && $this->rollsValid();
+	}
+
+	private function rollsValid(){
+		if(Validate::blackOrNull($this->{self::ROLLS})){
+			return true;
+		}
+
+		return $this->setErrorOnFailed(self::ROLLS, function(){
+			return Validate::validRollString($this->{self::ROLLS});
+		});
 	}
 
 }

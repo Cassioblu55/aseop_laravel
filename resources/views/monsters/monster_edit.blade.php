@@ -339,11 +339,12 @@
     <input name="skills" class="hidden" ng-model="skills_text" type="text">
     <input name="stats" class="hidden" ng-model="stats_text" type="text">
     <input name="languages" class="hidden" ng-model="languages_text" , type="text">
-    <input name="abilities" class="hidden" ng-model="abilities_text" type="text">
+    <input name="abilities" class="" ng-model="abilities_text" type="text">
     <input name="actions" class="hidden" ng-model="actions_text" type="text">
     <input name="senses" class="hidden" ng-model="senses_text" type="text">
     <input name="found" class="hidden" ng-model="found_text" type="text">
     <input name="hit_points" class="hidden" ng-value="getDiceDisplay(monster.hit_points)">
+
 @stop
 
 @section('back_location', url('/monsters'))
@@ -386,7 +387,7 @@
                 else{
                     $scope.ability_modal = {};
                 }
-            }
+            };
 
             $scope.editAction = function(index){
                 if(index != null){

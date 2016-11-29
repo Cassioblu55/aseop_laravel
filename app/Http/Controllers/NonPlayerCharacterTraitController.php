@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\NonPlayerCharacterTrait;
 
-class NpcTraitController extends Controller
+class NonPlayerCharacterTraitController extends Controller
 {
 	const CONTROLLER_NAME = "npcTrait";
 

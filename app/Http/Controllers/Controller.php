@@ -175,6 +175,8 @@ class Controller extends BaseController
 		return self::addMessages($dataHash, $urlParams);
 	}
 
+	//TODO Controller adds slashes when saving json data with special characters: "'"
+
 	protected function validateStore(GenericModel $genericModel, $redirectToIndex = false, $modelName = null){
 		$modelName = ($modelName == null) ? $genericModel->getTable() : $modelName;
 		$data = [$modelName => $genericModel];

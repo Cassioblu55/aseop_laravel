@@ -108,6 +108,15 @@ class MonsterTest extends TestCase
 		$this->assertEquals($expectedErrorMessage, $monster->getErrorsJson());
 	}
 
+	public function testJsonWithSingleQuoteShouldSaveSuccesfully(){
+		$monster = factory(Monster::class)->make();
+		$monster->{Monster::ABILITIES} = '[{"name":"Rejuvenation","description":"Contains a \' in it"}]';
+		$this->assertTrue($monster->validate());
+
+		$monster->runUpdateOrSave();
+		$this->assertEquals($monster->{Monster::ABILITIES}, '[{"name":"Rejuvenation","description":"Contains a \' in it"}]');
+	}
+
 	public function testValidateShouldFaillIfAbilitiesInvalid(){
 		$monster = factory(Monster::class)->create();
 		$this->assertTrue($monster->validate());

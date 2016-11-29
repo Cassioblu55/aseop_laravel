@@ -1,2 +1,2 @@
-name,description
-uploadTrap,foo
+name,description,rolls
+uploadTrap,foo,"1d6+2,2d6+6"

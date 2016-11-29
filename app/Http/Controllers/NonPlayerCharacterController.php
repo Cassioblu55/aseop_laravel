@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\NonPlayerCharacter;
 use App\Http\Requests;
 
-class NpcController extends Controller
+class NonPlayerCharacterController extends Controller
 {
 
 	const CONTROLLER_NAME = "npc";

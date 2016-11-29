@@ -43,18 +43,18 @@ Route::resource('traps', 'TrapController',[
 	'parameters' => 'singular'
 ]);
 
-Route::get('npcs/upload', 'NpcController@upload');
-Route::post('npcs/upload', 'NpcController@saveBatch');
+Route::get('npcs/upload', 'NonPlayerCharacterController@upload');
+Route::post('npcs/upload', 'NonPlayerCharacterController@saveBatch');
 
-Route::get('npcs/generate', 'NpcController@generate');
+Route::get('npcs/generate', 'NonPlayerCharacterController@generate');
 
-Route::resource('npcs', 'NpcController',[
+Route::resource('npcs', 'NonPlayerCharacterController',[
 	'parameters' => 'singular'
 ]);
 
-Route::get('npcTraits/upload', 'NpcTraitController@upload');
-Route::post('npcTraits/upload', 'NpcTraitController@saveBatch');
-Route::resource('npcTraits', 'NpcTraitController',[
+Route::get('npcTraits/upload', 'NonPlayerCharacterTraitController@upload');
+Route::post('npcTraits/upload', 'NonPlayerCharacterTraitController@saveBatch');
+Route::resource('npcTraits', 'NonPlayerCharacterTraitController',[
 	'parameters' => 'singular'
 ]);
 
