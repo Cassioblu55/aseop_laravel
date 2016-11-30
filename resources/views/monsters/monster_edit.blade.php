@@ -339,7 +339,7 @@
     <input name="skills" class="hidden" ng-model="skills_text" type="text">
     <input name="stats" class="hidden" ng-model="stats_text" type="text">
     <input name="languages" class="hidden" ng-model="languages_text" , type="text">
-    <input name="abilities" class="" ng-model="abilities_text" type="text">
+    <input name="abilities" class="hidden" ng-model="abilities_text" type="text">
     <input name="actions" class="hidden" ng-model="actions_text" type="text">
     <input name="senses" class="hidden" ng-model="senses_text" type="text">
     <input name="found" class="hidden" ng-model="found_text" type="text">
@@ -403,13 +403,21 @@
                 $scope.monster = convertValuesToNumbers(monster, valueToNumberList);
                 $scope.monster.stats = (monster.stats) ? convertValuesToNumbers($scope.monster.stats, $scope.statsValues).parseEscape() : {};
                 $scope.skills = (monster.skills) ? convertListHashValuesToNumbers($scope.monster.skills.parseEscape(), ['modifer']) : [];
-                $scope.languages = (monster.languages) ? $scope.monster.languages.parseEscape([]) : [];
-                $scope.senses = (monster.senses) ? $scope.monster.senses.parseEscape([]) : [];
-                $scope.abilities = (monster.abilities) ? $scope.monster.abilities.parseEscape([]) : [];
-                $scope.actions = (monster.actions) ? $scope.monster.actions.parseEscape([]) : [];
-                $scope.found_places = (monster.found) ? $scope.monster.found.parseEscape([]) : [];
+                $scope.languages = getJsonValue(monster.language);
+                $scope.senses = getJsonValue(monster.senses);
+                $scope.abilities = getJsonValue(monster.abilities);
+                $scope.actions = getJsonValue(monster.actions);
+                $scope.found_places = getJsonValue(monster.found);
                 $scope.monster.hit_points = (monster.hit_points) ? getDiceValue(monster.hit_points) : {};
             });
+
+            function getJsonValue(possibleString, defaultValue){
+                if(defaultValue === undefined){defaultValue = [];}
+                if(possibleString && typeof(possibleString) == "string"){
+                    return possibleString.parseEscape(defaultValue);
+                }
+                return defaultValue;
+            }
 
             $scope.utils.runOnCreate(function(){
                 $scope.monster = {};

@@ -40,16 +40,32 @@ class Controller extends BaseController
 		$this->controllerNameSpace = $controllerNameSpace;
 	}
 
+	public function getControllerNameSpace(){
+		return $this->controllerNameSpace;
+	}
+
 	protected function setControllerProperName($controllerProperName){
 		$this->controllerProperName = $controllerProperName;
+	}
+
+	public function getControllerProperName(){
+		return $this->controllerProperName;
 	}
 
 	protected function setControllerViewPrefix($controllerViewPrefix){
 		$this->controllerViewPrefix = $controllerViewPrefix;
 	}
 
+	public function getControllerViewPrefix(){
+		return $this->controllerViewPrefix;
+	}
+
 	protected function setControllerModelName($controllerModelName){
 		$this->controllerModelName = $controllerModelName;
+	}
+
+	public function getControllerModelName(){
+		return $this->controllerModelName;
 	}
 
 	protected function setTableName($tableName){
@@ -60,38 +76,51 @@ class Controller extends BaseController
 		return url($this->controllerNameSpace);
 	}
 
-	protected function getTableName(){
+	public function getTableName(){
 		return $this->tableName;
 	}
 
-	protected function getControllerAction($controllerAction){
+	public function getControllerAction($controllerAction){
 		return $this->controllerProperName.'@'.$controllerAction;
 	}
 
-	protected function getControllerView($controllerView){
+	public function getControllerView($controllerView){
 		return $this->controllerNameSpace.".".$this->controllerViewPrefix."_".$controllerView;
 	}
 
-	protected function getCreateHeaders(){
-		return (object) ["createOrUpdate" => "Create", "postLocation" => $this->getPostLocation(), "methodField" => "POST", "addOrSave" => "Add", "dataDefaults" => $this->getDefaultAdditionalData()];
+	public function getCreateHeaders(){
+		return (object) [
+			"createOrUpdate" => "Create",
+			"postLocation" => $this->getPostLocation(),
+			"methodField" => "POST",
+			"addOrSave" => "Add",
+			"dataDefaults" => $this->getDefaultAdditionalData()];
 	}
 
-	protected function getUpdateHeaders($id){
-
-
-		return (object) ["createOrUpdate" => "Update", "postLocation" => $this->getPostLocation()."/".$id, "methodField" => "PATCH", "addOrSave" => "Save", "dataDefaults" => $this->getDefaultAdditionalData()];
+	public function getUpdateHeaders($id){
+		return (object) [
+			"createOrUpdate" => "Update",
+			"postLocation" => $this->getPostLocation()."/".$id,
+			"methodField" => "PATCH",
+			"addOrSave" => "Save",
+			"dataDefaults" => $this->getDefaultAdditionalData()
+		];
 	}
 
-	protected function getIndexHeaders(){
+	public function getIndexHeaders(){
 		return (object) ["dataDefaults" => $this->getDefaultAdditionalData()];
 	}
 
-	protected function getShowHeaders(){
+	public function getShowHeaders(){
 		return (object) ["dataDefaults" => $this->getDefaultAdditionalData()];
 	}
 
-	protected function getUploadHeaders(){
-		return (object) ["postLocation" => $this->getPostLocation()."/upload","addOrSave" => "Upload", "methodField" => "POST", "dataDefaults" => $this->getDefaultAdditionalData()];
+	public function getUploadHeaders(){
+		return (object) [
+			"postLocation" => $this->getPostLocation()."/upload",
+			"addOrSave" => "Upload",
+			"methodField" => "POST",
+			"dataDefaults" => $this->getDefaultAdditionalData()];
 	}
 
 	private function getDefaultAdditionalData(){

@@ -16,6 +16,7 @@ class NonPlayerCharacterTraitController extends Controller
 
 	public function __construct(){
 		$this->setControllerNames(self::CONTROLLER_NAME);
+		$this->setControllerProperName("NonPlayerCharacterTraitController");
 
 		$this->logging = new Logging(self::class);
 
