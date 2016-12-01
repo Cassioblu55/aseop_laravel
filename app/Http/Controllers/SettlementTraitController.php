@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\SettlementTrait;
 
-class SettlementTraitController extends Controller
+class SettlementTraitController extends AbstractController
 {
 	const CONTROLLER_NAME = "settlementTrait";
 
@@ -105,6 +105,6 @@ class SettlementTraitController extends Controller
 	public function destroy(SettlementTrait $settlementTrait)
 	{
 		$settlementTrait->delete();
-		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
 	}
 }

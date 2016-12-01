@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\ForestEncounter;
 
-class ForestEncounterController extends Controller
+class ForestEncounterController extends AbstractController
 {
     const CONTROLLER_NAME = "forestEncounter";
 
@@ -109,6 +109,6 @@ class ForestEncounterController extends Controller
     public function destroy(ForestEncounter $forestEncounter)
     {
         $forestEncounter->delete();
-	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
     }
 }

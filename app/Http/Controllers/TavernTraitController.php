@@ -9,7 +9,7 @@ use App\TavernTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 
-class TavernTraitController extends Controller
+class TavernTraitController extends AbstractController
 {
 	const CONTROLLER_NAME = "tavernTrait";
 	
@@ -105,6 +105,6 @@ class TavernTraitController extends Controller
 	public function destroy(TavernTrait $tavernTrait)
 	{
 		$tavernTrait->delete();
-		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
 	}
 }

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\Riddle;
 
-class RiddleController extends Controller
+class RiddleController extends AbstractController
 {
 	const CONTROLLER_NAME = "riddle";
 
@@ -109,6 +109,6 @@ class RiddleController extends Controller
 	public function destroy(Riddle $riddle)
 	{
 		$riddle->delete();
-		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
 	}
 }

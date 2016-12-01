@@ -10,7 +10,7 @@ use App\Trap;
 use Illuminate\Support\Facades\Auth;
 
 
-class TrapController extends Controller
+class TrapController extends AbstractController
 {
 
 	const defaultValidation = [
@@ -111,6 +111,6 @@ class TrapController extends Controller
     public function destroy(Trap $trap)
     {
         $trap->delete();
-	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
     }
 }

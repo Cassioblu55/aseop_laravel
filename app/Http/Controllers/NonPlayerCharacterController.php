@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\NonPlayerCharacter;
 use App\Http\Requests;
 
-class NonPlayerCharacterController extends Controller
+class NonPlayerCharacterController extends AbstractController
 {
 
 	const CONTROLLER_NAME = "npc";
@@ -113,6 +113,6 @@ class NonPlayerCharacterController extends Controller
 	public function destroy(NonPlayerCharacter $npc)
 	{
 		$npc->delete();
-		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
 	}
 }

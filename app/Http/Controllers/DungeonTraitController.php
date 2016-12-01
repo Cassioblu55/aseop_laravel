@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\DungeonTrait;
 
-class DungeonTraitController extends Controller
+class DungeonTraitController extends AbstractController
 {
 
 	const CONTROLLER_NAME = "dungeonTrait";
@@ -106,6 +106,6 @@ class DungeonTraitController extends Controller
 	public function destroy(DungeonTrait $dungeonTrait)
 	{
 		$dungeonTrait->delete();
-		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
 	}
 }

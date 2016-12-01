@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\NonPlayerCharacterTrait;
 
-class NonPlayerCharacterTraitController extends Controller
+class NonPlayerCharacterTraitController extends AbstractController
 {
 	const CONTROLLER_NAME = "npcTrait";
 
@@ -106,6 +106,6 @@ class NonPlayerCharacterTraitController extends Controller
 	public function destroy(NonPlayerCharacterTrait $npcTrait)
 	{
 		$npcTrait->delete();
-		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
 	}
 }

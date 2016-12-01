@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\VillainTrait;
 
-class VillainTraitController extends Controller
+class VillainTraitController extends AbstractController
 {
     const CONTROLLER_NAME = "villainTrait";
 	
@@ -105,6 +105,6 @@ class VillainTraitController extends Controller
     public function destroy(VillainTrait $villainTrait)
     {
         $villainTrait->delete();
-	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
     }
 }

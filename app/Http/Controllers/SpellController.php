@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Spell;
 
-class SpellController extends Controller
+class SpellController extends AbstractController
 {
     const CONTROLLER_NAME = "spell";
 
@@ -104,6 +104,6 @@ class SpellController extends Controller
     public function destroy(Spell $spell)
     {
         $spell->delete();
-	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
     }
 }

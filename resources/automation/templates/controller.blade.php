@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\Base_name;
 
-class Base_nameController extends Controller
+class Base_nameController extends AbstractController
 {
     const CONTROLLER_NAME = "base_name";
 

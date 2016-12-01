@@ -10,7 +10,7 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use App\Monster;
 
-class MonsterController extends Controller
+class MonsterController extends AbstractController
 {
 	const CONTROLLER_NAME = "monster";
 
@@ -106,6 +106,6 @@ class MonsterController extends Controller
 	public function destroy(Monster $monster)
 	{
 		$monster->delete();
-		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
 	}
 }

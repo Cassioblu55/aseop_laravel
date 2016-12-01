@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 
-class DungeonController extends Controller
+class DungeonController extends AbstractController
 {
 	const CONTROLLER_NAME  = "dungeon";
 
@@ -127,6 +127,6 @@ class DungeonController extends Controller
 	public function destroy(Dungeon $dungeon)
 	{
 		$dungeon->delete();
-		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+		return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
 	}
 }

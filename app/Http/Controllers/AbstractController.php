@@ -11,7 +11,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\GenericModel;
 
-class Controller extends BaseController
+abstract class AbstractController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
@@ -137,51 +137,47 @@ class Controller extends BaseController
 		return ucwords($this->controllerModelName.$middle."Controller");
 	}
 
-	protected function getPostHeaders(){
+	public function getPostHeaders(){
 		return (object) ["postLocation" => $this->getPostLocation(), "methodField" => "POST"];
 	}
 
-	protected static function sendRecordUpdatedSuccessfully($message = Messages::DEFAULT_RECORD_UPDATED_MESSAGE){
+	public static function sendRecordUpdatedSuccessfully($message = Messages::DEFAULT_RECORD_UPDATED_MESSAGE){
+		return self::sendSuccessMessage($message);
+	}
+
+	public static function sendRecordAddedSuccessfully($message = Messages::DEFAULT_RECORD_ADDED_MESSAGE){
+		return self::sendSuccessMessage($message);
+	}
+
+	public static function sendSuccessfullyDeletedMessage($message = Messages::DEFAULT_RECORD_DELETED_MESSAGE){
+		return self::sendSuccessMessage($message);
+	}
+
+	protected static function sendSuccessMessage($message){
 		return [Messages::SUCCESS_MESSAGE => $message];
 	}
 
-	protected static function sendRecordAddedSuccessfully($message = Messages::DEFAULT_RECORD_ADDED_MESSAGE){
-		return [Messages::SUCCESS_MESSAGE => $message];
-	}
-
-	protected static function sendSucessMesage($message){
-		return [Messages::SUCCESS_MESSAGE => $message];
-	}
-
-	protected static function sendSuccessfullyDeletedMesage(){
-		return [Messages::SUCCESS_MESSAGE => Messages::DEFAULT_RECORD_DELETED_MESSAGE];
-	}
-
-	protected function getIndexControllerAction(){
+	public function getIndexControllerAction(){
 		return $this->getControllerAction(Messages::INDEX);
 	}
 
-	protected function getCreateControllerAction(){
+	public function getCreateControllerAction(){
 		return $this->getControllerAction(Messages::CREATE);
 	}
 
-	protected function getEditControllerAction(){
+	public function getEditControllerAction(){
 		return $this->getControllerAction(Messages::EDIT);
 	}
 
-	protected function getShowControllerAction(){
+	public function getShowControllerAction(){
 		return $this->getControllerAction(Messages::SHOW);
 	}
 
-	protected static function addMessages($dataHash, array $urlParams){
-		$data = [];
-		foreach ($dataHash as $key =>$value){
-			$data[$key] = $value;
-		}
+	public static function addMessages($dataHash, array $urlParams){
 		foreach ($urlParams as $urlParam => $urlParamValue) {
-			$data[$urlParam] = $urlParamValue;
+			$dataHash[$urlParam] = $urlParamValue;
 		}
-		return $data;
+		return $dataHash;
 	}
 
 	public static function addUpdatedFailedMessage($dataHash){
@@ -189,24 +185,24 @@ class Controller extends BaseController
 		return self::addMessages($dataHash, $urlParams);
 	}
 
-	protected static function addUpdateSuccessMessage($dataHash){
+	public static function addUpdateSuccessMessage($dataHash){
 		$urlParams = [Messages::SUCCESS_MESSAGE => Messages::DEFAULT_RECORD_UPDATED_MESSAGE];
 		return self::addMessages($dataHash, $urlParams);
 	}
 
-	protected static function addAddedSuccessMessage($dataHash){
+	public static function addAddedSuccessMessage($dataHash){
 		$urlParams = [Messages::SUCCESS_MESSAGE => Messages::DEFAULT_RECORD_ADDED_MESSAGE];
 		return self::addMessages($dataHash, $urlParams);
 	}
 
-	protected static function addAddedFailedMessage($dataHash){
+	public static function addAddedFailedMessage($dataHash){
 		$urlParams = [Messages::ERROR_MESSAGE => Messages::DEFAULT_RECORD_COULD_NOT_BE_ADDED];
 		return self::addMessages($dataHash, $urlParams);
 	}
 
 	//TODO Controller adds slashes when saving json data with special characters: "'"
 
-	protected function validateStore(GenericModel $genericModel, $redirectToIndex = false, $modelName = null){
+	public function validateStore(GenericModel $genericModel, $redirectToIndex = false, $modelName = null){
 		$modelName = ($modelName == null) ? $genericModel->getTable() : $modelName;
 		$data = [$modelName => $genericModel];
 
@@ -220,7 +216,7 @@ class Controller extends BaseController
 		return redirect()->action($action, $message);
 	}
 
-	protected function validateUpdate(Request $request, GenericModel $genericModel, $redirectToIndex = false, $modelName = null){
+	public function validateUpdate(Request $request, GenericModel $genericModel, $redirectToIndex = false, $modelName = null){
 		$modelName = ($modelName == null) ? $genericModel->getTable() : $modelName;
 		$data = [$modelName => $genericModel];
 

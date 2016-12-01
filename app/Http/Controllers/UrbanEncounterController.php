@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\UrbanEncounter;
 
-class UrbanEncounterController extends Controller
+class UrbanEncounterController extends AbstractController
 {
     const CONTROLLER_NAME = "urbanEncounter";
 
@@ -108,6 +108,6 @@ class UrbanEncounterController extends Controller
     public function destroy(UrbanEncounter $urbanEncounter)
     {
         $urbanEncounter->delete();
-	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMesage());
+	    return redirect()->action($this->getIndexControllerAction(), self::sendSuccessfullyDeletedMessage());
     }
 }
