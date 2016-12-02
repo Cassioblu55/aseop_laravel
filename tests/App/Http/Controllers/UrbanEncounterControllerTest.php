@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\UrbanEncounterController;
+use App\UrbanEncounter;
 
 class UrbanEncounterControllerTest extends TestCase
 {

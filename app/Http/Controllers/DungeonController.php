@@ -79,7 +79,6 @@ class DungeonController extends AbstractController
     }
 
    public function generateWithMapAndTrapsCreated(Request $request){
-	   $this->logging->logJson($request->all());
 	   $dungeon = new Dungeon($request->all());
 	   $dungeon->generate();
 	   return $this->validateStore($dungeon);

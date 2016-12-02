@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\NonPlayerCharacterTraitController;
+use App\NonPlayerCharacterTrait;
 
 class NonPlayerCharacterTraitControllerTest extends TestCase
 {

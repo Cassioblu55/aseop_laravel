@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\MonsterController;
+use App\Monster;
 
 class MonsterControllerTest extends TestCase
 {
@@ -93,6 +94,115 @@ class MonsterControllerTest extends TestCase
 		];
 
 		$this->assertHashesHaveEqualValues($expectedData, $monster);
+	}
+
+	//TODO Correctly order tests  based on their appearance in the Controller
+	public function testStoreShouldCreateNewMonster(){
+		$monster = [
+			"armor" => 10,
+			"hit_points" => "1d5+6",
+			"speed" => 30,
+			"xp" => 20,
+			"challenge" => 1.5,
+			"name" => "foo monster",
+			"stats" => '{"strength":16,"dexterity":13,"constitution":13,"intelligence":7,"wisdom":11,"charisma":8}',
+		];
+
+
+		$response = $this->call('POST', '/monsters', $monster);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/monsters/1?successMessage=Record+Added+Successfully'));
+
+		$this->assertEquals(1, count(Monster::all()));
+
+		$storedMonster = Monster::findById(1);
+		$this->assertNotNull($storedMonster);
+
+		$this->assertEquals(10, $storedMonster->armor);
+		$this->assertEquals('1d5+6', $storedMonster->hit_points);
+		$this->assertEquals(30, $storedMonster->speed);
+		$this->assertEquals(20, $storedMonster->xp);
+		$this->assertEquals(1.5, $storedMonster->challenge);
+		$this->assertEquals("foo monster", $storedMonster->name);
+		$this->assertEquals('{"strength":16,"dexterity":13,"constitution":13,"intelligence":7,"wisdom":11,"charisma":8}', $storedMonster->stats);
+
+		$this->assertEquals(0, $storedMonster->approved);
+		$this->assertEquals(0, $storedMonster->public);
+		$this->assertEquals($this->user->id, $storedMonster->owner_id);
+	}
+
+	public function testStoreShouldNotCreateNewMonsterWhenMonsterInvalid(){
+		$monster = [
+			"armor" => 10,
+			"hit_points" => "1d5+6",
+			"speed" => 30,
+			"xp" => 20,
+			"challenge" => 1.5,
+			"stats" => '{"strength":16,"dexterity":13,"constitution":13,"intelligence":7,"wisdom":11,"charisma":8}',
+		];
+
+		$response = $this->call('POST', '/monsters', $monster);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/monsters/create?errorMessage=Record+could+not+be+added'));
+
+		$this->assertEquals(0, count(Monster::all()));
+	}
+
+	public function testUpdateShouldUpdateObject(){
+		$monster = factory(Monster::class)->create();
+
+		$newMonster = [
+			"name" => "new monster name",
+			'id' => $monster->id
+		];
+
+		$storedMonster = Monster::findById($monster->id);
+		$this->assertEquals("foo monster", $storedMonster->name);
+
+		$response = $this->call('PATCH', 'monsters/'.$monster->id, $newMonster);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/monsters/1?successMessage=Record+Updated+Successfully'));
+
+		$storedMonster = Monster::findById($monster->id);
+		$this->assertEquals("new monster name", $storedMonster->name);
+	}
+
+	public function testUpdateShouldNotUpdateIfObjectInvalid(){
+		self::ensureTrapOfIdOneExists();
+
+		$monster = factory(Monster::class)->create();
+
+		$newMonster = [
+			'name' => null,
+			'id' => $monster->id
+		];
+
+		$storedMonster = Monster::findById($monster->id);
+		$this->assertEquals("foo monster", $storedMonster->name);
+
+		$response = $this->call('PATCH', 'monsters/'.$monster->id, $newMonster);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/monsters/'.$monster->id.'/edit?errorMessage=Record+failed+to+update'));
+
+		$storedMonster = Monster::findById($monster->id);
+		$this->assertEquals("foo monster", $storedMonster->name);
+	}
+
+	public function testDestroyShouldDeleteRecord(){
+		$monster = factory(Monster::class)->create();
+
+		$count = count(Monster::all());
+
+		$response = $this->call('DELETE', 'monsters/'.$monster->id);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/monsters?successMessage=Record+Deleted+Successfully'));
+
+		$this->assertEquals($count-1, count(Monster::all()));
 	}
 
 }

@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\TavernTraitController;
+use App\TavernTrait;
 
 class TavernTraitControllerTest extends TestCase
 {

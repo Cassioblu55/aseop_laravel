@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\SettlementController;
+use App\Settlement;
 
 class SettlementControllerTest extends TestCase
 {

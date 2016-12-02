@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\VillainController;
+use App\Villain;
 
 class VillainControllerTest extends TestCase
 {

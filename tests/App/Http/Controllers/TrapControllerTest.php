@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\TrapController;
+use App\Trap;
 
 class TrapControllerTest extends TestCase
 {

@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\RiddleController;
+use App\Riddle;
 
 class RiddleControllerTest extends TestCase
 {

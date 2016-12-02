@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\TavernController;
+use App\Tavern;
 
 class TavernControllerTest extends TestCase
 {

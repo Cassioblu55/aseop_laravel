@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\SettlementTraitController;
+use App\SettlementTrait;
 
 class SettlementTraitControllerTest extends TestCase
 {

@@ -5,6 +5,7 @@
 
 use App\Http\Controllers\DungeonController;
 use Illuminate\Http\Request;
+use App\Dungeon;
 
 class DungeonControllerTest extends TestCase
 {
@@ -40,7 +41,55 @@ class DungeonControllerTest extends TestCase
 	    $this->assertViewHas('dungeon');
     }
 
+    public function testStoreShouldCreateNewDungeon(){
+	    self::ensureTrapOfIdOneExists();
+
+	    $dungeon = [
+	    	'name' => "foo",
+		    'map' => '[["w","w","w","s","w","w","t","w"],["x","w","x","w","x","w","x","w"],["t","w","w","w","w","w","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","w","w","w","w","w","w"],["x","x","x","x","x","w","x","x"]]',
+		    'traps' => '[["1","6","0"],["1","0","2"]]',
+		    'size' => 'M'
+	    ];
+
+	    $response = $this->call('POST', '/dungeons', $dungeon);
+
+	    $this->assertEquals(302, $response->status());
+	    $this->assertRedirectedTo(url('/dungeons/1?successMessage=Record+Added+Successfully'));
+
+	    $this->assertEquals(1, count(Dungeon::all()));
+
+	    $storedDungeon = Dungeon::findById(1);
+	    $this->assertNotNull($storedDungeon);
+
+	    $this->assertEquals($dungeon['map'], $storedDungeon->map);
+	    $this->assertEquals($dungeon['traps'], $storedDungeon->traps);
+	    $this->assertEquals("M", $storedDungeon->size);
+
+	    $this->assertEquals(0, $storedDungeon->approved);
+	    $this->assertEquals(0, $storedDungeon->public);
+	    $this->assertEquals($this->user->id, $storedDungeon->owner_id);
+    }
+
+	public function testStoreShouldNotCreateNewDungeonWhenDungeonInvalid(){
+		self::ensureTrapOfIdOneExists();
+
+		$dungeon = [
+			'map' => '[["w","w","w","s","w","w","t","w"],["x","w","x","w","x","w","x","w"],["t","w","w","w","w","w","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","w","w","w","w","w","w"],["x","x","x","x","x","w","x","x"]]',
+			'traps' => '[["1","6","0"],["1","0","2"]]',
+			'size' => 'M'
+		];
+
+		$response = $this->call('POST', '/dungeons', $dungeon);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/dungeons/create?errorMessage=Record+could+not+be+added'));
+
+		$this->assertEquals(0, count(Dungeon::all()));
+	}
+
 	public function testEditShouldShowEditObjectPage(){
+		self::ensureTrapOfIdOneExists();
+
 		$dungeon = factory(\App\Dungeon::class)->create();
 
 		$this->callSecure('GET', 'dungeons/'.$dungeon->id.'/edit');
@@ -48,16 +97,62 @@ class DungeonControllerTest extends TestCase
 		$this->assertResponseOk();
 
 		$this->assertViewHas('dungeon');
+		$this->assertViewHas('headers');
+	}
+
+	public function testUpdateShouldUpdateObject(){
+		self::ensureTrapOfIdOneExists();
+
+		$dungeon = factory(Dungeon::class)->create();
+
+		$newDungeon = [
+			'name' => "This is the new Name",
+			'id' => $dungeon->id
+		];
+
+		$storedDungeon = Dungeon::findById($dungeon->id);
+		$this->assertEquals("foo", $storedDungeon->name);
+
+		$response = $this->call('PATCH', 'dungeons/'.$dungeon->id, $newDungeon);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/dungeons/'.$dungeon->id.'?successMessage=Record+Updated+Successfully'));
+
+		$storedDungeon = Dungeon::findById($dungeon->id);
+		$this->assertEquals("This is the new Name", $storedDungeon->name);
+	}
+
+	public function testUpdateShouldNotUpdateIfObjectInvalid(){
+		self::ensureTrapOfIdOneExists();
+
+		$dungeon = factory(Dungeon::class)->create();
+
+		$newDungeon = [
+			'name' => null,
+			'id' => $dungeon->id
+		];
+
+		$storedDungeon = Dungeon::findById($dungeon->id);
+		$this->assertEquals("foo", $storedDungeon->name);
+
+		$response = $this->call('PATCH', 'dungeons/'.$dungeon->id, $newDungeon);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/dungeons/'.$dungeon->id.'/edit?errorMessage=Record+failed+to+update'));
+
+		$storedDungeon = Dungeon::findById($dungeon->id);
+		$this->assertEquals("foo", $storedDungeon->name);
 	}
 
 	public function testShowShouldShowShowObjectPage(){
-		$dungeon = factory(\App\Dungeon::class)->create();
+		$dungeon = factory(Dungeon::class)->create();
 
 		$this->callSecure('GET', 'dungeons/'.$dungeon->id);
 
 		$this->assertResponseOk();
 
 		$this->assertViewHas('dungeon');
+		$this->assertViewHas('headers');
 	}
 
 	public function testUploadShouldShowUploadPage(){
@@ -93,7 +188,7 @@ class DungeonControllerTest extends TestCase
 	}
 
 	public function testApiShouldRetrunAllData(){
-		factory(\App\Dungeon::class)->create();
+		factory(Dungeon::class)->create();
 
 		$response = $this->callSecure('GET', 'api/dungeons');
 
@@ -119,4 +214,16 @@ class DungeonControllerTest extends TestCase
 		$this->assertHashesHaveEqualValues($expectedData, $dungeon);
 	}
 
+	public function testDestroyShouldDeleteRecord(){
+		$dungeon = factory(Dungeon::class)->create();
+
+		$count = count(Dungeon::all());
+
+		$response = $this->call('DELETE', 'dungeons/'.$dungeon->id);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/dungeons?successMessage=Record+Deleted+Successfully'));
+
+		$this->assertEquals($count-1, count(Dungeon::all()));
+	}
 }

@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\ForestEncounterController;
+use App\ForestEncounter;
 
 class ForestEncounterControllerTest extends TestCase
 {
@@ -89,6 +90,103 @@ class ForestEncounterControllerTest extends TestCase
 		];
 
 		$this->assertHashesHaveEqualValues($expectedData, $forestEncounter);
+	}
+	
+	//TODO Correctly order tests  based on their appearance in the Controller
+	public function testStoreShouldCreateNewForestEncounter(){
+		$forestEncounter = [
+			'description' => "description",
+			'title' => "title",
+			'rolls' => "1d6+2,2d5+10",
+		];
+
+
+		$response = $this->call('POST', '/forestEncounters', $forestEncounter);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/forestEncounters/1?successMessage=Record+Added+Successfully'));
+
+		$this->assertEquals(1, count(ForestEncounter::all()));
+
+		$storedForestEncounter = ForestEncounter::findById(1);
+		$this->assertNotNull($storedForestEncounter);
+
+		$this->assertEquals('title', $storedForestEncounter->title);
+		$this->assertEquals('description', $storedForestEncounter->description);
+		$this->assertEquals("1d6+2,2d5+10", $storedForestEncounter->rolls);
+
+		$this->assertEquals(0, $storedForestEncounter->approved);
+		$this->assertEquals(0, $storedForestEncounter->public);
+		$this->assertEquals($this->user->id, $storedForestEncounter->owner_id);
+	}
+
+	public function testStoreShouldNotCreateNewForestEncounterWhenForestEncounterInvalid(){
+		$forestEncounter = [
+			'description' => "description",
+			'rolls' => "1d6+2,2d5+10",
+		];
+
+		$response = $this->call('POST', '/forestEncounters', $forestEncounter);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/forestEncounters/create?errorMessage=Record+could+not+be+added'));
+
+		$this->assertEquals(0, count(ForestEncounter::all()));
+	}
+	
+	public function testUpdateShouldUpdateObject(){
+		$forestEncounter = factory(ForestEncounter::class)->create();
+
+		$newForestEncounter = [
+			'title' => "this is a new title",
+			'id' => $forestEncounter->id
+		];
+
+		$storedForestEncounter = ForestEncounter::findById($forestEncounter->id);
+		$this->assertEquals("title", $storedForestEncounter->title);
+
+		$response = $this->call('PATCH', 'forestEncounters/'.$forestEncounter->id, $newForestEncounter);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/forestEncounters/1?successMessage=Record+Updated+Successfully'));
+
+		$storedForestEncounter = ForestEncounter::findById($forestEncounter->id);
+		$this->assertEquals("this is a new title", $storedForestEncounter->title);
+	}
+
+	public function testUpdateShouldNotUpdateIfObjectInvalid(){
+		self::ensureTrapOfIdOneExists();
+
+		$forestEncounter = factory(ForestEncounter::class)->create();
+
+		$newForestEncounter = [
+			'title' => null,
+			'id' => $forestEncounter->id
+		];
+
+		$storedForestEncounter = ForestEncounter::findById($forestEncounter->id);
+		$this->assertEquals("title", $storedForestEncounter->title);
+
+		$response = $this->call('PATCH', 'forestEncounters/'.$forestEncounter->id, $newForestEncounter);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/forestEncounters/'.$forestEncounter->id.'/edit?errorMessage=Record+failed+to+update'));
+
+		$storedForestEncounter = ForestEncounter::findById($forestEncounter->id);
+		$this->assertEquals("title", $storedForestEncounter->title);
+	}
+	
+	public function testDestroyShouldDeleteRecord(){
+		$forestEncounter = factory(ForestEncounter::class)->create();
+
+		$count = count(ForestEncounter::all());
+
+		$response = $this->call('DELETE', 'forestEncounters/'.$forestEncounter->id);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/forestEncounters?successMessage=Record+Deleted+Successfully'));
+
+		$this->assertEquals($count-1, count(ForestEncounter::all()));
 	}
 
 }

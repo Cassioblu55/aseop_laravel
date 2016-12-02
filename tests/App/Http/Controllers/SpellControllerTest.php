@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\SpellController;
+use App\Spell;
 
 class SpellControllerTest extends TestCase
 {
