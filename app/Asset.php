@@ -8,7 +8,7 @@
 
 namespace App;
 
-abstract class Asset extends GenericModel implements Generate
+abstract class Asset extends GenericModel
 {
 
 	private $traitTable;

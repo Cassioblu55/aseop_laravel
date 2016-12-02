@@ -50,14 +50,9 @@ class Dungeon extends Asset
 		parent::__construct($attributes,new $class() ,self::FILLABLE_FROM_TRAIT_TABLE);
 	}
 
-	public static function generate(){
-		return self::generateIncomplete();
-	}
-
-	private static function generateIncomplete(){
-		$dungeon = new Dungeon();
-		$dungeon->setRandomMissing();
-		return  $dungeon;
+	public function generate(){
+		$this->setRandomMissing();
+		return  $this;
 	}
 
 	private function setRandomMissing(){
@@ -219,7 +214,7 @@ class Dungeon extends Asset
 					return false;
 				}
 
-				if ($this->getMapSquare($trap[1], $trap[2]) != self::TRAP) {
+				if ($this->getMapSquare($trap[2], $trap[1]) != self::TRAP) {
 					$this->setError(self::TRAPS, "Trap number $trapNumber not marked as trap in map.");
 					return false;
 				}
@@ -232,14 +227,14 @@ class Dungeon extends Asset
 		return false;
 	}
 
-	public function getMapSquare($x, $y){
+	public function getMapSquare($column, $row){
 		if($this->validMap()){
 			$mapArray = json_decode($this->{self::MAP});
 			$rowCount = 0;
 			foreach ($mapArray as $mapRow){
 				$columnCount = 0;
 				foreach ($mapRow as $squareValue){
-					if($columnCount == $y && $rowCount == $x){
+					if($columnCount == $row && $rowCount == $column){
 						return $squareValue;
 					}
 					$columnCount++;

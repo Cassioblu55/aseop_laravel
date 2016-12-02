@@ -140,11 +140,12 @@ class DungeonTest extends TestCase
 		$this->assertEquals($expectedError, $this->dungeon->getErrorMessage());
 	}
 
-	public function testGenerateShouldReturnIncompleteDungeonWithNoMapOrTraps(){
+	public function testGenerateShouldAddFillableAndRequiredParams(){
 
 		factory(App\DungeonTrait::class)->create();
 
-		$dungeon = Dungeon::generate();
+		$dungeon = new Dungeon();
+		$dungeon->generate();
 
 		$this->assertNull($dungeon->map);
 		$this->assertEquals("[]", $dungeon->traps);
@@ -172,7 +173,7 @@ class DungeonTest extends TestCase
 		$uploadMap = '[["w","w","w","s","w","w","w","w"],["x","w","x","w","x","w","x","w"],["w","w","w","w","w","w","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","t","w","w","w","w","w"],["x","x","x","x","x","t","x","x"]]';
 		$this->assertEquals($uploadMap, $dungeon->map);
 
-		$uploadTraps = '[["1","6","2"],["1","7","5"]]';
+		$uploadTraps = '[["1","2","6"],["1","5","7"]]';
 		$this->assertEquals($uploadTraps, $dungeon->traps);
 
 		$this->assertEquals("M", $dungeon->size);
@@ -235,7 +236,7 @@ class DungeonTest extends TestCase
 		$dungeon = factory(Dungeon::class)->make();
 		$this->assertTrue($dungeon->validate());
 
-		$dungeon->traps = '[["1","0","6"],["2","2","0"]]';
+		$dungeon->traps = '[["1","6","0"],["2","2","0"]]';
 		$this->assertFalse($dungeon->validate());
 
 		$expectedError = 'Could not save: {"traps":["Trap number 2 not found in database."]}';
@@ -246,7 +247,7 @@ class DungeonTest extends TestCase
 		$dungeon = factory(Dungeon::class)->make();
 		$this->assertTrue($dungeon->validate());
 
-		$dungeon->traps = '[["1","0","6"],"foobar"]';
+		$dungeon->traps = '[["1","6","0"],"foobar"]';
 		$this->assertFalse($dungeon->validate());
 
 		$expectedError = 'Could not save: {"traps":["Trap number 2 invalid, not array."]}';
@@ -257,7 +258,7 @@ class DungeonTest extends TestCase
 		$dungeon = factory(Dungeon::class)->make();
 		$this->assertTrue($dungeon->validate());
 
-		$dungeon->traps = '[["1","0","6"],["1","2"]]';
+		$dungeon->traps = '[["1","6","0"],["1","2"]]';
 		$this->assertFalse($dungeon->validate());
 
 		$expectedError = 'Could not save: {"traps":["Trap number 2 invalid, too small."]}';

@@ -74,14 +74,16 @@ class DungeonController extends AbstractController
 	}
 
     public function generate(){;
-	    $dungeon = Dungeon::generate();
-	    return view($this->getControllerView("createMap"), compact('dungeon'));
+	    $headers = $this->getCreateHeaders();
+	    return view($this->getControllerView("createMap"), compact('headers') );
     }
 
-    public function createWithIdReturn(Request $request){
-	    $dungeon = Dungeon::create($request->all());
-	    return $dungeon[Dungeon::ID];
-    }
+   public function generateWithMapAndTrapsCreated(Request $request){
+	   $this->logging->logJson($request->all());
+	   $dungeon = new Dungeon($request->all());
+	   $dungeon->generate();
+	   return $this->validateStore($dungeon);
+   }
 
 	public function upload(){
 		$headers = $this->getUploadHeaders();

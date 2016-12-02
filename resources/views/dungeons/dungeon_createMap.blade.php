@@ -9,10 +9,16 @@
     @include('tiles.loading', ['title'=>'Creating Dungeon'])
 
     <div ng-controller="CreateMapController">
-        <div id="dungeon"  class="hidden">
-            {{json_encode($dungeon)}}
-        </div>
+        <form class="hidden" action="{{url('/dungeons/generateWithMapAndTrapsCreated')}}" method="POST" id="form">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            {{method_field($headers->methodField)}}
+
+            <textarea name="traps" type="text" ng-model="trapsString"></textarea>
+            <textarea name="map"  type="text" ng-model="mapString"></textarea>
+            <input name="size" ng-model="dungeon.size" type="text">
+        </form>
     </div>
+
 @stop
 
 
@@ -24,29 +30,21 @@
 
             const TRAP_RESOURCE_URL = "{{url("/api/traps")}}";
 
-            $scope.dungeon = JSON.parse(document.getElementById('dungeon').innerHTML);
+            $scope.dungeon = {};
+            $scope.dungeon.size = randomFromArray(['S','M','L']);
 
             $scope.setFromGet(TRAP_RESOURCE_URL,function(traps){
                 $scope.trapOptions = traps;
-
                 $scope.generateMap();
                 setTraps();
+                $scope.mapString = JSON.stringify($scope.map.getTiles());
 
-                $scope.dungeon.traps = ($scope.trapOptions.length > 0) ? getTrapSting($scope.traps) : "[]";
+            });
 
-                $scope.dungeon['_token'] = "{{ csrf_token() }}";
-                $scope.dungeon['_method'] = "POST";
-
-                var req = {
-                    method: 'POST',
-                    url: "{{url('/dungeons/createWithIdReturn')}}",
-                    data: $scope.dungeon
-                };
-
-                $http(req).then(function(response){
-                    $window.location.href ="{{url('/dungeons')}}/"+response.data+"?successMessage=Dungeon Successfully added";
-                });
-
+            $scope.$watchGroup(['mapString', 'trapsString'], function(vals){
+                if(vals[0] && vals[1]){
+                    $( "#form" ).submit();
+                }
             });
 
             function setTraps(){
@@ -63,7 +61,8 @@
 
                 addTrapsToMap();
 
-                $scope.stringifyMap($scope.map.getTiles());
+                $scope.trapsString = getTrapString($scope.traps);
+
             }
 
             function addTrapsToMap(){

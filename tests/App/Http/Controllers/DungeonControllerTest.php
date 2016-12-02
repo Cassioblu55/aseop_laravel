@@ -4,6 +4,7 @@
  */
 
 use App\Http\Controllers\DungeonController;
+use Illuminate\Http\Request;
 
 class DungeonControllerTest extends TestCase
 {
@@ -65,6 +66,32 @@ class DungeonControllerTest extends TestCase
 		$this->assertResponseOk();
 	}
 
+	public function testGenerateWithMapAndTrapsCreatedShouldCreateDungeonWithRequestDataOfADungeonMapAndTraps(){
+		self::ensureTrapOfIdOneExists();
+		factory(App\DungeonTrait::class)->create();
+
+		$mapAndTraps = [
+			'map' => '[["w","w","w","s","w","w","t","w"],["x","w","x","w","x","w","x","w"],["t","w","w","w","w","w","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","w","w","w","w","w","w"],["x","x","x","x","x","w","x","x"]]',
+			'traps' => '[["1","6","0"],["1","0","2"]]',
+			'size' => 'M'
+		];
+
+		$request = new Request($mapAndTraps);
+
+		$controller = new DungeonController();
+
+		$view = $controller->generateWithMapAndTrapsCreated($request);
+
+		$dungeons = \App\Dungeon::all();
+		$this->assertEquals(1, count($dungeons));
+
+		$newDungeon = $dungeons[0];
+		$this->assertEquals($mapAndTraps['map'], $newDungeon->map);
+		$this->assertEquals($mapAndTraps['traps'], $newDungeon->traps);
+
+		$this->assertEquals(url('dungeons/1?successMessage=Record+Added+Successfully'), $view->getTargetUrl());
+	}
+
 	public function testApiShouldRetrunAllData(){
 		factory(\App\Dungeon::class)->create();
 
@@ -81,7 +108,7 @@ class DungeonControllerTest extends TestCase
 		$expectedData = [
 			'name' => "foo",
 			'map' => '[["w","w","w","s","w","w","t","w"],["x","w","x","w","x","w","x","w"],["t","w","w","w","w","w","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","w","w","w","w","w","w"],["x","x","x","x","x","w","x","x"]]',
-			'traps' => '[["1","0","6"],["1","2","0"]]',
+			'traps' => '[["1","6","0"],["1","0","2"]]',
 			'size' => 'M',
 
 			'public' => "0",

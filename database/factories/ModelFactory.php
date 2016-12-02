@@ -26,7 +26,7 @@ $factory->define(App\Dungeon::class, function (Faker\Generator $faker) {
 	return [
 		'name' => "foo",
 		'map' => '[["w","w","w","s","w","w","t","w"],["x","w","x","w","x","w","x","w"],["t","w","w","w","w","w","w","w"],["w","x","x","w","x","w","x","x"],["w","w","w","x","w","w","w","x"],["w","x","x","x","x","w","x","w"],["w","x","w","w","w","w","w","w"],["x","x","x","x","x","w","x","x"]]',
-		'traps' => '[["1","0","6"],["1","2","0"]]',
+		'traps' => '[["1","6","0"],["1","0","2"]]',
 		'size' => 'M',
 
 		'public' => false,

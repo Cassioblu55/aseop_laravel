@@ -23,7 +23,7 @@ Route::get('dungeons/upload', 'DungeonController@upload');
 Route::post('dungeons/upload', 'DungeonController@saveBatch');
 
 Route::get('dungeons/generate', 'DungeonController@generate');
-Route::post('dungeons/createWithIdReturn', 'DungeonController@createWithIdReturn');
+Route::post('dungeons/generateWithMapAndTrapsCreated', 'DungeonController@generateWithMapAndTrapsCreated');
 
 Route::resource('dungeons', 'DungeonController',[
 	'parameters' => 'singular'

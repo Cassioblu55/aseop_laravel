@@ -252,9 +252,9 @@ var map = function(t){
 	}
 	that.removeTraps = removeTraps;
 	
-	function setTrap(x,y){
-		if(vaildTile(x,y) && (start.y != y || start.x != x)){
-			tiles[y][x] = "t";
+	function setTrap(column,row){
+		if(vaildTile(column,row) && (start.y != row || start.x != column)){
+			tiles[row][column] = "t";
 		}
 	}
 	that.setTrap = setTrap;
