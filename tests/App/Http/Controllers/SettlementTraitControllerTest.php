@@ -91,4 +91,96 @@ class SettlementTraitControllerTest extends TestCase
 		$this->assertHashesHaveEqualValues($expectedData, $settlementTrait);
 	}
 
+	//TODO Correctly order tests  based on their appearance in the Controller
+	public function testStoreShouldCreateNewSettlementTrait(){
+		$settlementTrait = [
+			'type' => 'name',
+			'trait' => 'Coolsville',
+		];
+
+
+		$response = $this->call('POST', '/settlementTraits', $settlementTrait);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/settlementTraits?successMessage=Record+Added+Successfully'));
+
+		$this->assertEquals(1, count(SettlementTrait::all()));
+
+		$storedSettlementTrait = SettlementTrait::findById(1);
+		$this->assertNotNull($storedSettlementTrait);
+
+		$this->assertEquals('name', $storedSettlementTrait->type);
+		$this->assertEquals('Coolsville', $storedSettlementTrait->trait);
+
+		$this->assertEquals(0, $storedSettlementTrait->approved);
+		$this->assertEquals(0, $storedSettlementTrait->public);
+		$this->assertEquals($this->user->id, $storedSettlementTrait->owner_id);
+	}
+
+	public function testStoreShouldNotCreateNewSettlementTraitWhenSettlementTraitInvalid(){
+		$settlementTrait = [
+			'trait' => 'Coolsville',
+		];
+
+		$response = $this->call('POST', '/settlementTraits', $settlementTrait);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/settlementTraits/create?errorMessage=Record+could+not+be+added'));
+
+		$this->assertEquals(0, count(SettlementTrait::all()));
+	}
+
+	public function testUpdateShouldUpdateObject(){
+		$settlementTrait = factory(SettlementTrait::class)->create();
+
+		$newSettlementTrait = [
+			'trait' => 'Coolland',
+			'id' => $settlementTrait->id
+		];
+
+		$storedSettlementTrait = SettlementTrait::findById($settlementTrait->id);
+		$this->assertEquals("Coolsville", $storedSettlementTrait->trait);
+
+		$response = $this->call('PATCH', 'settlementTraits/'.$settlementTrait->id, $newSettlementTrait);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/settlementTraits?successMessage=Record+Updated+Successfully'));
+
+		$storedSettlementTrait = SettlementTrait::findById($settlementTrait->id);
+		$this->assertEquals("Coolland", $storedSettlementTrait->trait);
+	}
+
+	public function testUpdateShouldNotUpdateIfObjectInvalid(){
+		$settlementTrait = factory(SettlementTrait::class)->create();
+
+		$newSettlementTrait = [
+			'trait' => null,
+			'id' => $settlementTrait->id
+		];
+
+		$storedSettlementTrait = SettlementTrait::findById($settlementTrait->id);
+		$this->assertEquals("Coolsville", $storedSettlementTrait->trait);
+
+		$response = $this->call('PATCH', 'settlementTraits/'.$settlementTrait->id, $newSettlementTrait);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/settlementTraits/'.$settlementTrait->id.'/edit?errorMessage=Record+failed+to+update'));
+
+		$storedSettlementTrait = SettlementTrait::findById($settlementTrait->id);
+		$this->assertEquals("Coolsville", $storedSettlementTrait->trait);
+	}
+
+	public function testDestroyShouldDeleteRecord(){
+		$settlementTrait = factory(SettlementTrait::class)->create();
+
+		$count = count(SettlementTrait::all());
+
+		$response = $this->call('DELETE', 'settlementTraits/'.$settlementTrait->id);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/settlementTraits?successMessage=Record+Deleted+Successfully'));
+
+		$this->assertEquals($count-1, count(SettlementTrait::all()));
+	}
+
 }

@@ -70,13 +70,9 @@ abstract class GenericModel extends Model implements Upload, Download
 
 	public function safeUpdate(Request $request = null, $overrideDefaultValidationRules = false){
 		if($request != null){
-			$rules = $this->getAllRules($overrideDefaultValidationRules);
-			$errors = Validate::getValidationErrors($request, $rules);
-
-			$valid = count($errors) > 0;
-		}else{
-			$valid = $this->validate($overrideDefaultValidationRules);
+			$this->fill($request->all());
 		}
+		$valid = $this->validate($overrideDefaultValidationRules);
 		if($valid) {
 			try {
 				($request == null) ? $this->update() : $this->update($request->all());

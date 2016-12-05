@@ -95,4 +95,99 @@ class VillainControllerTest extends TestCase
 		$this->assertHashesHaveEqualValues($expectedData, $villain);
 	}
 
+	//TODO Correctly order tests  based on their appearance in the Controller
+	public function testStoreShouldCreateNewVillain(){
+		$villain = [
+			'npc_id' => 1,
+		];
+
+
+		$response = $this->call('POST', '/villains', $villain);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/villains/1?successMessage=Record+Added+Successfully'));
+
+		$this->assertEquals(1, count(Villain::all()));
+
+		$storedVillain = Villain::findById(1);
+		$this->assertNotNull($storedVillain);
+
+		$this->assertEquals(1, $storedVillain->npc_id);
+
+		$this->assertEquals(0, $storedVillain->approved);
+		$this->assertEquals(0, $storedVillain->public);
+		$this->assertEquals($this->user->id, $storedVillain->owner_id);
+	}
+
+	public function testStoreShouldNotCreateNewVillainWhenVillainInvalid(){
+		$villain = [
+			'method_type' => 'Bounty hunting or assassination',
+			'npc_id' => 1
+		];
+
+		$response = $this->call('POST', '/villains', $villain);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/villains/create?errorMessage=Record+could+not+be+added'));
+
+		$this->assertEquals(0, count(Villain::all()));
+	}
+
+	public function testUpdateShouldUpdateObject()
+	{
+		$villain = factory(Villain::class)->create();
+
+		$newVillain = [
+			'method_type' => 'Bounty hunting or assassination',
+			'method_description' => 'Hire a deadly assassin',
+			'id' => $villain->id
+		];
+
+		$storedVillain = Villain::findById($villain->id);
+		$this->assertNull($storedVillain->method_type);
+		$this->assertNull($storedVillain->method_description);
+
+		$response = $this->call('PATCH', 'villains/' . $villain->id, $newVillain);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/villains/1?successMessage=Record+Updated+Successfully'));
+
+		$storedVillain = Villain::findById($villain->id);
+		$this->assertEquals('Bounty hunting or assassination', $storedVillain->method_type);
+		$this->assertEquals('Hire a deadly assassin', $storedVillain->method_description);
+	}
+
+	public function testUpdateShouldNotUpdateIfObjectInvalid(){
+		$villain = factory(Villain::class)->create();
+
+		$newVillain = [
+			'npc_id' => -1,
+			'id' => $villain->id
+		];
+
+		$storedVillain = Villain::findById($villain->id);
+		$this->assertEquals(1, $storedVillain->npc_id);
+
+		$response = $this->call('PATCH', 'villains/'.$villain->id, $newVillain);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/villains/'.$villain->id.'/edit?errorMessage=Record+failed+to+update'));
+
+		$storedVillain = Villain::findById($villain->id);
+		$this->assertEquals(1, $storedVillain->npc_id);
+	}
+
+	public function testDestroyShouldDeleteRecord(){
+		$villain = factory(Villain::class)->create();
+
+		$count = count(Villain::all());
+
+		$response = $this->call('DELETE', 'villains/'.$villain->id);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/villains?successMessage=Record+Deleted+Successfully'));
+
+		$this->assertEquals($count-1, count(Villain::all()));
+	}
+
 }

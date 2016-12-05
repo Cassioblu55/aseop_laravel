@@ -96,4 +96,99 @@ class TavernControllerTest extends TestCase
 		$this->assertHashesHaveEqualValues($expectedData, $tavern);
 	}
 
+	//TODO Correctly order tests  based on their appearance in the Controller
+	public function testStoreShouldCreateNewTavern(){
+		$tavern = [
+			'name' => 'The Golden Rat',
+			'type' => 'Thieves Guild Hangout',
+			'tavern_owner_id' => 1,
+		];
+
+
+		$response = $this->call('POST', '/taverns', $tavern);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/taverns/1?successMessage=Record+Added+Successfully'));
+
+		$this->assertEquals(1, count(Tavern::all()));
+
+		$storedTavern = Tavern::findById(1);
+		$this->assertNotNull($storedTavern);
+
+		$this->assertEquals('The Golden Rat', $storedTavern->name);
+		$this->assertEquals('Thieves Guild Hangout', $storedTavern->type);
+		$this->assertEquals(1, $storedTavern->tavern_owner_id);
+
+		$this->assertEquals(0, $storedTavern->approved);
+		$this->assertEquals(0, $storedTavern->public);
+		$this->assertEquals($this->user->id, $storedTavern->owner_id);
+	}
+
+	public function testStoreShouldNotCreateNewTavernWhenTavernInvalid(){
+		$tavern = [
+			'type' => 'Thieves Guild Hangout',
+			'tavern_owner_id' => 1,
+		];
+
+		$response = $this->call('POST', '/taverns', $tavern);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/taverns/create?errorMessage=Record+could+not+be+added'));
+
+		$this->assertEquals(0, count(Tavern::all()));
+	}
+
+	public function testUpdateShouldUpdateObject(){
+		$tavern = factory(Tavern::class)->create();
+
+		$newTavern = [
+			'name' => 'The Golden Ratty',
+			'id' => $tavern->id
+		];
+
+		$storedTavern = Tavern::findById($tavern->id);
+		$this->assertEquals("The Golden Rat", $storedTavern->name);
+
+		$response = $this->call('PATCH', 'taverns/'.$tavern->id, $newTavern);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/taverns/1?successMessage=Record+Updated+Successfully'));
+
+		$storedTavern = Tavern::findById($tavern->id);
+		$this->assertEquals("The Golden Ratty", $storedTavern->name);
+	}
+
+	public function testUpdateShouldNotUpdateIfObjectInvalid(){
+		$tavern = factory(Tavern::class)->create();
+
+		$newTavern = [
+			'name' => null,
+			'id' => $tavern->id
+		];
+
+		$storedTavern = Tavern::findById($tavern->id);
+		$this->assertEquals("The Golden Rat", $storedTavern->name);
+
+		$response = $this->call('PATCH', 'taverns/'.$tavern->id, $newTavern);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/taverns/'.$tavern->id.'/edit?errorMessage=Record+failed+to+update'));
+
+		$storedTavern = Tavern::findById($tavern->id);
+		$this->assertEquals("The Golden Rat", $storedTavern->name);
+	}
+
+	public function testDestroyShouldDeleteRecord(){
+		$tavern = factory(Tavern::class)->create();
+
+		$count = count(Tavern::all());
+
+		$response = $this->call('DELETE', 'taverns/'.$tavern->id);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/taverns?successMessage=Record+Deleted+Successfully'));
+
+		$this->assertEquals($count-1, count(Tavern::all()));
+	}
+
 }

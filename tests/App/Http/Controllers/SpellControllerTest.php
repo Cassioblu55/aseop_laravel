@@ -95,4 +95,110 @@ class SpellControllerTest extends TestCase
 		$this->assertHashesHaveEqualValues($expectedData, $spell);
 	}
 
+	//TODO Correctly order tests  based on their appearance in the Controller
+	public function testStoreShouldCreateNewSpell(){
+		$spell = [
+			'name' => 'Test Name',
+			'type' => 'abjuration',
+			'class' => 'fighter',
+			'level' => 6,
+			'range' => 30,
+			'description' => 'description',
+		];
+
+
+		$response = $this->call('POST', '/spells', $spell);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/spells/1?successMessage=Record+Added+Successfully'));
+
+		$this->assertEquals(1, count(Spell::all()));
+
+		$storedSpell = Spell::findById(1);
+		$this->assertNotNull($storedSpell);
+
+		$this->assertEquals('Test Name', $storedSpell->name);
+		$this->assertEquals('abjuration', $storedSpell->type);
+		$this->assertEquals('fighter', $storedSpell->class);
+		$this->assertEquals(6, $storedSpell->level);
+		$this->assertEquals(30, $storedSpell->range);
+		$this->assertEquals('description', $storedSpell->description);
+
+		$this->assertEquals(0, $storedSpell->approved);
+		$this->assertEquals(0, $storedSpell->public);
+		$this->assertEquals($this->user->id, $storedSpell->owner_id);
+	}
+
+	public function testStoreShouldNotCreateNewSpellWhenSpellInvalid(){
+		$spell = [
+			'type' => 'abjuration',
+			'class' => 'fighter',
+			'level' => 6,
+			'range' => 30,
+			'description' => 'description',
+		];
+
+		$response = $this->call('POST', '/spells', $spell);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/spells/create?errorMessage=Record+could+not+be+added'));
+
+		$this->assertEquals(0, count(Spell::all()));
+	}
+
+	public function testUpdateShouldUpdateObject(){
+		$spell = factory(Spell::class)->create();
+
+		$newSpell = [
+			'name' => 'New Spell Name',
+			'id' => $spell->id
+		];
+
+		$storedSpell = Spell::findById($spell->id);
+		$this->assertEquals("Test Name", $storedSpell->name);
+
+		$response = $this->call('PATCH', 'spells/'.$spell->id, $newSpell);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/spells/1?successMessage=Record+Updated+Successfully'));
+
+		$storedSpell = Spell::findById($spell->id);
+		$this->assertEquals("New Spell Name", $storedSpell->name);
+	}
+
+	public function testUpdateShouldNotUpdateIfObjectInvalid(){
+		self::ensureTrapOfIdOneExists();
+
+		$spell = factory(Spell::class)->create();
+
+		$newSpell = [
+			'name' => null,
+			'id' => $spell->id
+		];
+
+		$storedSpell = Spell::findById($spell->id);
+		$this->assertEquals("Test Name", $storedSpell->name);
+
+		$response = $this->call('PATCH', 'spells/'.$spell->id, $newSpell);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/spells/'.$spell->id.'/edit?errorMessage=Record+failed+to+update'));
+
+		$storedSpell = Spell::findById($spell->id);
+		$this->assertEquals("Test Name", $storedSpell->name);
+	}
+
+	public function testDestroyShouldDeleteRecord(){
+		$spell = factory(Spell::class)->create();
+
+		$count = count(Spell::all());
+
+		$response = $this->call('DELETE', 'spells/'.$spell->id);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/spells?successMessage=Record+Deleted+Successfully'));
+
+		$this->assertEquals($count-1, count(Spell::all()));
+	}
+
 }

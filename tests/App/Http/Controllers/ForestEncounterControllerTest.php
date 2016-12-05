@@ -155,8 +155,6 @@ class ForestEncounterControllerTest extends TestCase
 	}
 
 	public function testUpdateShouldNotUpdateIfObjectInvalid(){
-		self::ensureTrapOfIdOneExists();
-
 		$forestEncounter = factory(ForestEncounter::class)->create();
 
 		$newForestEncounter = [

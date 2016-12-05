@@ -171,8 +171,6 @@ class MonsterControllerTest extends TestCase
 	}
 
 	public function testUpdateShouldNotUpdateIfObjectInvalid(){
-		self::ensureTrapOfIdOneExists();
-
 		$monster = factory(Monster::class)->create();
 
 		$newMonster = [

@@ -163,8 +163,6 @@ class NonPlayerCharacterControllerTest extends TestCase
 	}
 
 	public function testUpdateShouldNotUpdateIfObjectInvalid(){
-		self::ensureTrapOfIdOneExists();
-
 		$nonPlayerCharacter = factory(NonPlayerCharacter::class)->create();
 
 		$newNonPlayerCharacter = [

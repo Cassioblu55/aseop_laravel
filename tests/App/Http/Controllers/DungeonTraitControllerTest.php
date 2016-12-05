@@ -109,8 +109,6 @@ class DungeonTraitControllerTest extends TestCase
 	}
 
 	public function testUpdateShouldNotUpdateIfObjectInvalid(){
-		self::ensureTrapOfIdOneExists();
-
 		$dungeonTrait = factory(DungeonTrait::class)->create();
 
 		$newDungeonTrait = [

@@ -92,4 +92,99 @@ class UrbanEncounterControllerTest extends TestCase
 		$this->assertHashesHaveEqualValues($expectedData, $urbanEncounter);
 	}
 
+	//TODO Correctly order tests  based on their appearance in the Controller
+	public function testStoreShouldCreateNewUrbanEncounter(){
+		$urbanEncounter = [
+			'description' => "description",
+			'title' => "title",
+			'rolls' => "1d6+2,2d5+10",
+		];
+
+
+		$response = $this->call('POST', '/urbanEncounters', $urbanEncounter);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/urbanEncounters/1?successMessage=Record+Added+Successfully'));
+
+		$this->assertEquals(1, count(UrbanEncounter::all()));
+
+		$storedUrbanEncounter = UrbanEncounter::findById(1);
+		$this->assertNotNull($storedUrbanEncounter);
+
+		$this->assertEquals('title', $storedUrbanEncounter->title);
+		$this->assertEquals('description', $storedUrbanEncounter->description);
+		$this->assertEquals('1d6+2,2d5+10', $storedUrbanEncounter->rolls);
+
+		$this->assertEquals(0, $storedUrbanEncounter->approved);
+		$this->assertEquals(0, $storedUrbanEncounter->public);
+		$this->assertEquals($this->user->id, $storedUrbanEncounter->owner_id);
+	}
+
+	public function testStoreShouldNotCreateNewUrbanEncounterWhenUrbanEncounterInvalid(){
+		$urbanEncounter = [
+			'description' => "description",
+			'rolls' => "1d6+2,2d5+10",
+		];
+
+		$response = $this->call('POST', '/urbanEncounters', $urbanEncounter);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/urbanEncounters/create?errorMessage=Record+could+not+be+added'));
+
+		$this->assertEquals(0, count(UrbanEncounter::all()));
+	}
+
+	public function testUpdateShouldUpdateObject(){
+		$urbanEncounter = factory(UrbanEncounter::class)->create();
+
+		$newUrbanEncounter = [
+			'title' => "new title",
+			'id' => $urbanEncounter->id
+		];
+
+		$storedUrbanEncounter = UrbanEncounter::findById($urbanEncounter->id);
+		$this->assertEquals("title", $storedUrbanEncounter->title);
+
+		$response = $this->call('PATCH', 'urbanEncounters/'.$urbanEncounter->id, $newUrbanEncounter);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/urbanEncounters/1?successMessage=Record+Updated+Successfully'));
+
+		$storedUrbanEncounter = UrbanEncounter::findById($urbanEncounter->id);
+		$this->assertEquals("new title", $storedUrbanEncounter->title);
+	}
+
+	public function testUpdateShouldNotUpdateIfObjectInvalid(){
+		$urbanEncounter = factory(UrbanEncounter::class)->create();
+
+		$newUrbanEncounter = [
+			'title' => null,
+			'id' => $urbanEncounter->id
+		];
+
+		$storedUrbanEncounter = UrbanEncounter::findById($urbanEncounter->id);
+		$this->assertEquals("title", $storedUrbanEncounter->title);
+
+		$response = $this->call('PATCH', 'urbanEncounters/'.$urbanEncounter->id, $newUrbanEncounter);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/urbanEncounters/'.$urbanEncounter->id.'/edit?errorMessage=Record+failed+to+update'));
+
+		$storedUrbanEncounter = UrbanEncounter::findById($urbanEncounter->id);
+		$this->assertEquals("title", $storedUrbanEncounter->title);
+	}
+
+	public function testDestroyShouldDeleteRecord(){
+		$urbanEncounter = factory(UrbanEncounter::class)->create();
+
+		$count = count(UrbanEncounter::all());
+
+		$response = $this->call('DELETE', 'urbanEncounters/'.$urbanEncounter->id);
+
+		$this->assertEquals(302, $response->status());
+		$this->assertRedirectedTo(url('/urbanEncounters?successMessage=Record+Deleted+Successfully'));
+
+		$this->assertEquals($count-1, count(UrbanEncounter::all()));
+	}
+
 }
